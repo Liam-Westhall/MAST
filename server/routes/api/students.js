@@ -9,6 +9,26 @@ router.get('/', async (req, res) => {
     res.send(students)
 })
 
+router.get('/search?', async (req, res) => {
+
+    var student_obj = {}
+    var user_obj = {}
+    var filters = req.query
+   
+    for (const [key, value] of Object.entries(filters)) {
+    
+        if (key == "firstName" || key == "lastName" || key == "email"){
+            user_obj[key] = value 
+        }else {
+            student_obj[key] = value 
+        }
+         
+    }
+
+    var students = await Student.findAll({include: [{model: User, where: user_obj }], where: student_obj })
+    res.send(students)
+})
+
 //USE FOR TESTING. CAN DELETE LATER!!!!!!!!!
 router.get('/new', async (req, res) => {
 
