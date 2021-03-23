@@ -1,4 +1,4 @@
-import logo from './logo.svg';
+
 import './App.css';
 import React, { Component} from 'react'
 import Navbar from './GPDScreens/NavbarGPD';
@@ -20,16 +20,17 @@ class App extends Component{
     const response = await fetch('/express_backend');
     const body = await response.json();
 
-    if(response.status != 200) {
+    if(response.status !== 200) {
       throw Error(body.message)
     }
 
     return body;
   }
+
+
   render(){
   return (
     <div className="App">
-      <ManageStudentsGPD />
     </div>
   );
   }
