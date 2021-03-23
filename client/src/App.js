@@ -4,6 +4,7 @@ import React, { Component} from 'react'
 import Navbar from './GPDScreens/NavbarGPD';
 import NavbarGPD from './GPDScreens/NavbarGPD';
 import ManageStudentsGPD from './GPDScreens/ManageStudentsGPD';
+import EditStudentGPD from './GPDScreens/EditStudentGPD';
 
 class App extends Component{
   state = {
@@ -31,6 +32,7 @@ class App extends Component{
   render(){
   return (
     <div className="App">
+      <EditStudentGPD />
     </div>
   );
   }
