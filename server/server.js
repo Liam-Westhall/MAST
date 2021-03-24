@@ -18,6 +18,7 @@ const db = require('./models')
 app.use("/api/users", require("./routes/api/users"))
 app.use("/api/students", require("./routes/api/students"))
 app.use("/api/auth", require("./routes/api/auth"))
+app.use("/api/add_student", require("./routes/api/add_student"))
 
 db.sequelize.sync().then((req) => {
 

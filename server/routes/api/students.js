@@ -29,6 +29,7 @@ router.get('/search?', async (req, res) => {
     res.send(students)
 })
 
+
 //USE FOR TESTING. CAN DELETE LATER!!!!!!!!!
 router.get('/new', async (req, res) => {
 
