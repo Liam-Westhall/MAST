@@ -14,10 +14,22 @@ class ManageStudentsGPD extends Component{
             department: "",
             entrySemester: "",
             track: "",
-            students: []
+            students: [],
+            query: ""
             
         }
     }
+
+    onClickSearchCallback = () => {
+
+    }
+
+    onChangeSearch = (event) => {
+
+        this.setState({query: event.target.value})
+
+    }
+
     onChange = (event) => {
         this.setState({[event.target.id]: event.target.value});
     }
@@ -47,7 +59,7 @@ class ManageStudentsGPD extends Component{
                     <Col
                     offset="l10"
                     l={3}>
-                        <TextInput
+                        <TextInput onChange={this.onChangeSearch}
                         icon="search"
                         label="Search">
                         </TextInput>

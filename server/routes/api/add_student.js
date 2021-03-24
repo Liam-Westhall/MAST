@@ -9,7 +9,7 @@ const {Student, User} = require('../../models')
 router.post('/', async(req, res) => {
     const {firstName, lastName, email, password, department, entrySemester, track} = req.body;
     try {
-        await User.create({
+        let user = await User.create({
             firstName: firstName,
             lastName: lastName,
             email: email,
@@ -17,15 +17,18 @@ router.post('/', async(req, res) => {
             isStudent: true
         });
 
-        await Student.create({
+        let student = await Student.create({
             sbuID: id.toString(),
             department: department,
             track: track,
-            entrySemester: entrySemester
+            entrySemester: entrySemester,
+            UserId: user.id
         });
 
         id = id + 1;
         useID = useID + 1;
+
+        res.send({name: user.firstName + " " + user.lastName})
     }
     catch(error){
         console.log(error);
