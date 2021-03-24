@@ -18,7 +18,8 @@ class ManageStudentsGPD extends Component{
             students: [],
             query: "",
             editStudent: false,
-            currentEditStudent: null
+            currentEditStudent: null,
+            refresh: false
         }
     }
 
@@ -60,8 +61,6 @@ class ManageStudentsGPD extends Component{
             },
           };    
         axios.post("http://localhost:5000/api/add_student/", body, header).catch((error) => console.log(error));
-        this.forceUpdate();
-        this.forceUpdate();
     }
 
     deleteStudentCallback = () => {
@@ -74,7 +73,6 @@ class ManageStudentsGPD extends Component{
         this.setState({currentEditStudent: student});
         console.log(student);
         this.setState({editStudent: true});
-        
     }
 
     async componentDidMount() {
@@ -92,17 +90,18 @@ class ManageStudentsGPD extends Component{
                 <Row>
                     <Col
                     offset="l10"
-                    l={3}
-                    >
-                        <Button label="Search" onClick={this.onClickSearchCallback}>Go</Button>
-                    </Col>
-                    <Col
-                    offset="l10"
                     l={3}>
                         <TextInput onChange={this.onChangeSearchQuery}
                         icon="search"
                         label="Search">
                         </TextInput>
+                    </Col>
+                </Row>
+                <Row>
+                <Col offset="l10"
+                    l={2}
+                    >
+                        <Button label="Search" onClick={this.onClickSearchCallback}>Search</Button>
                     </Col>
                 </Row>
                 <Row>
@@ -163,13 +162,9 @@ class ManageStudentsGPD extends Component{
                             <span>Entry Semester:</span>
                             <TextInput className="white" id="entrySemester" onChange={this.onChange}></TextInput>
                             <span>Track:</span>
-                            <TextInput className="white" id="track" onChange={this.handleChange}></TextInput>
+                            <TextInput className="white" id="track" onChange={this.onChange}></TextInput>
                             <Button type="submit" modal="close" onClick={this.addStudentCallback}>Submit</Button>
                         </Modal>
-                    </Col>
-                    <Col
-                    size={1}>
-                        <Button>Edit Info</Button>
                     </Col>
                     <Col
                     size={1}>
