@@ -18,6 +18,7 @@ class ManageStudentsGPD extends Component{
             
         }
     }
+    
     onChange = (event) => {
         this.setState({[event.target.id]: event.target.value});
     }
@@ -30,6 +31,18 @@ class ManageStudentsGPD extends Component{
             },
           };    
         axios.post("http://localhost:5000/api/add_student/", body, header).catch((error) => console.log(error));
+        this.forceUpdate();
+    }
+
+    deleteStudentCallback = () => {
+        let body = []
+        let header = {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }; 
+        axios.post("https://localhost:5000/api/students/delete_all", body, header);
+        this.setState({students: []});
     }
 
     async componentDidMount() {
@@ -107,8 +120,6 @@ class ManageStudentsGPD extends Component{
                             <TextInput className="white" id="email" onChange={this.onChange}></TextInput>
                             <span>Password:</span>
                             <TextInput className="white" id="password" onChange={this.onChange}></TextInput>
-                            <span>Confirm Password:</span>
-                            <TextInput className="white"></TextInput>
                             <span>Department:</span>
                             <TextInput className="white" id="department" onChange={this.onChange}></TextInput>
                             <span>Entry Semester:</span>
@@ -124,7 +135,7 @@ class ManageStudentsGPD extends Component{
                     </Col>
                     <Col
                     size={1}>
-                        <Button>Delete All</Button>
+                        <Button onClick={this.deleteStudentCallback}>Delete All</Button>
                     </Col>
                 </Row>
                 </div>

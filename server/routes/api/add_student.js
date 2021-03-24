@@ -2,7 +2,6 @@ const express = require('express')
 const jwt = require('jsonwebtoken')
 const router = express.Router()
 let id = 111111111
-let useID = 2
 
 const {Student, User} = require('../../models')
 
@@ -25,10 +24,9 @@ router.post('/', async(req, res) => {
         });
 
         id = id + 1;
-        useID = useID + 1;
     }
     catch(error){
-        console.log(error);
+        throw error;
     }
 })
 

@@ -29,6 +29,13 @@ router.get('/search?', async (req, res) => {
     res.send(students)
 })
 
+router.post('/delete_all', async (req, res) => {
+    await Student.destroy({
+        truncate: true
+    });
+}
+)
+
 
 //USE FOR TESTING. CAN DELETE LATER!!!!!!!!!
 router.get('/new', async (req, res) => {
