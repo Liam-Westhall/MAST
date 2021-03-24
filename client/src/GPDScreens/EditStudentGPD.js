@@ -63,23 +63,6 @@ class EditStudentGPD extends Component{
                             </Row>
                             <Row>
                                 <Col l={6}>
-                                    <span align="left" class="white-text">Full Name:</span>
-                                </Col>
-                                <Col l={6}>
-                                    <span class="white-text">Major:</span>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col l={6}>
-                                    <TextInput class="white">
-                                    </TextInput>
-                                </Col>
-                                <Col l={6}>
-                                    <TextInput class="white darken-3">
-                                    </TextInput>
-                                </Col>
-                            </Row><Row>
-                                <Col l={6}>
                                     <span align="left" class="white-text">SBU ID:</span>
                                 </Col>
                                 <Col l={6}>

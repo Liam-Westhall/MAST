@@ -30,7 +30,7 @@ class App extends Component{
   render(){
   return this.state.data ? (
     <div className="App">
-      <LoginScreen data={this.state.data}/>
+      <ManageStudentsGPD />
     </div>
   ) : (<div>Loading...</div>);
   }

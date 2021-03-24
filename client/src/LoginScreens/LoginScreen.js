@@ -11,7 +11,6 @@ class LoginScreen extends Component{
 
     handleChangeEmail = (event) => {
         this.setState({email: event.target.value});
-        console.log(this.state.email);
     }
     handleChangePassword = (event) => {
         this.setState({password: event.target.value});
@@ -25,8 +24,6 @@ class LoginScreen extends Component{
           };
             
         const res = axios.post("http://localhost:5000/api/auth/", body, header).then(this.setState({isLogin: true, loginError: false})).catch((error) => this.setState({loginError: true}));
-        console.log(this.state.email)
-        console.log(this.state.user_data);
     }
     render(){
         return(
