@@ -5,6 +5,8 @@ import Navbar from './GPDScreens/NavbarGPD';
 import NavbarGPD from './GPDScreens/NavbarGPD';
 import ManageStudentsGPD from './GPDScreens/ManageStudentsGPD';
 import EditStudentGPD from './GPDScreens/EditStudentGPD';
+import LoginScreen from './LoginScreens/LoginScreen';
+import axios from 'axios'
 
 class App extends Component{
   state = {
@@ -12,29 +14,24 @@ class App extends Component{
   };
 
   componentDidMount = () => {
-    this.callBackendAPI()
-    .then(res => this.setState({data: res.express}))
-    .catch(err => console.log(err));
+    this.callBackendAPI();
   }
 
   callBackendAPI = async () => {
-    const response = await fetch('/express_backend');
-    const body = await response.json();
+    const response = await axios.get("/api/users");
+    this.setState({data: response.data});
+    console.log(this.state.data)
 
-    if(response.status !== 200) {
-      throw Error(body.message)
-    }
-
-    return body;
+    return response;
   }
 
 
   render(){
-  return (
+  return this.state.data ? (
     <div className="App">
-      <ManageStudentsGPD />
+      <LoginScreen data={this.state.data}/>
     </div>
-  );
+  ) : (<div>Loading...</div>);
   }
 }
 
