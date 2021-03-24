@@ -3,8 +3,8 @@ import NavbarGPD from './NavbarGPD'
 import {Navbar, Row, Column, Col, TextInput, Button, Table, Modal} from 'react-materialize'
 import axios from 'axios'
 import EditStudentGPD from './EditStudentGPD'
+import { Link, Redirect, useHistory } from 'react-router-dom'
 class ManageStudentsGPD extends Component{
-
     constructor(props){
         super(props)
         this.state = {
@@ -17,7 +17,8 @@ class ManageStudentsGPD extends Component{
             track: "",
             students: [],
             query: "",
-            editStudent: null
+            editStudent: false,
+            currentEditStudent: null
         }
     }
 
@@ -53,6 +54,13 @@ class ManageStudentsGPD extends Component{
         this.setState({students: []});
     }
 
+    editStudent = (student) => {
+        this.setState({currentEditStudent: student});
+        console.log(student);
+        this.setState({editStudent: true});
+        
+    }
+
     async componentDidMount() {
         var students = await axios.get('/api/students')
         console.log(students.data)
@@ -61,6 +69,7 @@ class ManageStudentsGPD extends Component{
 
     render(){
         return(
+            this.state.editStudent ? <Redirect to={{pathname: "edit_student_gpd", state: {currentEditStudent: this.state.currentEditStudent}}}></Redirect> : 
             <div>
                 <NavbarGPD />
                 <div className="body">
@@ -97,7 +106,7 @@ class ManageStudentsGPD extends Component{
                     </thead>
                     <tbody>
                         {this.state.students.map((student) => (
-                                <tr>
+                                <tr onClick={this.editStudent.bind(this, student)}>
                                     <th data-field="Name">{student.User.firstName + " " + student.User.lastName}</th>
                                     <th data-field="Id">{student.sbuID}</th>
                                     <th data-field="Email">{student.User.email}</th>
@@ -108,7 +117,6 @@ class ManageStudentsGPD extends Component{
                             ))
                         }
                     </tbody>
-                    
                 </Table>
                 <br></br>
                 <Row>
@@ -149,7 +157,7 @@ class ManageStudentsGPD extends Component{
                 </div>
             </div>
             
-        )
+        );
     }
 }
 

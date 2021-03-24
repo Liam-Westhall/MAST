@@ -5,8 +5,9 @@ class EditStudentGPD extends Component{
     constructor(props){
         super(props);
         this.state = {
-            currentStudent: null
+            currentStudent: this.props.location.state.currentEditStudent
         };
+        console.log(this.state.currentStudent);
     }
 
     render(){
