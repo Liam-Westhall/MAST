@@ -25,7 +25,6 @@ router.post('/', async(req, res) => {
         });
 
         id = id + 1;
-        useID = useID + 1;
 
         res.send({name: user.firstName + " " + user.lastName})
     }

@@ -43,16 +43,12 @@ class ManageStudentsGPD extends Component{
           };    
         axios.post("http://localhost:5000/api/add_student/", body, header).catch((error) => console.log(error));
         this.forceUpdate();
+        this.forceUpdate();
     }
 
     deleteStudentCallback = () => {
         let body = []
-        let header = {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }; 
-        axios.post("https://localhost:5000/api/students/delete_all", body, header);
+        axios.post("http://localhost:5000/api/students/delete_all", body).catch((error) => console.log(error));
         this.setState({students: []});
     }
 
@@ -137,7 +133,7 @@ class ManageStudentsGPD extends Component{
                             <TextInput className="white" id="entrySemester" onChange={this.onChange}></TextInput>
                             <span>Track:</span>
                             <TextInput className="white" id="track" onChange={this.handleChange}></TextInput>
-                            <Button type="submit" onClick={this.addStudentCallback}>Submit</Button>
+                            <Button type="submit" modal="close" onClick={this.addStudentCallback}>Submit</Button>
                         </Modal>
                     </Col>
                     <Col
