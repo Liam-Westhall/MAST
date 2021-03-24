@@ -1,7 +1,7 @@
 
 import './App.css';
 import React, { Component} from 'react'
-import {Routem, Switch} from 'react-router-dom'
+import {Router, Switch, Route, BrowserRouter} from 'react-router-dom'
 import Navbar from './GPDScreens/NavbarGPD';
 import NavbarGPD from './GPDScreens/NavbarGPD';
 import ManageStudentsGPD from './GPDScreens/ManageStudentsGPD';
@@ -30,7 +30,16 @@ class App extends Component{
   render(){
   return this.state.data ? (
     <div className="App">
-      <ManageStudentsGPD />
+      <BrowserRouter>
+        <Switch>
+          <Route exact path="/" component={LoginScreen}>
+          </Route>
+          <Route exact path="/manage_students_gpd" component={ManageStudentsGPD}>
+          </Route>
+          <Route exact path="/edit_student_gpd" component={EditStudentGPD}>
+          </Route>  
+        </Switch>
+      </BrowserRouter>
     </div>
   ) : (<div>Loading...</div>);
   }

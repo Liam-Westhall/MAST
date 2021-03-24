@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, {Component} from 'react'
 import { Button, Card, Navbar, TextInput } from 'react-materialize'
+import { Redirect } from 'react-router';
 import ManageStudentsGPD from '../GPDScreens/ManageStudentsGPD';
 
 class LoginScreen extends Component{
@@ -28,7 +29,7 @@ class LoginScreen extends Component{
     render(){
         return(
             <div align="left">
-                {this.state.isLogin ? <ManageStudentsGPD /> : 
+                {this.state.isLogin ? <Redirect push to="/manage_students_gpd"></Redirect> : 
                 <div>
                 <Navbar className="blue" brand={<a className="brand-logo" href="/">MAST</a>}>   
                 </Navbar>

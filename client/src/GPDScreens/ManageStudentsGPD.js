@@ -2,6 +2,7 @@ import React, { Component} from 'react'
 import NavbarGPD from './NavbarGPD'
 import {Navbar, Row, Column, Col, TextInput, Button, Table, Modal} from 'react-materialize'
 import axios from 'axios'
+import EditStudentGPD from './EditStudentGPD'
 class ManageStudentsGPD extends Component{
 
     constructor(props){
@@ -15,8 +16,8 @@ class ManageStudentsGPD extends Component{
             entrySemester: "",
             track: "",
             students: [],
-            query: ""
-            
+            query: "",
+            editStudent: null
         }
     }
 
