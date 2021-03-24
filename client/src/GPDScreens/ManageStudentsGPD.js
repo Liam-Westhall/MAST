@@ -20,11 +20,27 @@ class ManageStudentsGPD extends Component{
         }
     }
 
-    onClickSearchCallback = () => {
+    onClickSearchCallback = async () => {
 
+        let values = this.state.query.split(" ")
+
+        if (this.state.query.length == 0) return 
+
+        if(values.length > 2) {
+            values = values.filter((item) => item.length > 0)
+        }
+
+        if(values.length > 2) return
+        
+
+        let path = values.length == 1 ?  "/api/students/search?firstName=" + values[0] : "/api/students/search?firstName=" + values[0] + "&lastName=" + values[1]
+        console.log("path is:::", path)
+        let res = await axios.get(path)
+        
+        this.setState({students: res.data})
     }
 
-    onChangeSearch = (event) => {
+    onChangeSearchQuery = (event) => {
 
         this.setState({query: event.target.value})
 
@@ -58,8 +74,14 @@ class ManageStudentsGPD extends Component{
                 <Row>
                     <Col
                     offset="l10"
+                    l={3}
+                    >
+                        <Button label="Search" onClick={this.onClickSearchCallback}>Go</Button>
+                    </Col>
+                    <Col
+                    offset="l10"
                     l={3}>
-                        <TextInput onChange={this.onChangeSearch}
+                        <TextInput onChange={this.onChangeSearchQuery}
                         icon="search"
                         label="Search">
                         </TextInput>

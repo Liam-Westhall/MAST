@@ -1,7 +1,8 @@
 const express = require('express')
+const {Op} = require("sequelize")
 const router = express.Router()
 
-const {Student, User} = require('../../models')
+const {Student, User, sequelize, Sequelize} = require('../../models')
 
 router.get('/', async (req, res) => {
 
@@ -18,15 +19,22 @@ router.get('/search?', async (req, res) => {
     for (const [key, value] of Object.entries(filters)) {
     
         if (key == "firstName" || key == "lastName" || key == "email"){
-            user_obj[key] = value 
+            user_obj[key] = Sequelize.where(Sequelize.fn('LOWER', Sequelize.col(key)), Sequelize.fn('LOWER', value))
         }else {
-            student_obj[key] = value 
+            student_obj[key] = Sequelize.where(Sequelize.fn('LOWER', Sequelize.col(key)), Sequelize.fn('LOWER', value))
         }
          
     }
+    try {
 
-    var students = await Student.findAll({include: [{model: User, where: user_obj }], where: student_obj })
-    res.send(students)
+        var students = await Student.findAll({include: [{model: User, where: user_obj }], where: student_obj })
+        res.send(students)
+        
+    }catch (err) {
+        console.log(err)
+        res.statusCode(500).send("Opsies woopsies, server error OWO")
+    }
+   
 })
 
 
