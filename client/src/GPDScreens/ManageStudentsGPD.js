@@ -2,6 +2,7 @@ import React, { Component} from 'react'
 import NavbarGPD from './NavbarGPD'
 import {Navbar, Row, Column, Col, TextInput, Button, Table, Modal} from 'react-materialize'
 import axios from 'axios'
+import EditStudentGPD from './EditStudentGPD'
 class ManageStudentsGPD extends Component{
 
     constructor(props){
@@ -15,8 +16,8 @@ class ManageStudentsGPD extends Component{
             entrySemester: "",
             track: "",
             students: [],
-            query: ""
-            
+            query: "",
+            editStudent: null
         }
     }
 
@@ -58,6 +59,14 @@ class ManageStudentsGPD extends Component{
             },
           };    
         axios.post("http://localhost:5000/api/add_student/", body, header).catch((error) => console.log(error));
+        this.forceUpdate();
+        this.forceUpdate();
+    }
+
+    deleteStudentCallback = () => {
+        let body = []
+        axios.post("http://localhost:5000/api/students/delete_all", body).catch((error) => console.log(error));
+        this.setState({students: []});
     }
 
     async componentDidMount() {
@@ -141,15 +150,13 @@ class ManageStudentsGPD extends Component{
                             <TextInput className="white" id="email" onChange={this.onChange}></TextInput>
                             <span>Password:</span>
                             <TextInput className="white" id="password" onChange={this.onChange}></TextInput>
-                            <span>Confirm Password:</span>
-                            <TextInput className="white"></TextInput>
                             <span>Department:</span>
                             <TextInput className="white" id="department" onChange={this.onChange}></TextInput>
                             <span>Entry Semester:</span>
                             <TextInput className="white" id="entrySemester" onChange={this.onChange}></TextInput>
                             <span>Track:</span>
                             <TextInput className="white" id="track" onChange={this.handleChange}></TextInput>
-                            <Button type="submit" onClick={this.addStudentCallback}>Submit</Button>
+                            <Button type="submit" modal="close" onClick={this.addStudentCallback}>Submit</Button>
                         </Modal>
                     </Col>
                     <Col
@@ -158,7 +165,7 @@ class ManageStudentsGPD extends Component{
                     </Col>
                     <Col
                     size={1}>
-                        <Button>Delete All</Button>
+                        <Button onClick={this.deleteStudentCallback}>Delete All</Button>
                     </Col>
                 </Row>
                 </div>
