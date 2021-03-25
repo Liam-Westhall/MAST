@@ -1,6 +1,7 @@
 import React, { Component} from 'react'
 import {Button, Card, Navbar, Tab, Icon, NavItem, Tabs} from 'react-materialize'
 import '../style.css'
+import {Link} from 'react-router-dom'
 class NavbarGPD extends Component{
     constructor(props){
         super(props);
@@ -18,7 +19,7 @@ class NavbarGPD extends Component{
             extendWith={<Tabs className="tabs-transparent"><Tab className="white-text" options={{duration: 300, onShow: null, responsiveThreshold: Infinity, swipeable: false}} title="manage students"></Tab><Tab className="white-text" options={{duration: 300, onShow: null, responsiveThreshold: Infinity, swipeable: false}} title="import data"></Tab><Tab className="white-text" options={{duration: 300, onShow: null, responsiveThreshold: Infinity, swipeable: false}} title="view enrollment trends"></Tab><Tab className="white-text" options={{duration: 300, onShow: null, responsiveThreshold: Infinity, swipeable: false}} title="suggest course plan"></Tab></Tabs>}
             options={{edge: 'left', preventScrolling: true}}>
             <NavItem>Profile</NavItem>
-            <NavItem>Logout</NavItem>
+            <Link to="/"><NavItem>Logout</NavItem></Link>
             </Navbar>
         )
     }

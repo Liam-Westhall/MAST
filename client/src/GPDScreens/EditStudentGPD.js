@@ -1,13 +1,31 @@
 import React, { Component} from 'react'
-import { Card, Row, Col, Navbar, TextInput, Button, Collapsible, CollapsibleItem, Table } from 'react-materialize';
+import { Card, Row, Col, Navbar, TextInput, Button, Collapsible, CollapsibleItem, Table } from 'react-materialize'
+import {Link} from 'react-router-dom'
 
 class EditStudentGPD extends Component{
     constructor(props){
         super(props);
         this.state = {
-            currentStudent: this.props.location.state.currentEditStudent
+            currentStudent: this.props.location.state.currentEditStudent,
+            firstName: this.props.location.state.currentEditStudent.User.firstName,
+            lastName: this.props.location.state.currentEditStudent.User.lastName,
+            email: this.props.location.state.currentEditStudent.User.email,
+            major: this.props.location.state.currentEditStudent.department,
+            entrySemester: this.props.location.state.currentEditStudent.entrySemester,
+            track: this.props.location.state.currentEditStudent.track,
+            sbuID: this.props.location.state.currentEditStudent.sbuID,
+            expectedGraduation: ""
         };
         console.log(this.state.currentStudent);
+    }
+
+    onChange = (event) => {
+        this.setState({[event.target.id]: event.target.value});
+    }
+
+    onChangeName = (event) => {
+        let nameStr = event.target.value.split(" ");
+        this.setState({firstName: nameStr[0], lastName: nameStr[1]});
     }
 
     render(){
@@ -17,7 +35,7 @@ class EditStudentGPD extends Component{
                 <br></br>
                 <Row>
                     <Col l={6}>
-                        <b>Edit Student: John Doe</b>
+                        <b>Edit Student: {this.state.firstName + " " + this.state.lastName}</b>
                     </Col>
                     <Col l={6}>
                         <b>View/Edit Comments</b>
@@ -36,11 +54,11 @@ class EditStudentGPD extends Component{
                             </Row>
                             <Row>
                                 <Col l={6}>
-                                    <TextInput class="white">
+                                    <TextInput class="white" onChange={this.onChangeName} value={this.state.firstName + " " + this.state.lastName}>
                                     </TextInput>
                                 </Col>
                                 <Col l={6}>
-                                    <TextInput class="white">
+                                    <TextInput class="white" onChange={this.onChange} value={this.state.major} id="major">
                                     </TextInput>
                                 </Col>
                             </Row>
@@ -54,11 +72,11 @@ class EditStudentGPD extends Component{
                             </Row>
                             <Row>
                                 <Col l={6}>
-                                    <TextInput class="white">
+                                    <TextInput class="white" onChange={this.onChange} value={this.state.email} id="email">
                                     </TextInput>
                                 </Col>
                                 <Col l={6}>
-                                    <TextInput class="white">
+                                    <TextInput class="white" onChange={this.onChange} value={this.state.entrySemester} id="entrySemester">
                                     </TextInput>
                                 </Col>
                             </Row>
@@ -72,17 +90,17 @@ class EditStudentGPD extends Component{
                             </Row>
                             <Row>
                                 <Col l={6}>
-                                    <TextInput class="white">
+                                    <TextInput class="white" onChange={this.onChange} value={this.state.sbuID} id="sbuID">
                                     </TextInput>
                                 </Col>
                                 <Col l={6}>
-                                    <TextInput class="white darken-3">
+                                    <TextInput class="white" onChange={this.onChange} value={this.state.expectedGraduation} id="expectedGraduation"> 
                                     </TextInput>
                                 </Col>
                             </Row>
                             <Row>
-                                <Col offset="l6" l={6}>
-                                    <span class="white-text">Track:</span>
+                            <Col l={6} offset="l6">
+                                    <span align="left" class="white-text">Track:</span>
                                 </Col>
                             </Row>
                             <Row>
@@ -90,7 +108,7 @@ class EditStudentGPD extends Component{
                                     <Button>Confirm Changes</Button>
                                 </Col>
                                 <Col l={6}>
-                                    <TextInput class="white darken-3">
+                                    <TextInput class="white" onChange={this.onChange} value={this.state.track} id="track"> 
                                     </TextInput>
                                 </Col>
                             </Row>
@@ -186,6 +204,9 @@ class EditStudentGPD extends Component{
                     </Card>
                     </Col>    
                 </Row>
+                <Link to="/manage_students_gpd">
+                    <Button>Return Home</Button>
+                </Link>
             </div>
             
         );
