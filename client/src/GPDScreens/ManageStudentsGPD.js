@@ -121,8 +121,7 @@ class ManageStudentsGPD extends Component{
                 <Table>
                     <thead>
                         <tr>
-                            <th data-field="Name">Name                                
-                            </th>
+                            <th data-field="Name">Name</th>
                             <th data-field="Id">ID</th>
                             <th data-field="Email">Email</th>
                             <th data-field="Department">Department</th>
