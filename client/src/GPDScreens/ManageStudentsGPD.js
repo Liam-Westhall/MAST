@@ -53,14 +53,15 @@ class ManageStudentsGPD extends Component{
         this.setState({[event.target.id]: event.target.value});
     }
 
-    addStudentCallback = () => {
+    addStudentCallback = async () => {
         let body = {firstName: this.state.firstName, lastName: this.state.lastName, email: this.state.email, password: this.state.password, department: this.state.department, entrySemester: this.state.entrySemester, track: this.state.track};
         let header = {
             headers: {
               "Content-Type": "application/json",
             },
           };    
-        axios.post("http://localhost:5000/api/add_student/", body, header).catch((error) => console.log(error));
+        await axios.post("http://localhost:5000/api/add_student/", body, header).catch((error) => console.log(error));
+        this.loadStudents()
     }
 
     deleteStudentCallback = () => {
@@ -75,10 +76,14 @@ class ManageStudentsGPD extends Component{
         this.setState({editStudent: true});
     }
 
-    async componentDidMount() {
+    loadStudents = async () => {
         var students = await axios.get('/api/students')
         console.log(students.data)
         this.setState({students: students.data})
+    }
+
+    async componentDidMount() {
+        this.loadStudents()
     }
 
     render(){
