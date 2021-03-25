@@ -11,14 +11,11 @@ router.post('/', async(req, res) => {
         console.log(req)
         
         let usertemp = await User.update({
-            firstName: firstName
-           }, {where : {email: email}})
-
-        let usertemp = await User.update({
+            firstName: firstName,
             lastName: lastName
-           }, {where : {email: email}})
+           }, {where : {email: email}});
 
-        res.send({usertemp})
+        res.send({usertemp});
     }
     catch(error){
         throw error;

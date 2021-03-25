@@ -37,7 +37,7 @@ class EditStudentGPD extends Component{
               "Content-Type": "application/json",
             },
           };    
-        await axios.post("http://localhost:5000/api/edit_student", JSON.stringify(body), header).catch((error) => console.log(error));
+        axios.post("http://localhost:5000/api/edit_student", body, header).catch((error) => console.log(error));
 
         await axios.get('/api/students')        
     }
