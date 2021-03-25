@@ -5,7 +5,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
-                notEmpty: true
+                notEmpty: true,
+                isAlpha: true
             }
         },
 
@@ -13,7 +14,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
-                notEmpty: true
+                notEmpty: true,
+                isAlpha: true
             }
         },
 
@@ -21,7 +23,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
-                notEmpty: true
+                notEmpty: true,
+                isEmail: true
             }
         },
 
@@ -34,10 +37,8 @@ module.exports = (sequelize, DataTypes) => {
         },
 
         isStudent: {
-
             type: DataTypes.BOOLEAN,
             allowNull: false,
-
         },
 
 
