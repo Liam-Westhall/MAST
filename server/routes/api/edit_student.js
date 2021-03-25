@@ -12,8 +12,12 @@ router.post('/', async(req, res) => {
         
         let usertemp = await User.update({
             firstName: firstName,
-            lastName: lastName
-           }, {where : {email: email}});
+            lastName: lastName,
+           }, {where : {email: email}})
+
+        let studenttemp = await Student.update({
+            track: track
+           }, {where : {sbuID: sbuID}})
 
         res.send({usertemp});
     }

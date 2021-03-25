@@ -45,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
         },
 
         section: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER(2),
             allowNull: false,
             validate: {
                 notEmpty: true
