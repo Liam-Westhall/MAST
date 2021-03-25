@@ -2,11 +2,8 @@
 module.exports = (sequelize, DataTypes) => {
     const Student = sequelize.define("Student", {
         sbuID: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                notEmpty: true
-            }
+            type: DataTypes.INTEGER(9),
+            allowNull: false
         },
         department: {
             type: DataTypes.STRING,
@@ -26,7 +23,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
-                notEmpty: true
+                notEmpty: true,
+                is: /^[F|S]\d{2}$/i
             }
 
         }, 
