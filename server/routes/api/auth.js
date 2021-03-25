@@ -10,7 +10,10 @@ router.post('/', async (req, res) => {
    const {email, password} = req.body
 
    var user = await User.findOne({where: {email: email}})
-   if(!user) return res.status(401).json({erros: [{msg: "invalid credential"}]})
+   if(!user){ 
+
+      return res.status(401).json({erros: [{msg: "invalid credential"}]})
+   }
 
     //not secured use bcrypt to encrypt password... for now it fine i guess
    if (user.password != password)  return res.status(401).json({erros: [{msg: "invalid credential"}]})

@@ -24,7 +24,7 @@ class LoginScreen extends Component{
             },
           };
             
-        const res = axios.post("http://localhost:5000/api/auth/", body, header).then(this.setState({isLogin: true, loginError: false})).catch((error) => this.setState({loginError: true}));
+        const res = axios.post("http://localhost:5000/api/auth/", body, header).then((res) => res.data.hasOwnProperty("token") ? this.setState({isLogin: true, loginError: false}) : this.setState({loginError: true})).catch((error) => this.setState({loginError: true}));
     }
     render(){
         return(
