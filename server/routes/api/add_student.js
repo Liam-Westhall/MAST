@@ -8,6 +8,13 @@ const {Student, User} = require('../../models')
 router.post('/', async(req, res) => {
     const {firstName, lastName, email, password, department, entrySemester, track} = req.body;
     try {
+
+        let check = await User.findOne({where : {email: email}})
+        
+        if (check) {
+            return res.status(409).send("User already exists")
+        }
+
         let user = await User.create({
             firstName: firstName,
             lastName: lastName,
@@ -30,6 +37,7 @@ router.post('/', async(req, res) => {
     }
     catch(error){
         throw error;
+        res.status(500).send("error ocurred adding the sudent")
     }
 })
 
