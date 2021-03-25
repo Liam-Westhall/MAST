@@ -1,6 +1,7 @@
 import React, { Component} from 'react'
 import { Card, Row, Col, Navbar, TextInput, Button, Collapsible, CollapsibleItem, Table } from 'react-materialize'
 import {Link} from 'react-router-dom'
+import axios from 'axios'
 
 class EditStudentGPD extends Component{
     constructor(props){
@@ -26,6 +27,19 @@ class EditStudentGPD extends Component{
     onChangeName = (event) => {
         let nameStr = event.target.value.split(" ");
         this.setState({firstName: nameStr[0], lastName: nameStr[1]});
+    }
+
+    confirmEdit = async () => {
+        let body = {firstName: this.state.firstName, lastName: this.state.lastName, email: this.state.email, sbuID: this.state.sbuID, department: this.state.department, entrySemester: this.state.entrySemester, track: this.state.track};        
+        console.log(body)
+        let header = {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          };    
+        await axios.post("http://localhost:5000/api/edit_student", JSON.stringify(body), header).catch((error) => console.log(error));
+
+        await axios.get('/api/students')        
     }
 
     render(){
@@ -54,7 +68,7 @@ class EditStudentGPD extends Component{
                             </Row>
                             <Row>
                                 <Col l={6}>
-                                    <TextInput class="white" onChange={this.onChangeName} value={this.state.firstName + " " + this.state.lastName}>
+                                    <TextInput class="white" onChange={this.onChangeName} value={this.state.firstName + " " + this.state.lastName} id ="fullName">
                                     </TextInput>
                                 </Col>
                                 <Col l={6}>
@@ -105,7 +119,7 @@ class EditStudentGPD extends Component{
                             </Row>
                             <Row>
                                 <Col l={6}>
-                                    <Button>Confirm Changes</Button>
+                                    <Button onClick={this.confirmEdit}>Confirm Changes</Button>
                                 </Col>
                                 <Col l={6}>
                                     <TextInput class="white" onChange={this.onChange} value={this.state.track} id="track"> 
