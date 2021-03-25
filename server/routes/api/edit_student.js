@@ -13,17 +13,13 @@ router.post('/', async(req, res) => {
         let usertemp = await User.update({
             firstName: firstName,
             lastName: lastName,
-            email: email
            }, {where : {email: email}})
 
         let studenttemp = await Student.update({
-            sbuID: sbuID,
-            department: major,
-            entrySemester: entrySemester,
             track: track
            }, {where : {sbuID: sbuID}})
 
-        res.send({usertemp, studenttemp})
+        res.send({usertemp})
     }
     catch(error){
         throw error;
