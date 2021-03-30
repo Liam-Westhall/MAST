@@ -19,7 +19,20 @@ class ManageStudentsGPD extends Component{
             query: "",
             editStudent: false,
             currentEditStudent: null,
-            refresh: false
+            refresh: false,
+            searchByFirsName: false,
+            searchByLastName: false,
+            searchByStudentID: false,
+            searchByDepartment: false,
+            searchByEmail: false,
+            searchByTrack: false,
+            searchByStudentID_input: "",
+            searchByFirstName_input: "",
+            searchByLastName_input: "",
+            searchByDepartment_input: "",
+            searchByEmail_input: "",
+            searchByTrack_input: ""
+        
         }
     }
 
@@ -41,6 +54,47 @@ class ManageStudentsGPD extends Component{
         let res = await axios.get(path)
         
         this.setState({students: res.data})
+    }
+
+    onClickAdvanceSearch = async () => {
+        
+        let path = "/api/students/search?"
+        let firstFilter = true
+
+        if (this.state.searchByFirsName) {
+            path = path + "firstName=" + this.state.searchByFirstName_input.trim()
+            firstFilter = false
+        }
+
+        if (this.state.searchByLastName) {
+            path =  firstFilter ? (path + "lastName=" + this.state.searchByLastName_input.trim()) : (path + "&lastName=" + this.state.searchByLastName_input.trim())
+            firstFilter = false
+        }
+
+        if (this.state.searchByDepartment) {
+            path =  firstFilter ? (path + "department=" + this.state.searchByDepartment_input.trim()) : (path + "&department=" + this.state.searchByDepartment_input.trim())
+            firstFilter = false
+        }
+
+        if (this.state.searchByEmail) {
+            path =  firstFilter ? (path + "email=" + this.state.searchByEmail_input.trim()) : (path + "&email=" + this.state.searchByEmail_input.trim())
+            firstFilter = false
+        }
+
+        if (this.state.searchByTrack) {
+            path =  firstFilter ? (path + "track=" + this.state.searchByTrack_input.trim()) : (path + "&track=" + this.state.searchByTrack_input.trim())
+            firstFilter = false
+        }
+
+        if (this.state.searchByStudentID) {
+            path =  firstFilter ? (path + "sbuID=" + this.state.searchByStudentID_input.trim()) : (path + "&sbuID=" + this.state.searchByStudentID_input.trim())
+            firstFilter = false
+        }
+
+
+        let res = await axios.get(path)
+        this.setState({students: res.data})
+
     }
 
     onChangeSearchQuery = (event) => {
@@ -113,9 +167,51 @@ class ManageStudentsGPD extends Component{
                     <Col
                     offset="l10"
                     l={2}>
-                        <Button node="button" waves="light">
-                            Advanced Search
-                        </Button>
+                        <Modal
+                        actions={[<Button flat modal="close" node="button">Close</Button>]}
+                        header="Advance Search"
+                        trigger={<Button node="button" waves="light"> Advanced Search </Button>}>
+                            <br></br>
+                            <label>
+                                <input type="checkbox" class="filled-in" checked={this.state.searchByFirsName} onChange={() => this.setState({searchByFirsName: !this.state.searchByFirsName})}/>
+                                <span>First-name</span>
+                            </label>
+                            <TextInput className="white" id="search_firstName_input" onChange={(e) => this.setState({searchByFirstName_input: e.target.value})}></TextInput>
+
+                            <label>
+                                <input type="checkbox" class="filled-in" checked={this.state.searchByLastName} onChange={() => this.setState({searchByLastName: !this.state.searchByLastName})}/>
+                                <span>Last name</span>
+                            </label>
+                            <TextInput className="white" id="search_lastName_input" onChange={(e) => this.setState({searchByLastName_input: e.target.value})}></TextInput>
+
+                            <label>
+                                <input type="checkbox" class="filled-in" checked={this.state.searchByStudentID} onChange={() => this.setState({searchByStudentID: !this.state.searchByStudentID})}/>
+                                <span>Student ID</span>
+                            </label>
+                            <TextInput className="white" id="search_studentID_input" onChange={(e) => this.setState({searchByStudentID_input: e.target.value})}></TextInput>
+
+
+                            <label>
+                                <input type="checkbox" class="filled-in" checked={this.state.searchByDepartment} onChange={() => this.setState({searchByDepartment: !this.state.searchByDepartment})}/>
+                                <span>Department</span>
+                            </label>
+                            <TextInput className="white" id="search_department_input" onChange={(e) => this.setState({searchByDepartment_input: e.target.value})} ></TextInput>
+
+                            <label>
+                                <input type="checkbox" class="filled-in" checked={this.state.searchByEmail} onChange={() => this.setState({searchByEmail: !this.state.searchByEmail})}/>
+                                <span>Email</span>
+                            </label>
+                            <TextInput className="white" id="search_email_input" onChange={(e) => this.setState({searchByEmail_input: e.target.value})}></TextInput>
+
+                            <label>
+                                <input type="checkbox" class="filled-in" checked={this.state.searchByTrack} onChange={() => this.setState({searchByTrack: !this.state.searchByTrack})}/>
+                                <span>Track</span>
+                            </label>
+                            <TextInput className="white" id="search_track_input" onChange={(e) => this.setState({searchByTrack_input: e.target.value})}></TextInput>
+
+                            <Button type="search" modal="close" onClick={this.onClickAdvanceSearch}>Submit</Button>
+                        </Modal>
+                        
                     </Col>
                 </Row>
                 <Table>
