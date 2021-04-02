@@ -8,6 +8,7 @@ import ManageStudentsGPD from './GPDScreens/ManageStudentsGPD';
 import EditStudentGPD from './GPDScreens/EditStudentGPD';
 import LoginScreen from './LoginScreens/LoginScreen';
 import axios from 'axios'
+import UploadFileGPD from './GPDScreens/UploadFileGPD';
 
 class App extends Component{
   state = {
@@ -38,6 +39,8 @@ class App extends Component{
           </Route>
           <Route exact path="/edit_student_gpd" component={EditStudentGPD}>
           </Route>  
+          <Route exact path="/upload_file_gpd" component={UploadFileGPD}>
+          </Route>
         </Switch>
       </BrowserRouter>
     </div>
