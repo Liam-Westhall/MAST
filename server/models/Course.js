@@ -17,9 +17,6 @@ module.exports = (sequelize, DataTypes) => {
         name: {
             type: DataTypes.STRING,
             allowNull: false,
-            validate: {
-                notEmpty: true
-            }
         },
 
         semester: {
@@ -27,16 +24,13 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             validate: {
                 notEmpty: true,
-                is: ["[F|S]\d{2}",'i']
+                //is: ["[F|S]\d{2}",'i']
             }
         },
         
         description: {
             type: DataTypes.STRING,
             allowNull: false,
-            validate: {
-                notEmpty: true
-            }
         },
 
         credits: {
@@ -47,9 +41,6 @@ module.exports = (sequelize, DataTypes) => {
         section: {
             type: DataTypes.INTEGER(2),
             allowNull: false,
-            validate: {
-                notEmpty: true
-            }
         },
 
         days: {

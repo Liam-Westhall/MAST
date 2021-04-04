@@ -4,18 +4,56 @@ import '../style.css'
 import {Link} from 'react-router-dom'
 import NavbarGPD from './NavbarGPD';
 import {DropzoneArea, DropzoneAreaBase} from 'material-ui-dropzone'
+import axios from 'axios'
+import formData from 'form-data'
 
 class UploadFileGPD extends Component{
     constructor(props){
         super(props);
-        this.state = {};
+        this.state = {
+            files: [],
+            upload_type: ''
+        };
+    }
+
+    onSubmitCourseOfferings = async () => {
+
+        if (this.state.files.length < 1) return 
+        const body = new formData()
+        body.append('file', this.state.files[0] )
+
+        console.log(body)
+        await axios.post("/api/uploadfiles/course", body).catch((error) => console.log(error));
+    }
+
+
+    onSubmit = () => {
+        switch (this.state.upload_type) {
+            case 'CouseOfferings':
+                this.onSubmitCourseOfferings()
+                break;
+        
+            default:
+               
+                break;
+        }
     }
 
     render(){
         return(
             <div>
-            <NavbarGPD />
-            <DropzoneAreaBase></DropzoneAreaBase>
+                <NavbarGPD />
+                <div class="input-field col s12">
+                    <select className="browser-default" onChange={(e) => this.setState({upload_type: e.target.value})}>
+                        <option value="" disabled selected>Choose your option</option>
+                        <option value="CouseOfferings">Couse Offerings</option>
+                    </select>
+                
+                </div>
+            <DropzoneAreaBase
+            onDrop={(files) => {this.setState({files: files})}}
+            ></DropzoneAreaBase>
+            <Button onClick={() => this.onSubmit()} >Submit File</Button>
         </div>
         );
     }
