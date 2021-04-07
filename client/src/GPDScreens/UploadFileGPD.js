@@ -53,6 +53,7 @@ class UploadFileGPD extends Component{
             <DropzoneAreaBase
             onDrop={(files) => {this.setState({files: files})}}
             ></DropzoneAreaBase>
+            <br></br>
             <Button onClick={() => this.onSubmit()} >Submit File</Button>
         </div>
         );

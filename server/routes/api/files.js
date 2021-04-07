@@ -14,6 +14,19 @@ router.get('/', async (req, res) => {
     res.send("File test")
 })
 
+router.post('/degree_req', async (req, res) => {
+    try{
+        if(!req.files) res.status(500).send({error: "No file"})
+        const file = req.files.file
+        const results = []
+        const departments = ['CSE', 'AMS', 'CE', 'BMI']   
+    }
+    catch (error) {
+        console.log(error)
+        res.status(500).send("error")
+    }
+})
+
 router.post('/course', async (req, res) => {
 
 
