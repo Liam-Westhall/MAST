@@ -20,21 +20,29 @@ class UploadFileGPD extends Component{
 
         if (this.state.files.length < 1) return 
         const body = new formData()
-        body.append('file', this.state.files[0] )
+        body.append('file', this.state.files[0])
 
         console.log(body)
         await axios.post("/api/uploadfiles/course", body).catch((error) => console.log(error));
     }
 
-
+    onSubmitDegreeRequirements = async () => {
+        if(this.state.files.length < 1) return
+        const body = new formData()
+        body.append('file', this.state.files[0])
+        
+        console.log(body)
+        await axios.post("/api/uploadfiles/degree_req", body).catch((error) => console.log(error));
+    }
     onSubmit = () => {
         switch (this.state.upload_type) {
             case 'CouseOfferings':
                 this.onSubmitCourseOfferings()
                 break;
-        
+            case 'DegreeRequirements':
+                this.onSubmitDegreeRequirements()
+                break;
             default:
-               
                 break;
         }
     }
@@ -47,6 +55,7 @@ class UploadFileGPD extends Component{
                     <select className="browser-default" onChange={(e) => this.setState({upload_type: e.target.value})}>
                         <option value="" disabled selected>Choose your option</option>
                         <option value="CouseOfferings">Couse Offerings</option>
+                        <option value="DegreeRequirements">Degree Requirements</option>
                     </select>
                 
                 </div>

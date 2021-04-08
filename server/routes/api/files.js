@@ -2,10 +2,10 @@ const express = require('express')
 const stream = require('stream')
 const fs = require('fs')
 const csv = require('csv-parser')
-const {Op} = require("sequelize")
+const {Op, json} = require("sequelize")
 const router = express.Router()
 
-const {Course} = require('../../models')
+const {Course, Degree} = require('../../models')
 const db = require('../../models')
 
 router.get('/', async (req, res) => {
@@ -16,10 +16,29 @@ router.get('/', async (req, res) => {
 
 router.post('/degree_req', async (req, res) => {
     try{
-        if(!req.files) res.status(500).send({error: "No file"})
-        const file = req.files.file
-        const results = []
-        const departments = ['CSE', 'AMS', 'CE', 'BMI']   
+        if(!req.files) res.status(500).send({error: "No file"});
+        const file = req.files.file;
+        const results = [];
+        const departments = ['CSE', 'AMS', 'CE', 'BMI'];
+
+        let degree_json = JSON.parse(file.data);
+        console.log(degree_json);
+        console.log(degree_json.name);
+        
+        let name_check = await Degree.findOne({where: {department: degree_json.name}});
+
+        if(name_check){
+            await Degree.update({
+                json: degree_json
+               }, {where : {department: degree_json.name}})
+        }
+        else{
+            await Degree.create({
+                department: degree_json.name,
+                track: degree_json.version,
+                json: degree_json
+            })
+        }
     }
     catch (error) {
         console.log(error)
