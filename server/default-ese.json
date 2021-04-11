@@ -1,0 +1,112 @@
+{
+    "name": "ESE",
+    "version": "S21",
+    "requirements": {
+        "credit-req": {
+            "credits": 30,
+            "credit-limit": {
+                "1": {
+                    "credits": 6,
+                    "courses": {
+                        "1": "ESE 597",
+                        "2": "ESE 599",
+                        "3": "ESE 698"
+                    }
+                },
+                "2": {
+                    "credits": 3,
+                    "courses": "ESE 698"
+                },
+                "3": {
+                    "credits": 3,
+                    "courses": "ESE 597"
+                }
+            }
+        },
+        "non-thesis": {
+            "hardware": {
+                "1": "ESE/CSE 536",
+                "2": "ESE 545",
+                "3": "ESE 566",
+                "4": "ESE 587" 
+            },
+            "networking": {
+                "1": "ESE 505",
+                "2": "ESE 506",
+                "3": "ESE 546",
+                "4": "ESE 548"
+            },
+            "cad/vlsi": {
+                "1": "ESE 507",
+                "2": "ESE 530",
+                "3": "ESE 549",
+                "4": "ESE 555",
+                "5": "ESE 556",
+                "6": "ESE 575"
+            },
+            "theory/software": {
+                "1": "ESE 501",
+                "2": "ESE 533",
+                "3": "ESE 534",
+                "4": "ESE 543",
+                "5": "ESE 554",
+                "6": "ESE 558",
+                "7": "ESE 588",
+                "8": "ESE 589",
+                "9": "CSE 506",
+                "10": "CSE 526",
+                "11": "CSE 548/AMS 542"
+            },
+            "lecture-req": {
+                "min-courses": 3
+            },
+            "other-req": {
+                "course": "ESE 597",
+                "min-credits": 1
+            }
+        },
+        "thesis": {
+            "hardware": {
+                "1": "ESE/CSE 536",
+                "2": "ESE 545",
+                "3": "ESE 566",
+                "4": "ESE 587" 
+            },
+            "networking": {
+                "1": "ESE 505",
+                "2": "ESE 506",
+                "3": "ESE 546",
+                "4": "ESE 548"
+            },
+            "cad/vlsi": {
+                "1": "ESE 507",
+                "2": "ESE 530",
+                "3": "ESE 549",
+                "4": "ESE 555",
+                "5": "ESE 556",
+                "6": "ESE 575"
+            },
+            "theory/software": {
+                "1": "ESE 501",
+                "2": "ESE 533",
+                "3": "ESE 534",
+                "4": "ESE 543",
+                "5": "ESE 554",
+                "6": "ESE 558",
+                "7": "ESE 588",
+                "8": "ESE 589",
+                "9": "CSE 506",
+                "10": "CSE 526",
+                "11": "CSE 548/AMS 542"
+            },
+            "lecture-req": {
+                "min-courses": 1
+            },
+            "other-req": {
+                "course": "ESE 597",
+                "min-credits": 1
+            },
+            "thesis-req": "Thesis"
+        }
+    }
+}
