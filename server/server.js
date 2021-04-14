@@ -25,7 +25,7 @@ app.use("/api/edit_student", require("./routes/api/edit_student"))
 app.use("/api/uploadfiles", require("./routes/api/files"))
 app.use("/api/degrees", require("./routes/api/degrees"))
 
-db.sequelize.sync().then((req) => {
+db.sequelize.sync({ force: true }).then((req) => {
 
     app.listen(port, () => {
         console.log(`Listening on port ${port}`);
