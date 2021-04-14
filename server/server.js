@@ -26,7 +26,7 @@ app.use("/api/uploadfiles", require("./routes/api/files"))
 app.use("/api/degrees", require("./routes/api/degrees"))
 app.use("/api/comments", require("./routes/api/comments"))
 
-db.sequelize.sync({ force: true }).then((req) => {
+db.sequelize.sync({}).then((req) => {
 
     app.listen(port, () => {
         console.log(`Listening on port ${port}`);

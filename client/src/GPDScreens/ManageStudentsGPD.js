@@ -16,6 +16,7 @@ class ManageStudentsGPD extends Component{
             entrySemester: "",
             track: "",
             students: [],
+            comments: [],
             query: "",
             graduation_semester: "",
             graduation_year: "",
@@ -126,10 +127,11 @@ class ManageStudentsGPD extends Component{
         this.setState({students: []});
     }
 
-    editStudent = (student) => {
-        this.setState({currentEditStudent: student});
-        console.log(student);
-        this.setState({editStudent: true});
+    editStudent = async (student) => {
+        let body = {id: student.sbuID};
+        console.log(body);
+        let res = await axios.post('api/comments', body).then((res) => this.setState({comments: res.data, currentEditStudent: student, editStudent: true})).catch((err) => console.log(err));
+        console.log(this.state.comments);
     }
 
     loadStudents = async () => {
@@ -144,7 +146,7 @@ class ManageStudentsGPD extends Component{
 
     render(){
         return(
-            this.state.editStudent ? <Redirect to={{pathname: "edit_student_gpd", state: {currentEditStudent: this.state.currentEditStudent}}}></Redirect> : 
+            this.state.editStudent ? <Redirect to={{pathname: "edit_student_gpd", state: {currentEditStudent: this.state.currentEditStudent, comments: this.state.comments}}}></Redirect> : 
             <div>
                 <NavbarGPD />
                 <div className="body">

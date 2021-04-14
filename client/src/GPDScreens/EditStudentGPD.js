@@ -18,7 +18,7 @@ class EditStudentGPD extends Component{
             sbuID: this.props.location.state.currentEditStudent.sbuID,
             expectedGraduation: "",
             degreeData: [],
-            comments: [],
+            comments: this.props.location.state.comments,
             rerender: false
         };
         console.log(this.state.currentStudent);
@@ -64,14 +64,8 @@ class EditStudentGPD extends Component{
         }
     }
 
-    getComments = async () => {
-        let comments = await axios.get('api/comments');
-        let commentData = comments.data;
-    }
-
     componentDidMount = () => {
         this.getDegreeRequirements();
-        this.getComments();
     }
 
     render(){
@@ -218,11 +212,8 @@ class EditStudentGPD extends Component{
                             <Row>
                                 <Col l={6}>
                                     <Collapsible>
-                                        <CollapsibleItem></CollapsibleItem>
-                                        <CollapsibleItem></CollapsibleItem>
-                                        <CollapsibleItem></CollapsibleItem>
-                                        <CollapsibleItem></CollapsibleItem>
-                                        <CollapsibleItem></CollapsibleItem>
+                                        {this.state.comments.map((comment) =>
+                                        (<CollapsibleItem header={comment.message}></CollapsibleItem>))}
                                     </Collapsible>
                                 </Col>
                                 <Col><TextInput placeholder="Comment..." class="white"></TextInput></Col>
