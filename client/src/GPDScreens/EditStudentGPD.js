@@ -19,9 +19,9 @@ class EditStudentGPD extends Component{
             expectedGraduation: "",
             degreeData: [],
             comments: this.props.location.state.comments,
-            rerender: false
+            rerender: false,
+            currentComment: ""
         };
-        console.log(this.state.currentStudent);
     }
 
     onChange = (event) => {
@@ -44,6 +44,20 @@ class EditStudentGPD extends Component{
         axios.post("http://localhost:5000/api/edit_student", body, header).catch((error) => console.log(error));
 
         await axios.get('/api/students')        
+    }
+
+    confirmAddComment = async () => {
+        let newComments = this.state.comments
+        console.log(this.state.currentComment);
+        newComments.push({message: this.state.currentComment});
+        console.log(newComments);
+        let body = {sbuID: this.state.sbuID, comment: this.state.currentComment};
+        let header = {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }; 
+        let res = await axios.post("http://localhost:5000/api/comments/add_comment", body, header).then(this.setState({comments: newComments})).catch((err) => console.log(err));
     }
 
     getDegreeRequirements = async () => {
@@ -216,14 +230,14 @@ class EditStudentGPD extends Component{
                                         (<CollapsibleItem header={comment.message}></CollapsibleItem>))}
                                     </Collapsible>
                                 </Col>
-                                <Col><TextInput placeholder="Comment..." class="white"></TextInput></Col>
+                                <Col><TextInput placeholder="Comment..." class="white" value={this.state.currentComment} onChange={this.onChange} id="currentComment"></TextInput></Col>
                             </Row>
                             <Row>
                                 <Col l={6}>
                                     <Button>Delete Comment</Button>
                                 </Col>
                                 <Col l={6}>
-                                    <Button>Add Comment</Button>
+                                    <Button onClick={this.confirmAddComment}>Add Comment</Button>
                                 </Col>
                             </Row>
                         </Card>

@@ -16,4 +16,13 @@ router.post('/', async (req, res) => {
     res.send(comments)
 })
 
+router.post('/add_comment', async (req, res) => {
+    const {sbuID, comment} = req.body
+    var student = await Student.findOne({where: {sbuID: sbuID}});
+    let new_comment = await Comment.create({
+        message: comment,
+        StudentId: student.id
+    });
+
+})
 module.exports = router;

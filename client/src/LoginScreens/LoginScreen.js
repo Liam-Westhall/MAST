@@ -16,7 +16,7 @@ class LoginScreen extends Component{
     handleChangePassword = (event) => {
         this.setState({password: event.target.value});
     }
-    loginCallback = () =>{
+    loginCallback = async () =>{
         let body = {email: this.state.email, password: this.state.password};
         let header = {
             headers: {
@@ -24,7 +24,7 @@ class LoginScreen extends Component{
             },
           };  
         let response = null;
-        const res = axios.post("http://localhost:5000/api/auth/", body, header).then((res) =>  {
+        const res = await axios.post("http://localhost:5000/api/auth/", body, header).then((res) =>  {
             if(res.data.hasOwnProperty("token")){
                 const payload = jwt_decode(res.data.token);
                 if(payload.isStudent == true){
@@ -39,16 +39,6 @@ class LoginScreen extends Component{
             else{
                 this.setState({loginError: true})
             }}).catch((error) => this.setState({loginError: true}));
-         console.log(this.state.isLogin)
-        if(this.state.isLogin == true){
-            console.log(response)
-            const payload = jwt_decode(this.state.response.data.token);
-            if(payload.isStudent == true){
-                this.state.redirectStudent = true;
-                this.setState({redirectURL:"/student_info_stu"})
-                console.log(this.state.redirectURL)
-            }
-        }
     }
     render(){
         return(
