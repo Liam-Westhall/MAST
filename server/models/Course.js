@@ -19,13 +19,19 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
         },
 
-        semester: {
+        semesters: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
                 notEmpty: true,
                 //is: ["[F|S]\d{2}",'i']
-            }
+            },
+            get() {
+                return this.getDataValue('favColors').split(';')
+            },
+            set(val) {
+               this.setDataValue('favColors',val.join(';'));
+            },
         },
         
         description: {
@@ -49,9 +55,8 @@ module.exports = (sequelize, DataTypes) => {
             validate: {
                 notEmpty: true
             }
-        },
-        
-    })
+        }
+    }, {timestamps: false})
 
 
 
