@@ -520,6 +520,7 @@ class EditStudentGPD extends Component{
                     </Card>
                     </Col>    
                 </Row>
+                <br></br>
                 <Link to="/manage_students_gpd">
                     <Button>Return Home</Button>
                 </Link>

@@ -1,39 +1,383 @@
 import React, { Component} from 'react'
-import { Card, Row, Col, Navbar, TextInput, Button, Collapsible, CollapsibleItem, Table } from 'react-materialize'
+import { Card, Row, Col, Navbar, TextInput, Button, Collapsible, CollapsibleItem, Table, Checkbox } from 'react-materialize'
 import {Link} from 'react-router-dom'
 import axios from 'axios'
+import NavbarStudent from './NavbarStudent';
 
 class StudentInfo extends Component{
     constructor(props){
         super(props);
         this.state = {
-            currentStudent: this.props.location.state.currentEditStudent,
-            firstName: this.props.location.state.currentEditStudent.User.firstName,
-            lastName: this.props.location.state.currentEditStudent.User.lastName,
-            email: this.props.location.state.currentEditStudent.User.email,
-            major: this.props.location.state.currentEditStudent.department,
-            entrySemester: this.props.location.state.currentEditStudent.entrySemester,
-            track: this.props.location.state.currentEditStudent.track,
-            sbuID: this.props.location.state.currentEditStudent.sbuID,
-            expectedGraduation: ""
+            currentStudent: "",
+            firstName: "",
+            lastName: "",
+            email: this.props.location.state.email,
+            major: "",
+            entrySemester: "",
+            track: "",
+            sbuID: "",
+            expectedGraduation: "",
+            rerender: false, 
+            degreeData: [],
+            comments: []
         };
-        console.log(this.state.currentStudent);
-        }
-        onChange = (event) => {
+    }
+        
+    onChange = (event) => {
             this.setState({[event.target.id]: event.target.value});
         }
         onChangeName = (event) => {
             let nameStr = event.target.value.split(" ");
             this.setState({firstName: nameStr[0], lastName: nameStr[1]});
         }
+
+
+        confirmAddComment = async () => {
+            let newComments = this.state.comments
+            console.log(this.state.currentComment);
+            newComments.push({message: this.state.currentComment});
+            console.log(newComments);
+            let body = {sbuID: this.state.sbuID, comment: this.state.currentComment};
+            let header = {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }; 
+            let res = await axios.post("http://localhost:5000/api/comments/add_comment", body, header).then(this.setState({comments: newComments})).catch((err) => console.log(err));
+        }
+
+        findStudent = async () => {
+            console.log(this.props.location.state.email);
+            let body = {email: this.props.location.state.email}
+            console.log(body);
+            let res = await axios.post("/api/students/find_student", body);
+            let people = res.data;
+            console.log(people);
+            this.setState({
+                currentStudent: people.student,
+                firstName: people.user.firstName,
+                lastName: people.user.lastName,
+                major: people.student.department,
+                entrySemester: people.student.entrySemester,
+                track: people.student.track,
+                sbuID: people.student.sbuID,
+                comments: people.comments
+            });
+        }   
+
+        getDegreeRequirements = async () => {
+            let degrees = await axios.get('api/degrees');
+            let degreeData = degrees.data
+            for(let i = 0; i < degreeData.length; i++){
+                let tempDegree = degreeData[i];
+                console.log(tempDegree);
+                if(this.state.major.replace(/ /g,'') == tempDegree.department){
+                    console.log(this.state.degreeData)
+                    this.setState({
+                        degreeData: degreeData[i].json,
+                        rerender: true
+                    });
+                    console.log(this.state.degreeData)
+                    break;
+                }
+            }
+        }
+
+        componentDidMount = () => {
+            this.findStudent();
+            this.getDegreeRequirements();
+        }
+
         render(){
+            let dropdown;
+            if (this.state.major.replace(/ /g,'') == "AMS" && this.state.rerender) {
+                if(this.state.track == "Computational Applied Mathematics"){
+                    dropdown = <div>
+                        <Collapsible class="disabled">
+                            {this.state.degreeData.requirements.tracks.comp.map((course) => (
+                                <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                            ))}
+                            <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
+                        </Collapsible>
+                    </div>;
+                }
+                else if(this.state.track == "Operations Research"){
+                    dropdown = <div>
+                    <Collapsible class="disabled">
+                        {this.state.degreeData.requirements.tracks.op.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
+                    </Collapsible>
+                    </div>;
+                }
+                else if(this.state.track == "Computational Biology"){
+                    dropdown = <div>
+                    <Collapsible class="disabled">
+                        {this.state.degreeData.requirements.tracks.bio.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
+                    </Collapsible>
+                    </div>;
+                }
+                else if(this.state.track == "Statistics"){
+                    dropdown = <div>
+                    <Collapsible class="disabled">
+                        {this.state.degreeData.requirements.tracks.stats.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
+                    </Collapsible>
+                    </div>;
+                }
+                else if(this.state.track == "Quanitative Finance"){
+                    dropdown = <div>
+                    <Collapsible class="disabled">
+                        {this.state.degreeData.requirements.tracks.quan.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
+                    </Collapsible>
+                    </div>;
+                }
+            }
+            else if (this.state.major.replace(/ /g,'') == "BMI" && this.state.rerender){
+                if(this.state.track = "Project/Imaging Informatics"){
+                    dropdown = <div>
+                    <Collapsible class="disabled">
+                        {this.state.degreeData.requirements.seminar.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.general.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.project.imaging.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.project.elective.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                    </Collapsible>
+                    </div>;
+                }
+                else if(this.state.track == "Project/Clinical Informatics"){
+                    dropdown = <div>
+                    <Collapsible class="disabled">
+                        {this.state.degreeData.requirements.seminar.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.general.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.project.clinical.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.project.elective.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                    </Collapsible>
+                    </div>;
+                }
+                else if(this.state.track == "Project/Translational Bio-Informatics"){
+                    dropdown = <div>
+                    <Collapsible class="disabled">
+                        {this.state.degreeData.requirements.seminar.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.general.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.project.translational.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.project.elective.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                    </Collapsible>
+                    </div>;
+                }
+                else if(this.state.track == "Thesis/Clinical Informatics"){
+                    dropdown = <div>
+                    <Collapsible class="disabled">
+                        {this.state.degreeData.requirements.seminar.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.general.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.thesis.clinical.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.thesis.elective.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                    </Collapsible>
+                    </div>;
+                }
+                else if(this.state.track == "Thesis/Translational Bio-Informatics"){
+                    dropdown = <div>
+                    <Collapsible class="disabled">
+                        {this.state.degreeData.requirements.seminar.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.general.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.thesis.translational.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.thesis.elective.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                    </Collapsible>
+                    </div>;
+                }
+                else if(this.state.track = "Thesis/Imaging Informatics"){
+                    dropdown = <div>
+                    <Collapsible class="disabled">
+                        {this.state.degreeData.requirements.seminar.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.general.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.thesis.imaging.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.thesis.elective.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                    </Collapsible>
+                    </div>;
+                }
+            }
+            else if(this.state.major.replace(/ /g,'') == "CSE" && this.state.rerender){
+                if(this.state.track == "Basic Project"){
+                    dropdown = <div>
+                    <Collapsible class="disabled">
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.registration}></CollapsibleItem>
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.credit}></CollapsibleItem>
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.gpa}></CollapsibleItem>
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.breadth.description}></CollapsibleItem>
+                        {this.state.degreeData.requirements.breadth.theory.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.breadth.systems.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.breadth.information.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.course.basic.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                    </Collapsible>
+                    </div>;
+                }
+                else if(this.state.track == "Advanced Project"){
+                    dropdown = <div>
+                    <Collapsible class="disabled">
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.registration}></CollapsibleItem>
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.credit}></CollapsibleItem>
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.gpa}></CollapsibleItem>
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.breadth.description}></CollapsibleItem>
+                        {this.state.degreeData.requirements.breadth.theory.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.breadth.systems.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.breadth.information.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.course.advanced.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                    </Collapsible>
+                    </div>;
+                }
+                else if(this.state.track == "Thesis"){
+                    dropdown = <div>
+                    <Collapsible class="disabled">
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.registration}></CollapsibleItem>
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.credit}></CollapsibleItem>
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.gpa}></CollapsibleItem>
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.breadth.description}></CollapsibleItem>
+                        {this.state.degreeData.requirements.breadth.theory.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.breadth.systems.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.breadth.information.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.course.thesis.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                    </Collapsible>
+                    </div>;
+                }
+            }
+            else if(this.state.major.replace(/ /g,'') == "CE" && this.state.rerender){
+                if(this.state.track == "Non-Thesis"){
+                    dropdown = <div>
+                    <Collapsible class="disabled">
+                    {this.state.degreeData.requirements.credit.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.no_thesis.description}></CollapsibleItem>
+                        {this.state.degreeData.requirements.no_thesis.hardware.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.no_thesis.networking.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.no_thesis.cad.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.no_thesis.description_2}></CollapsibleItem>
+                        {this.state.degreeData.requirements.no_thesis.theory.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.no_thesis.lecture}></CollapsibleItem>
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.no_thesis.other}></CollapsibleItem>
+                    </Collapsible>
+                    </div>;
+                }
+                else if(this.state.track == "Thesis"){
+                    dropdown = <div>
+                    <Collapsible class="disabled">
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.credit}></CollapsibleItem>
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.no_thesis.description}></CollapsibleItem>
+                        {this.state.degreeData.requirements.no_thesis.hardware.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.no_thesis.networking.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        {this.state.degreeData.requirements.no_thesis.cad.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.no_thesis.description_2}></CollapsibleItem>
+                        {this.state.degreeData.requirements.no_thesis.theory.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.no_thesis.lecture}></CollapsibleItem>
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.no_thesis.other}></CollapsibleItem>
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.no_thesis.thesis}></CollapsibleItem>
+                    </Collapsible>
+                    </div>;
+                }
+            }
             return(
                 <div align="left">
-                    <Navbar className="blue"></Navbar>
+                    <NavbarStudent></NavbarStudent>
                     <br></br>
                     <Row>
                         <Col l={6}>
-                            <b>Edit Profile: {this.state.firstName + " " + this.state.lastName}</b>
+                            <b>Edit Student: {this.state.firstName + " " + this.state.lastName}</b>
                         </Col>
                         <Col l={6}>
                             <b>View/Edit Comments</b>
@@ -88,7 +432,7 @@ class StudentInfo extends Component{
                                 </Row>
                                 <Row>
                                     <Col l={6}>
-                                        <TextInput class="white" onChange={this.onChange} value={this.state.sbuID} id="sbuID">
+                                        <TextInput class="white" onChange={this.onChange} value={this.state.sbuID} id="sbuID" disabled>
                                         </TextInput>
                                     </Col>
                                     <Col l={6}>
@@ -116,23 +460,18 @@ class StudentInfo extends Component{
                             <Card className="blue-grey">
                                 <Row>
                                     <Col l={6}>
-                                        <Collapsible accordion>
-                                            <CollapsibleItem>Comment</CollapsibleItem>
-                                            <CollapsibleItem>Comment</CollapsibleItem>
-                                            <CollapsibleItem>Comment</CollapsibleItem>
-                                            <CollapsibleItem>Comment</CollapsibleItem>
-                                            <CollapsibleItem>Comment</CollapsibleItem>
-                                            <CollapsibleItem>Comment</CollapsibleItem>
+                                        <Collapsible>
+                                            {this.state.comments.map((comment) =>
+                                            (<CollapsibleItem header={comment.message}></CollapsibleItem>))}
                                         </Collapsible>
                                     </Col>
-                                    <Col><TextInput placeholder="Comment..." class="white"></TextInput></Col>
+                                    <Col><TextInput placeholder="Comment..." class="white" value={this.state.currentComment} onChange={this.onChange} id="currentComment"></TextInput></Col>
                                 </Row>
                                 <Row>
                                     <Col l={6}>
-                                        <Button>Delete Comment</Button>
                                     </Col>
                                     <Col l={6}>
-                                        <Button>Add Comment</Button>
+                                        <Button onClick={this.confirmAddComment}>Add Comment</Button>
                                     </Col>
                                 </Row>
                             </Card>
@@ -179,32 +518,13 @@ class StudentInfo extends Component{
                         <Card className="blue-grey">
                             <Row>
                             <Col l={12}>
-                                <Table className="white">
-                                    <thead>
-                                        <tr>
-                                        <th>Course</th>
-                                        <th>Status</th>
-                                        <th>Grade</th>
-                                        <th>Semester</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>AMS 501</td>
-                                            <td>Pending</td>
-                                            <td>N/A</td>
-                                            <td>Spring 2018</td>
-                                        </tr>
-                                    </tbody>
-                                </Table>
+                                {dropdown}
                             </Col>
                             </Row>
                         </Card>
                         </Col>    
                     </Row>
-                    <Link to="/student_info_stu">
-                        <Button>Return Home</Button>
-                    </Link>
+                    <br></br>
                 </div>
                 
             );

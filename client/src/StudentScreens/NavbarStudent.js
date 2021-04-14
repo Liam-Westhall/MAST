@@ -2,7 +2,7 @@ import React, { Component} from 'react'
 import {Button, Card, Navbar, Tab, Icon, NavItem, Tabs} from 'react-materialize'
 import '../style.css'
 import {Link, Redirect} from 'react-router-dom'
-class NavbarGPD extends Component{
+class NavbarStudent extends Component{
     constructor(props){
         super(props);
         this.state = {
@@ -17,10 +17,8 @@ class NavbarGPD extends Component{
             brand={<a className="brand-logo" href="/">MAST</a>}
             className = "blue"
             extendWith={<ul className="tabs tabs-transparent">
-                <li class="tab white-text"><a target="_self" href="/manage_students_gpd">Manage Students</a></li>
-                <li class="tab white-text"><a target="_self" href="/upload_file_gpd">Upload File</a></li>
-                <li class="tab white-text"><a target="_self" href="/manage_students_gpd">View Enrollment Trends</a></li>
-                <li class="tab white-text"><a target="_self" href="/manage_students_gpd">Sugggest Course Plan</a></li></ul>}
+                <li class="tab white-text"><a target="_self" href="/student_info_stu">Manage Students</a></li>
+                <li class="tab white-text"><a target="_self" href="/student_info_stu">Sugggest Course Plan</a></li></ul>}
             options={{edge: 'left', preventScrolling: true}}>
             <Link to="/"><NavItem>Logout</NavItem></Link>
             </Navbar>
@@ -29,4 +27,4 @@ class NavbarGPD extends Component{
 
 }
 
-export default NavbarGPD
+export default NavbarStudent

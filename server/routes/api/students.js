@@ -2,7 +2,7 @@ const express = require('express')
 const {Op} = require("sequelize")
 const router = express.Router()
 
-const {Student, User, sequelize, Sequelize} = require('../../models')
+const {Student, User, sequelize, Sequelize, Comment} = require('../../models')
 
 router.get('/', async (req, res) => {
 
@@ -35,6 +35,15 @@ router.get('/search?', async (req, res) => {
         res.statusCode(500).send("Error Searching for students")
     }
    
+})
+
+router.post('/find_student', async (req, res) => {
+    const {email} = req.body;
+    var user = await User.findOne({where: {email: email}});
+    var student = await Student.findOne({where: {UserID: user.id}});
+    var comments = await Comment.findAll({where: {StudentID: student.id}})
+    var people = {user: user, student: student, comments: comments};
+    res.send(people);
 })
 
 router.post('/delete_all', async (req, res) => {

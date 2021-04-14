@@ -29,7 +29,7 @@ class LoginScreen extends Component{
                 const payload = jwt_decode(res.data.token);
                 if(payload.isStudent == true){
                     this.state.redirectStudent = true;
-                    this.setState({isLogin: true, loginError: false, redirectURL:"/student_info_stu"})
+                    this.setState({isLogin: true, loginError: false, redirectURL:"/student_info_stu", email: this.state.email})
                     console.log(this.state.redirectURL)
                 }
                 else{
@@ -43,7 +43,7 @@ class LoginScreen extends Component{
     render(){
         return(
             <div align="left">
-                {this.state.isLogin ? <Redirect push to={this.state.redirectURL}></Redirect> : 
+                {this.state.isLogin ? <Redirect push to={{pathname: this.state.redirectURL, state: {email: this.state.email}}}></Redirect> : 
                 <div>
                 <Navbar className="blue" brand={<a className="brand-logo" href="/">MAST</a>}>   
                 </Navbar>
