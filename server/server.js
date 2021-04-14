@@ -24,6 +24,7 @@ app.use("/api/add_student", require("./routes/api/add_student"))
 app.use("/api/edit_student", require("./routes/api/edit_student"))
 app.use("/api/uploadfiles", require("./routes/api/files"))
 app.use("/api/degrees", require("./routes/api/degrees"))
+app.use("/api/comments", require("./routes/api/comments"))
 
 db.sequelize.sync({ force: true }).then((req) => {
 

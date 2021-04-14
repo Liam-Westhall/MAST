@@ -9,6 +9,7 @@ router.post('/', async (req, res) => {
 
    const {email, password} = req.body
 
+
    var user = await User.findOne({where: {email: email}})
    if(!user){ 
 
@@ -19,7 +20,7 @@ router.post('/', async (req, res) => {
    if (user.password != password)  return res.status(401).json({erros: [{msg: "invalid credential"}]})
 
    const token = jwt.sign({email: user.email, isStudent: user.isStudent}, "SECRET", {expiresIn: "1d"})
-  
+   res.json({token})
 
 })
 

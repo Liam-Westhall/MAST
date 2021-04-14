@@ -53,16 +53,22 @@ module.exports = (sequelize, DataTypes) => {
 
     Student.associate =  models => {
         Student.belongsTo(models.User, {
-            foreingKey: {
+            foreignKey: {
                 allowNull: false
             }
         }),
         
-        Student.hasMany(models.Student_Course), {
-            foreingKey: {
+        Student.hasMany(models.Student_Course, {
+            foreignKey: {
                 allowNull: false
             }
-        }
+        }),
+        
+        Student.hasMany(models.Comment, {
+            foreignKey: {
+                allowNull: false
+            }
+        })
     }
 
 

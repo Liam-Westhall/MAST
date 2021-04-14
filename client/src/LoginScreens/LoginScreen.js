@@ -7,7 +7,7 @@ import jwt_decode from "jwt-decode";
 class LoginScreen extends Component{
     constructor(props){
         super(props);
-        this.state = {user_data: this.props.data, email: "", password: "", isLogin: false, loginError: false, redirectStudent: false, redirectURL: "/manage_students_gpd"}
+        this.state = {user_data: this.props.data, email: "", password: "", isLogin: false, loginError: false, redirectStudent: false, redirectURL: "/manage_students_gpd", response: null, second_render: false}
     }
 
     handleChangeEmail = (event) => {
@@ -16,19 +16,33 @@ class LoginScreen extends Component{
     handleChangePassword = (event) => {
         this.setState({password: event.target.value});
     }
-    loginCallback = async () =>{
+    loginCallback = () =>{
         let body = {email: this.state.email, password: this.state.password};
         let header = {
             headers: {
               "Content-Type": "application/json",
             },
-          };
-        let response = null;    
-        const res = await axios.post("http://localhost:5000/api/auth/", body, header).then((res) => {response = res
-         res.data.hasOwnProperty("token") ? this.setState({isLogin: true, loginError: false}) : this.setState({loginError: true})}).catch((error) => this.setState({loginError: true}));
+          };  
+        let response = null;
+        const res = axios.post("http://localhost:5000/api/auth/", body, header).then((res) =>  {
+            if(res.data.hasOwnProperty("token")){
+                const payload = jwt_decode(res.data.token);
+                if(payload.isStudent == true){
+                    this.state.redirectStudent = true;
+                    this.setState({isLogin: true, loginError: false, redirectURL:"/student_info_stu"})
+                    console.log(this.state.redirectURL)
+                }
+                else{
+                    this.setState({isLogin: true, loginError: false})
+                }
+            }
+            else{
+                this.setState({loginError: true})
+            }}).catch((error) => this.setState({loginError: true}));
+         console.log(this.state.isLogin)
         if(this.state.isLogin == true){
             console.log(response)
-            const payload = jwt_decode(response.data.token);
+            const payload = jwt_decode(this.state.response.data.token);
             if(payload.isStudent == true){
                 this.state.redirectStudent = true;
                 this.setState({redirectURL:"/student_info_stu"})

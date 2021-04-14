@@ -2,6 +2,7 @@ import React, { Component} from 'react'
 import { Card, Row, Col, Navbar, TextInput, Button, Collapsible, CollapsibleItem, Table } from 'react-materialize'
 import {Link} from 'react-router-dom'
 import axios from 'axios'
+import { Checkbox } from 'react-materialize';
 
 class EditStudentGPD extends Component{
     constructor(props){
@@ -16,7 +17,9 @@ class EditStudentGPD extends Component{
             track: this.props.location.state.currentEditStudent.track,
             sbuID: this.props.location.state.currentEditStudent.sbuID,
             expectedGraduation: "",
-            degreeData: []
+            degreeData: [],
+            comments: [],
+            rerender: false
         };
         console.log(this.state.currentStudent);
     }
@@ -48,9 +51,12 @@ class EditStudentGPD extends Component{
         let degreeData = degrees.data
         for(let i = 0; i < degreeData.length; i++){
             let tempDegree = degreeData[i];
-            if(this.state.major == tempDegree.department){
+            console.log(tempDegree);
+            if(this.state.major.replace(/ /g,'') == tempDegree.department){
+                console.log(this.state.degreeData)
                 this.setState({
-                    degreeData: degreeData[i].json
+                    degreeData: degreeData[i].json,
+                    rerender: true
                 });
                 console.log(this.state.degreeData)
                 break;
@@ -58,11 +64,70 @@ class EditStudentGPD extends Component{
         }
     }
 
+    getComments = async () => {
+        let comments = await axios.get('api/comments');
+        let commentData = comments.data;
+    }
+
     componentDidMount = () => {
         this.getDegreeRequirements();
+        this.getComments();
     }
 
     render(){
+        let dropdown;
+        if (this.state.major.replace(/ /g,'') == "AMS" && this.state.rerender) {
+            if(this.state.track == "Computational Applied Mathematics"){
+                dropdown = <div>
+                    <Collapsible disabled>
+                        {this.state.degreeData.requirements.tracks.comp.map((course) => (
+                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                        ))}
+                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
+                    </Collapsible>
+                </div>;
+            }
+            else if(this.state.track == "Operations Research"){
+                dropdown = <div>
+                <Collapsible disabled>
+                    {this.state.degreeData.requirements.tracks.op.map((course) => (
+                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                    ))}
+                    <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
+                </Collapsible>
+                </div>;
+            }
+            else if(this.state.track == "Computational Biology"){
+                dropdown = <div>
+                <Collapsible disabled>
+                    {this.state.degreeData.requirements.tracks.bio.map((course) => (
+                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                    ))}
+                    <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
+                </Collapsible>
+                </div>;
+            }
+            else if(this.state.track == "Statistics"){
+                dropdown = <div>
+                <Collapsible disabled>
+                    {this.state.degreeData.requirements.tracks.stats.map((course) => (
+                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                    ))}
+                    <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
+                </Collapsible>
+                </div>;
+            }
+            else if(this.state.track == "Quanitative Finance"){
+                dropdown = <div>
+                <Collapsible disabled>
+                    {this.state.degreeData.requirements.tracks.quan.map((course) => (
+                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                    ))}
+                    <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
+                </Collapsible>
+                </div>;
+            }
+        }
         return(
             <div align="left">
                 <Navbar className="blue"></Navbar>
@@ -152,13 +217,12 @@ class EditStudentGPD extends Component{
                         <Card className="blue-grey">
                             <Row>
                                 <Col l={6}>
-                                    <Collapsible accordion>
-                                        <CollapsibleItem>Comment</CollapsibleItem>
-                                        <CollapsibleItem>Comment</CollapsibleItem>
-                                        <CollapsibleItem>Comment</CollapsibleItem>
-                                        <CollapsibleItem>Comment</CollapsibleItem>
-                                        <CollapsibleItem>Comment</CollapsibleItem>
-                                        <CollapsibleItem>Comment</CollapsibleItem>
+                                    <Collapsible>
+                                        <CollapsibleItem></CollapsibleItem>
+                                        <CollapsibleItem></CollapsibleItem>
+                                        <CollapsibleItem></CollapsibleItem>
+                                        <CollapsibleItem></CollapsibleItem>
+                                        <CollapsibleItem></CollapsibleItem>
                                     </Collapsible>
                                 </Col>
                                 <Col><TextInput placeholder="Comment..." class="white"></TextInput></Col>
@@ -215,24 +279,7 @@ class EditStudentGPD extends Component{
                     <Card className="blue-grey">
                         <Row>
                         <Col l={12}>
-                            <Table className="white">
-                                <thead>
-                                    <tr>
-                                    <th>Course</th>
-                                    <th>Status</th>
-                                    <th>Grade</th>
-                                    <th>Semester</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>AMS 501</td>
-                                        <td>Pending</td>
-                                        <td>N/A</td>
-                                        <td>Spring 2018</td>
-                                    </tr>
-                                </tbody>
-                            </Table>
+                            {dropdown}
                         </Col>
                         </Row>
                     </Card>
