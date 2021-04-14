@@ -2,60 +2,19 @@
     "name": "CSE",
     "version": "S21",
     "requirements": {
-        "registration": {
-            "name": "Registration",
-            "min-credits": 1,
-            "grad-semester": "Yes"
+        "registration": ["Must be enrolled in at least 1 credit during graduation semester."],
+        "credit": "Credits: 31",
+        "breadth": {
+            "description": "Must be registered in at least one course from each of the following breadths:",
+            "theory": ["Theory", "CSE 512", "CSE 526", "CSE 540", "CSE 541", "CSE 547", "CSE 548", "CSE 549"],
+            "systems": ["Systems", "CSE 502", "CSE 504", "CSE 506", "CSE 508", "CSE 509", "CSE 532", "CSE 534", "CSE 535"],
+            "information": ["Information Systems", "CSE 505", "CSE 519", "CSE 527", "CSE 528", "CSE 537", "CSE 538", "CSE 564"]
         },
-        "credit-requirement": 31,
-        "breadth-requirement": {
-            "theory": {
-                "1": "CSE 512",
-                "2": "CSE 526",
-                "3": "CSE 540",
-                "4": "CSE 541",
-                "5": "CSE 547",
-                "6": "CSE 548",
-                "7": "CSE 549"
-            },
-            "systems": {
-                "1": "CSE 502",
-                "2": "CSE 504",
-                "3": "CSE 506",
-                "4": "CSE 508",
-                "5": "CSE 509",
-                "6": "CSE 532",
-                "7": "CSE 534",
-                "8": "CSE 535"
-            },
-            "information-systems": {
-                "1": "CSE 505",
-                "2": "CSE 519",
-                "3": "CSE 527",
-                "4": "CSE 528",
-                "5": "CSE 537",
-                "6": "CSE 538",
-                "7": "CSE 564"
-            }
-        },
-        "gpa-req": 3.0,
-        "course-options": {
-            "basic-project": {
-                "courses": 8,
-                "1": "CSE 522"
-            },
-            "advanced-project": {
-                "courses": 7,
-                "1": "CSE 523",
-                "2":"CSE 524"
-            },
-            "thesis": {
-                "courses": 6,
-                "1": {
-                    "name": "CSE 566",
-                    "req-credits": "6"
-                }
-            }
+        "gpa": "GPA Requirement: 3.0",
+        "course": {
+            "basic": ["CSE 522", "8 Additional CSE Graduate Courses"],
+            "advanced": ["CSE 523", "CSE 524", "7 Additional CSE Graduate Courses"],
+            "thesis": ["CSE 566 (6 Credits Required)", "6 Additional CSE Graduate Courses"]
         }
     }
 }
