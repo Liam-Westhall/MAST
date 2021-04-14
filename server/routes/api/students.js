@@ -32,7 +32,7 @@ router.get('/search?', async (req, res) => {
         
     }catch (err) {
         console.log(err)
-        res.statusCode(500).send("Opsies woopsies, server error OWO")
+        res.statusCode(500).send("Error Searching for students")
     }
    
 })
