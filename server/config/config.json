@@ -1,7 +1,7 @@
 {
   "development": {
-    "username": "cse416",
-    "password": "cse416",
+    "username": "root",
+    "password": "cse416cse",
     "database": "mast",
     "host": "localhost",
     "dialect": "mysql"
