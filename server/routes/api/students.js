@@ -39,8 +39,7 @@ router.get('/search?', async (req, res) => {
 
 router.post('/delete_all', async (req, res) => {
     await Student.destroy({
-        truncate: true,
-        cascade: true
+        truncate: true
     });
 }
 )
