@@ -15,7 +15,8 @@ class EditStudentGPD extends Component{
             entrySemester: this.props.location.state.currentEditStudent.entrySemester,
             track: this.props.location.state.currentEditStudent.track,
             sbuID: this.props.location.state.currentEditStudent.sbuID,
-            expectedGraduation: ""
+            expectedGraduation: "",
+            degreeData: []
         };
         console.log(this.state.currentStudent);
     }
@@ -40,6 +41,25 @@ class EditStudentGPD extends Component{
         axios.post("http://localhost:5000/api/edit_student", body, header).catch((error) => console.log(error));
 
         await axios.get('/api/students')        
+    }
+
+    getDegreeRequirements = async () => {
+        let degrees = await axios.get('api/degrees');
+        let degreeData = degrees.data
+        for(let i = 0; i < degreeData.length; i++){
+            let tempDegree = degreeData[i];
+            if(this.state.major == tempDegree.department){
+                this.setState({
+                    degreeData: degreeData[i].json
+                });
+                console.log(this.state.degreeData)
+                break;
+            }
+        }
+    }
+
+    componentDidMount = () => {
+        this.getDegreeRequirements();
     }
 
     render(){

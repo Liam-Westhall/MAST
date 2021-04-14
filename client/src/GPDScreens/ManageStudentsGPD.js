@@ -17,6 +17,8 @@ class ManageStudentsGPD extends Component{
             track: "",
             students: [],
             query: "",
+            graduation_semester: "",
+            graduation_year: "",
             editStudent: false,
             currentEditStudent: null,
             refresh: false,
@@ -108,7 +110,7 @@ class ManageStudentsGPD extends Component{
     }
 
     addStudentCallback = async () => {
-        let body = {firstName: this.state.firstName, lastName: this.state.lastName, email: this.state.email, password: this.state.password, department: this.state.department, entrySemester: this.state.entrySemester, track: this.state.track};
+        let body = {firstName: this.state.firstName, lastName: this.state.lastName, email: this.state.email, password: this.state.password, department: this.state.department, entrySemester: this.state.entrySemester, track: this.state.track, graduation_semester: this.state.graduation_semester, graduation_year: this.state.graduation_year};
         let header = {
             headers: {
               "Content-Type": "application/json",
@@ -263,6 +265,10 @@ class ManageStudentsGPD extends Component{
                             <TextInput className="white" id="entrySemester" onChange={this.onChange}></TextInput>
                             <span>Track:</span>
                             <TextInput className="white" id="track" onChange={this.onChange}></TextInput>
+                            <span>Graduation Semester:</span>
+                            <TextInput className="white" id="graduation_semester" onChange={this.onChange}></TextInput>
+                            <span>Graduation Year:</span>
+                            <TextInput className="white" id="graduation_year" onChange={this.onChange}></TextInput>
                             <Button type="submit" modal="close" onClick={this.addStudentCallback}>Submit</Button>
                         </Modal>
                     </Col>

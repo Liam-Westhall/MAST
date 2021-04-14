@@ -23,6 +23,7 @@ app.use("/api/auth", require("./routes/api/auth"))
 app.use("/api/add_student", require("./routes/api/add_student"))
 app.use("/api/edit_student", require("./routes/api/edit_student"))
 app.use("/api/uploadfiles", require("./routes/api/files"))
+app.use("/api/degrees", require("./routes/api/degrees"))
 
 db.sequelize.sync().then((req) => {
 

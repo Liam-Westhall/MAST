@@ -6,7 +6,7 @@ let id = 111111111
 const {Student, User} = require('../../models')
 
 router.post('/', async(req, res) => {
-    const {firstName, lastName, email, password, department, entrySemester, track} = req.body;
+    const {firstName, lastName, email, password, department, entrySemester, track, graduation_semester, graduation_year} = req.body;
     try {
 
         let check = await User.findOne({where : {email: email}})
