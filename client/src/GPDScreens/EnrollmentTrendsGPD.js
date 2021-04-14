@@ -39,9 +39,6 @@ class EnrollmentTrendsGPD extends Component{
                 { label: 'S21', value: 211 }
             ],
 
-            startSem: "",
-            endSem: "",
-
             courseOptions: [],
             selectedSemData: [],
             selectedCourseData: [],
@@ -52,7 +49,10 @@ class EnrollmentTrendsGPD extends Component{
 
             graphData: [],
 
-            graphLegend: []
+            graphLegend: [],
+
+            startSem: "",
+            endSem: "",
 
         }
     }
@@ -75,7 +75,7 @@ class EnrollmentTrendsGPD extends Component{
 
     onChangeCourses = (event) => {
         //Update selected courses
-        console.log(event)
+
         var tempCNs = []
         event.forEach(function(semes) {
             let str = semes.label
@@ -83,7 +83,6 @@ class EnrollmentTrendsGPD extends Component{
 
             tempCNs.push(parseInt(str));
         });
-        console.log(event)
 
         this.setState({ selectedCourses: event, tempCourseHolder : tempCNs}, () => 
             {this.loadOptions()}); 
@@ -92,7 +91,7 @@ class EnrollmentTrendsGPD extends Component{
 
     loadOptions = async () => {
         //Loads the courses from the database based off of the current state options
-        //console.log('we loaded/reloaded')
+
         let dept = this.state.selectedDepartment;
         //Update course list 
         if (this.state.selectedDepartment.length === 0 || this.state.selectedSemesters.length === 0) {
@@ -106,7 +105,7 @@ class EnrollmentTrendsGPD extends Component{
 
             var courses = await axios.post('/api/courses/courselist', body);
             let x = Array.from(courses.data);
-            const dataToAdd = x;
+            //const dataToAdd = x;
 
             dept = this.state.selectedDepartment;
 
@@ -129,8 +128,8 @@ class EnrollmentTrendsGPD extends Component{
                     }
             });
 
-            console.log(tempOptionsArray, 'temparray')
-            this.setState({courseOptions : tempOptionsArray, courseData : dataToAdd})
+            //this.state.courseOptions = tempOptionsArray;
+            this.setState({courseOptions : tempOptionsArray, courseData : x}); 
         }
 
 
@@ -148,7 +147,7 @@ class EnrollmentTrendsGPD extends Component{
             temp.forEach(function(courseNum) {  //For each selected course
                 let tempGraphData = [];
                 allcrsinfo.forEach(function(crs) {  //For each course in masterlist that satisfies sem and degree
-                    //console.log("doubly inside loop")
+
                     if (crs.courseNumber === courseNum) {
                         let strtemp = crs.semester;
 
@@ -168,13 +167,13 @@ class EnrollmentTrendsGPD extends Component{
                 });
                 console.log(tempGraphData, 'tempgraphdata')
                 //let tempdept = this.state.department;
-                tempLegend.push({ name: (dept + ' ' + courseNum )})
+                tempLegend.push({ name: (dept + ' ' + courseNum )});
 
                 master.push(tempGraphData)
             });
             console.log(master)
-
-            this.setState({graphData: master, graphLegend : tempLegend})
+            this.setState({graphData: master})
+            //this.setState({graphData: master, graphLegend : tempLegend})
         }
     }
 
@@ -183,16 +182,14 @@ class EnrollmentTrendsGPD extends Component{
     }
 
     render(){
-        //let bars = this.state.graphData;
         const items = this.state.graphData.map(e => <VictoryLine data={e}/>);
-        //const legendItems = this.state.graphData.map(e => <VictoryLine data={e}/>);
+        //const holder = this.state.courseOptions;
         return(
             <div>
                 <NavbarGPD />
                 <div class = "row"></div>
                 <div class = "row">
                     <Select
-                        //defaultValue={this.state.semesterOptions[this.state.semesterOptions.length]}
                         isMulti
                         placeholder="Select Semester(s)"
                         options={this.state.semesterOptions}
@@ -200,7 +197,6 @@ class EnrollmentTrendsGPD extends Component{
                         onChange={e => this.onChangeSemester(e)}
                     />
                     <Select
-                        //defaultValue={this.state.departmentOptions[0]}
                         isMulti={false}
                         placeholder="Select a Department"
                         options={this.state.departmentOptions}

@@ -27,7 +27,6 @@ router.post('/courselist', async (req, res) => {
             raw: true
         })
 
-        console.log(courses)
         res.send(courses)
     } catch (error) {
         console.log(error)
