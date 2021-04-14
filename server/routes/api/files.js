@@ -107,24 +107,33 @@ router.post('/student_data', async (req, res) => {
 
         if(!req.files) res.status(500).send({error: "No file"})
         const studentProfile = req.files.studentProfile
-        const studentCoursePlan = req.files.studentCoursePlan
+        //const studentCoursePlan = req.files.studentCoursePlan
         const results = []
-    
+        const departments = ['CSE', 'AMS', 'CE', 'BMI']
 
 
         var studentProfile_bufferStream = new stream.PassThrough()
         studentProfile_bufferStream.end(studentProfile.data)
 
         studentProfile_bufferStream.pipe(csv())
-        .on('data', (data) => results.push(data))
+        .on('data', (data) => {console.log(data) 
+            results.push(data)})
         .on('end', async () => {
             
             for (const data in results){
 
+                let check = await User.findOne({where : {email: results[data].email}})
+
+                if (check) {
+                    let previousStudentProfile = await Student.findOne({where: {UserId: check.id}})
+                    await check.destroy()
+                    await previousStudentProfile.destroy()
+                }
+
                 console.log(data)
                 if (results[data].entry_semester !== 'Fall' && results[data].entry_semester !== 'Spring') throw results[data].entry_semester + 'Semester string is not correct'
                 if (departments.indexOf(results[data].department) <= -1) throw 'Not a correct department'
-
+                console.log("---------------------------------------->", results[data])
                 let user = await User.create({
                     firstName: results[data].first_name,
                     lastName: results[data].last_name,
@@ -150,44 +159,44 @@ router.post('/student_data', async (req, res) => {
            
         });
 
-        results = []
-        var studentCourse_bufferStream = new stream.PassThrough()
-        studentCourse_bufferStream.end(studentCoursePlan.data)
+        // results = []
+        // var studentCourse_bufferStream = new stream.PassThrough()
+        // studentCourse_bufferStream.end(studentCoursePlan.data)
 
-        studentCourse_bufferStream.pipe(csv())
-        .on('data', (data) => results.push(data))
-        .on('end', async () => {
+        // studentCourse_bufferStream.pipe(csv())
+        // .on('data', (data) => results.push(data))
+        // .on('end', async () => {
             
-            for (const data in results){
+        //     for (const data in results){
 
-                var student = await Student.findOne({where: {sbu_id: results[data].sbu_id}})
+        //         var student = await Student.findOne({where: {sbu_id: results[data].sbu_id}})
 
-                if (!student) throw 'Student not found!'
+        //         if (!student) throw 'Student not found!'
                 
-                var courses = await student.getCourses()
-                var course = await courses.get(Student_Course, {where: {
-                    department: results[data].department, 
-                    course_num: results[data].course_num,
+        //         var courses = await student.getCourses()
+        //         var course = await courses.get(Student_Course, {where: {
+        //             department: results[data].department, 
+        //             course_num: results[data].course_num,
 
-                }})
+        //         }})
 
-                if(course.length > 0) {
-                    //update course
-                }else {
-                    let newCourse = await Student_Course.create({
-                        department: results[data].department, 
-                        course_num: results[data].course_num,
-                        semester: results[data].semester,
-                        year: results[data].year,
-                        grade: results[data].grade,
-                        section: results[data].section
-                    })
+        //         if(course.length > 0) {
+        //             //update course
+        //         }else {
+        //             let newCourse = await Student_Course.create({
+        //                 department: results[data].department, 
+        //                 course_num: results[data].course_num,
+        //                 semester: results[data].semester,
+        //                 year: results[data].year,
+        //                 grade: results[data].grade,
+        //                 section: results[data].section
+        //             })
 
-                    await courses.add(newCourse)
-                }
-            }
+        //             await courses.add(newCourse)
+        //         }
+        //     }
            
-        });
+        // });
 
 
 

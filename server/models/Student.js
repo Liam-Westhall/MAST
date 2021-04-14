@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             validate: {
                 notEmpty: true,
-                is: /^[F|S]\d{2}$/i
+                //is: /^[F|S]\d{2}$/i
             }
 
         }, 
