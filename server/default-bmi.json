@@ -1,0 +1,105 @@
+{
+    "name": "BMI",
+    "version": "S21",
+    "requirements": {
+        "seminar-req": {
+            "class": "BMI 592",
+            "semesters": "All"
+        },
+        "general-reqs": {
+            "1": "BMI 501",
+            "2": {
+                "1": "BMI 502",
+                "2": "BMI 503"
+            }
+        },
+        "project-reqs": {
+            "imaging": {
+                "1": "BMI 513",
+                "2": "BMI 514",
+                "3": "BMI 520",
+                "4": "BMI 530",
+                "5": "BMI 540"
+                }
+            },
+            "clinical": {
+                "1": "BMI 512",
+                "2": "BMI 540",
+                "3": "BMI 550",
+                "4": "BMI 551",
+                "5": "BMI 540"
+            },
+            "translational": {
+                "1": "BMI 511",
+                "2": "BMI 520",
+                "3": "BMI 530",
+                "4": "BMI 540"
+            },
+            "elective-reqs": {
+                "credits": 30,
+                "courses": {
+                    "1": {
+                        "name": "BMI 598",
+                        "max-cred": 6
+                    },
+                    "2": {
+                        "1": "BMI 596",
+                        "2": "BMI 696",
+                        "max-cred": 6
+                    },
+                    "3": {
+                        "name": "BMI 599",
+                        "max-creds": 0
+                    },
+                    "4": {
+                        "1": "BMI 502",
+                        "2": "BMI 503"
+                    }
+                }
+            }
+        },
+        "thesis-reqs": {
+            "imaging": {
+                "1": "BMI 513",
+                "2": "BMI 514",
+                "3": "BMI 520",
+                "4": "BMI 530",
+                "5": "BMI 540"
+                }
+            },
+            "clinical": {
+                "1": "BMI 512",
+                "2": "BMI 540",
+                "3": "BMI 550",
+                "4": "BMI 551",
+                "5": "BMI 540"
+            },
+            "translational": {
+                "1": "BMI 511",
+                "2": "BMI 520",
+                "3": "BMI 530",
+                "4": "BMI 540"
+            },
+            "elective-reqs": {
+                "credits": 21,
+                "courses": {
+                    "1": {
+                        "name": "BMI 599",
+                        "max-cred": 12
+                    },
+                    "2": {
+                        "1": "BMI 596",
+                        "2": "BMI 696",
+                        "max-cred": 6
+                    },
+                    "3": {
+                        "name": "BMI 598",
+                        "max-creds": 0
+                    },
+                    "4": {
+                        "1": "BMI 502",
+                        "2": "BMI 503"
+                    }
+                }
+            }
+        }
