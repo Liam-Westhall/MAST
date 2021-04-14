@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             validate: {
                 notEmpty: true,
-                isIn: [['CSE', 'AMS', 'CE', 'BMI']]
+                isIn: ['CSE', 'AMS', 'CE', 'BMI']
             }
         },
 
@@ -19,18 +19,12 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
         },
 
-        semesters: {
+        semester: {
             type: DataTypes.STRING,
             allowNull: false,
             validate: {
                 notEmpty: true,
                 //is: ["[F|S]\d{2}",'i']
-            },
-            get() {
-                return this.getDataValue('favColors').split(';')
-            },
-            set(val) {
-               this.setDataValue('favColors',val.join(';'));
             },
         },
         
@@ -55,9 +49,14 @@ module.exports = (sequelize, DataTypes) => {
             validate: {
                 notEmpty: true
             }
-        }
-    }, {timestamps: false})
+        },
 
+        totalStudents: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0
+        },
+    }, {timestamps: false})
 
 
     return Course

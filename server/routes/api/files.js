@@ -81,7 +81,8 @@ router.post('/course', async (req, res) => {
                     days: results[data].timeslot,
                     name: '',
                     description: '',
-                    credits: 0
+                    credits: 0,
+                    totalStudents: 0
                 })
 
             }
