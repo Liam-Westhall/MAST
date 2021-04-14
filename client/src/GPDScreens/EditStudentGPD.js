@@ -9,6 +9,8 @@ class EditStudentGPD extends Component{
         super(props);
         this.state = {
             currentStudent: this.props.location.state.currentEditStudent,
+            userID: this.props.location.state.currentEditStudent.User.id,
+            studentID: this.props.location.state.currentEditStudent.id,
             firstName: this.props.location.state.currentEditStudent.User.firstName,
             lastName: this.props.location.state.currentEditStudent.User.lastName,
             email: this.props.location.state.currentEditStudent.User.email,
@@ -34,7 +36,7 @@ class EditStudentGPD extends Component{
     }
 
     confirmEdit = async () => {
-        let body = {firstName: this.state.firstName, lastName: this.state.lastName, email: this.state.email, sbuID: this.state.sbuID, department: this.state.department, entrySemester: this.state.entrySemester, track: this.state.track};        
+        let body = {userID: this.state.userID, studentID: this.state.studentID, firstName: this.state.firstName, lastName: this.state.lastName, email: this.state.email, sbuID: this.state.sbuID, major: this.state.major, entrySemester: this.state.entrySemester, track: this.state.track};        
         console.log(body)
         let header = {
             headers: {
@@ -234,7 +236,6 @@ class EditStudentGPD extends Component{
                             </Row>
                             <Row>
                                 <Col l={6}>
-                                    <Button>Delete Comment</Button>
                                 </Col>
                                 <Col l={6}>
                                     <Button onClick={this.confirmAddComment}>Add Comment</Button>

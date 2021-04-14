@@ -6,18 +6,22 @@ let id = 111111111
 const {Student, User} = require('../../models')
 
 router.post('/', async(req, res) => {
-    const {firstName, lastName, email, sbuID, major, entrySemester, track} = req.body;
+    const {userID, studentID, firstName, lastName, email, sbuID, major, entrySemester, track} = req.body;
     try {
         console.log(req)
         
         let usertemp = await User.update({
             firstName: firstName,
             lastName: lastName,
-           }, {where : {email: email}})
+            entrySemester: entrySemester,
+            email: email
+           }, {where : {id: userID}})
 
         let studenttemp = await Student.update({
-            track: track
-           }, {where : {sbuID: sbuID}})
+            department: major,
+            track: track,
+            sbuID: sbuID
+           }, {where : {id: studentID}})
 
         res.send({usertemp});
     }
