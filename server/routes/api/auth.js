@@ -18,9 +18,8 @@ router.post('/', async (req, res) => {
     //not secured use bcrypt to encrypt password... for now it fine i guess
    if (user.password != password)  return res.status(401).json({erros: [{msg: "invalid credential"}]})
 
-   const token = jwt.sign({email: user.email}, "SECRET", {expiresIn: "1d"})
-
-   res.json({token})
+   const token = jwt.sign({email: user.email, isStudent: user.isStudent}, "SECRET", {expiresIn: "1d"})
+  
 
 })
 
