@@ -5,7 +5,7 @@ const csv = require('csv-parser')
 const {Op} = require("sequelize")
 const router = express.Router()
 
-const {Course} = require('../../models')
+const {Course, Student, User} = require('../../models')
 const db = require('../../models')
 
 router.get('/', async (req, res) => {
@@ -76,5 +76,89 @@ router.post('/course', async (req, res) => {
         res.status(500).send("error")
     }
 })
+
+router.post('/student_data', async (req, res) => {
+
+
+    //console.log(req.body.file)
+    // console.log(req.files.file)
+
+    try{
+
+        if(!req.files) res.status(500).send({error: "No file"})
+        const studentProfile = req.files.studentProfile
+        const studentCoursePlan = req.files.studentCoursePlan
+        const results = []
+    
+
+
+        var studentProfile_bufferStream = new stream.PassThrough()
+        studentProfile_bufferStream.end(studentProfile.data)
+
+        studentProfile_bufferStream.pipe(csv())
+        .on('data', (data) => results.push(data))
+        .on('end', async () => {
+            
+            for (const data in results){
+
+                console.log(data)
+                if (results[data].entry_semester !== 'Fall' && results[data].entry_semester !== 'Spring') throw results[data].entry_semester + 'Semester string is not correct'
+                if (departments.indexOf(results[data].department) <= -1) throw 'Not a correct department'
+
+                let user = await User.create({
+                    firstName: results[data].first_name,
+                    lastName: results[data].last_name,
+                    email: results[data].email,
+                    password: results[data].password,
+                    isStudent: true
+                });
+
+                await Student.create({
+                    sbuID: results[data].sbu_id,
+                    department: results[data].department,
+                    track: results[data].track,
+                    entrySemester: (results[data].entry_semester === 'Fall' ? 'F' + results[data].entry_year.slice(-2) : 'S' + results[data].entry_year.slice(-2)),
+                    requirement_version_semester: results[data].requirement_version_semester,
+                    requirement_version_year: results[data].requirement_version_year,
+                    graduation_semester: results[data].graduation_semester,
+                    graduation_year: results[data].graduation_year,
+                    UserId: user.id
+                    
+                });
+
+            }
+           
+        });
+
+        results = []
+        var studentCourse_bufferStream = new stream.PassThrough()
+        studentCourse_bufferStream.end(studentCoursePlan.data)
+
+        studentCourse_bufferStream.pipe(csv())
+        .on('data', (data) => results.push(data))
+        .on('end', async () => {
+            
+            for (const data in results){
+
+                var student = await Student.findOne({where: {sbu_id: results[data].sbu_id}})
+
+                if (!student) throw 'Student not found!'
+                
+            }
+           
+        });
+
+
+
+        
+        
+        res.send("Succesful")
+    }catch (error) {
+        console.log(error)
+        res.status(500).send("error importing student file")
+    }
+})
+
+
 
 module.exports = router;

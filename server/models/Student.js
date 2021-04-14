@@ -28,6 +28,26 @@ module.exports = (sequelize, DataTypes) => {
             }
 
         }, 
+
+        requirement_version_semester: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        }, 
+
+        requirement_version_year: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        }, 
+
+        graduation_semester: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        }, 
+
+        graduation_year: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
         
     })
 
@@ -36,7 +56,13 @@ module.exports = (sequelize, DataTypes) => {
             foreingKey: {
                 allowNull: false
             }
-        })
+        }),
+        
+        Student.hasMany(models.Student_Course), {
+            foreingKey: {
+                allowNull: false
+            }
+        }
     }
 
 
