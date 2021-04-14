@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.JSON,
             allowNull: false,
         }
-        })
+        }, {timestamps: false})
 
     return Degree
 }

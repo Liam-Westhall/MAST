@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,
         },
         
-    })
+    }, {timestamps: false})
 
     Student.associate =  models => {
         Student.belongsTo(models.User, {
