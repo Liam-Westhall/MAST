@@ -85,19 +85,62 @@ class EnrollmentTrendsGPD extends Component{
         });
 
         this.setState({ selectedCourses: event, tempCourseHolder : tempCNs}, () => 
-            {this.loadOptions()}); 
+            {this.updateGraph()}); 
+    }
+
+    updateGraph = () => {
+        let dept = this.state.selectedDepartment;
+
+        //Numerical values representing the selected courses [num, num, ...]
+        let temp = this.state.tempCourseHolder; 
+            
+        //Data for all courses that satisfy degree and semester options{[courseNum, sem, totaltudents][...]...}
+        let allcrsinfo = this.state.courseData;    
+
+        let master = []
+        let tempLegend = []
+        temp.forEach(function(courseNum) {  //For each selected course
+            let tempGraphData = [];
+            allcrsinfo.forEach(function(crs) {  //For each course in masterlist that satisfies sem and degree
+
+                if (crs.courseNumber === courseNum) {
+                    let strtemp = crs.semester;
+
+                    //sem to int conversion
+                    let val = 0;
+                    let fs = strtemp.substring(0, 1);
+                    let yr = strtemp.substring(strtemp.length - 2);
+                    val = parseInt(yr) * 10;
+
+                    if (fs === 'F') {
+                        val += 1
+                    } 
+
+                    let tempnum = crs.totalStudents;
+                    tempGraphData.push({ x: val, y: tempnum})
+                }
+            });
+            console.log(tempGraphData, 'tempgraphdata')
+                //let tempdept = this.state.department;
+            tempLegend.push({ name: (dept + ' ' + courseNum )});
+
+            master.push(tempGraphData)
+        });
+        console.log(master)
+            //this.setState({graphData: master})
+        this.setState({graphData: master, graphLegend : tempLegend}, () => 
+        {this.loadOptions()}); 
+           //this.setState({graphData: master, graphLegend : tempLegend})
     }
 
 
     loadOptions = async () => {
         //Loads the courses from the database based off of the current state options
-
-        let dept = this.state.selectedDepartment;
-        //Update course list 
         if (this.state.selectedDepartment.length === 0 || this.state.selectedSemesters.length === 0) {
             //Dep or sem has not been chosen, Do Nothing
         } else {
-            //Get data from database
+            let dept = this.state.selectedDepartment;
+
             const body = new formData()
             body.append('department', this.state.selectedDepartment)
             body.append('courselist', this.state.selectedCourseData)
@@ -105,11 +148,11 @@ class EnrollmentTrendsGPD extends Component{
 
             var courses = await axios.post('/api/courses/courselist', body);
             let x = Array.from(courses.data);
-            //const dataToAdd = x;
+                //const dataToAdd = x;
 
             dept = this.state.selectedDepartment;
 
-            //Array that contains the course numbers for all courses that satisfy sem/dept options
+                //Array that contains the course numbers for all courses that satisfy sem/dept options
             let strArray = []
             var i;
             for (i = 0; i < x.length; i++) {
@@ -117,63 +160,18 @@ class EnrollmentTrendsGPD extends Component{
                 strArray.push(num)
             }
 
-            //No need for duplicates in select options
+                //No need for duplicates in select options
             let tempOptionsArray = []
             var alreadySeen = [];
             strArray.forEach(function(str) {
                 if (alreadySeen[str]) {
                 } else {
                     alreadySeen[str] = true;
-                    tempOptionsArray.push({ label: (dept + ' ' + str ), value: 1 })
-                    }
+                    tempOptionsArray.push({ label: (dept + ' ' + str ), value: str })
+                }
             });
 
-            //this.state.courseOptions = tempOptionsArray;
-            this.setState({courseOptions : tempOptionsArray, courseData : x}); 
-        }
-
-
-        if (this.state.selectedCourses.length === 0) {
-            //No courses are selected, Do Nothing
-        } else {
-            //Numerical values representing the selected courses [num, num, ...]
-            let temp = this.state.tempCourseHolder; 
-            
-            //Data for all courses that satisfy degree and semester options{[courseNum, sem, totaltudents][...]...}
-            let allcrsinfo = this.state.courseData;    
-
-            let master = []
-            let tempLegend = []
-            temp.forEach(function(courseNum) {  //For each selected course
-                let tempGraphData = [];
-                allcrsinfo.forEach(function(crs) {  //For each course in masterlist that satisfies sem and degree
-
-                    if (crs.courseNumber === courseNum) {
-                        let strtemp = crs.semester;
-
-                        //sem to int conversion
-                        let val = 0;
-                        let fs = strtemp.substring(0, 1);
-                        let yr = strtemp.substring(strtemp.length - 2);
-                        val = parseInt(yr) * 10;
-
-                        if (fs === 'F') {
-                            val += 1
-                        } 
-
-                        let tempnum = crs.totalStudents;
-                        tempGraphData.push({ x: val, y: tempnum})
-                    }
-                });
-                console.log(tempGraphData, 'tempgraphdata')
-                //let tempdept = this.state.department;
-                tempLegend.push({ name: (dept + ' ' + courseNum )});
-
-                master.push(tempGraphData)
-            });
-            console.log(master)
-            this.setState({graphData: master})
-            //this.setState({graphData: master, graphLegend : tempLegend})
+                this.setState({courseOptions : tempOptionsArray, courseData : x}); 
         }
     }
 
