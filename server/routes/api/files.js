@@ -4,8 +4,10 @@ const fs = require('fs')
 const csv = require('csv-parser')
 const {Op, json} = require("sequelize")
 const router = express.Router()
+const { PdfReader } = require('pdfreader')
 
-const {Course, Degree, Student, User, Student_Course} = require('../../models')
+
+const {Course, Degree, Student, User, Student_Course, Course_Offerings} = require('../../models')
 const db = require('../../models')
 
 router.get('/', async (req, res) => {
@@ -210,6 +212,58 @@ router.post('/student_data', async (req, res) => {
     }
 })
 
+cleanData = (text, department) => {
+    var isdept = false;
+    let deptData = new Array();
+
+    //Gets text for chosen department
+    text.forEach(function(line) {
+        let str = line
+        if (str.length === 3) {
+            if (isdept && !/[^a-z]/i.test(str)) {
+                console.log('that', str)
+                isdept = false;
+            }
+
+            if (str === department) {
+                console.log('this', str)
+                deptData.push(str)
+                isdept = true;
+            } 
+        } else if (isdept) {
+            deptData.push(str)
+        }
+    });
+
+    //
+}
+
+
+router.post('/course_info', async (req, res) => {
+    //console.log(req.files.file.data)
+
+    const {file, semester, dept} = req.body;
+
+    try{
+        if(!req.files) res.status(500).send({error: "No file"})
+
+        let rawtext = new Array();
+
+        //Read pdf and convert to array or strings for each line
+        new PdfReader().parseBuffer(req.files.file.data, function(err, item) {
+            if (err) callback(err);
+            else if (!item) cleanData(rawtext, dept);   //When EOF is reached, clean data
+            else if (item.text) {
+                rawtext.push(item.text);
+            }
+        });
+       
+        res.send("Succesful")
+    }catch (error) {
+        console.log(error)
+        res.status(500).send("error importing course information")
+    }
+})
 
 
 module.exports = router;
