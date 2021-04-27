@@ -75,7 +75,6 @@ class EnrollmentTrendsGPD extends Component{
 
     onChangeCourses = (event) => {
         //Update selected courses
-
         var tempCNs = []
         event.forEach(function(semes) {
             let str = semes.label
@@ -120,17 +119,12 @@ class EnrollmentTrendsGPD extends Component{
                     tempGraphData.push({ x: val, y: tempnum})
                 }
             });
-            console.log(tempGraphData, 'tempgraphdata')
-                //let tempdept = this.state.department;
             tempLegend.push({ name: (dept + ' ' + courseNum )});
 
             master.push(tempGraphData)
         });
-        console.log(master)
-            //this.setState({graphData: master})
         this.setState({graphData: master, graphLegend : tempLegend}, () => 
         {this.loadOptions()}); 
-           //this.setState({graphData: master, graphLegend : tempLegend})
     }
 
 
@@ -148,11 +142,10 @@ class EnrollmentTrendsGPD extends Component{
 
             var courses = await axios.post('/api/courses/courselist', body);
             let x = Array.from(courses.data);
-                //const dataToAdd = x;
 
             dept = this.state.selectedDepartment;
 
-                //Array that contains the course numbers for all courses that satisfy sem/dept options
+            //Array that contains the course numbers for all courses that satisfy sem/dept options
             let strArray = []
             var i;
             for (i = 0; i < x.length; i++) {
@@ -160,7 +153,7 @@ class EnrollmentTrendsGPD extends Component{
                 strArray.push(num)
             }
 
-                //No need for duplicates in select options
+            //No need for duplicates in select options
             let tempOptionsArray = []
             var alreadySeen = [];
             strArray.forEach(function(str) {
@@ -181,7 +174,6 @@ class EnrollmentTrendsGPD extends Component{
 
     render(){
         const items = this.state.graphData.map(e => <VictoryLine data={e}/>);
-        //const holder = this.state.courseOptions;
         return(
             <div>
                 <NavbarGPD />
