@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const Course = sequelize.define("Course", {
+    const Course = sequelize.define("Course_Offerings", {
         department: {
             type: DataTypes.STRING,
             allowNull: false,
