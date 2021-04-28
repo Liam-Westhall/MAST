@@ -35,6 +35,7 @@ class EditStudentGPD extends Component{
         this.setState({firstName: nameStr[0], lastName: nameStr[1]});
     }
 
+    //Is called when the confirm button in the edit student information section is pressed
     confirmEdit = async () => {
         let body = {userID: this.state.userID, studentID: this.state.studentID, firstName: this.state.firstName, lastName: this.state.lastName, email: this.state.email, sbuID: this.state.sbuID, major: this.state.major, entrySemester: this.state.entrySemester, track: this.state.track};        
         console.log(body)

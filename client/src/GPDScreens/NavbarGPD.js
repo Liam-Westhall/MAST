@@ -20,7 +20,7 @@ class NavbarGPD extends Component{
                 <li class="tab white-text"><a target="_self" href="/manage_students_gpd">Manage Students</a></li>
                 <li class="tab white-text"><a target="_self" href="/upload_file_gpd">Upload File</a></li>
                 <li class="tab white-text"><a target="_self" href="/enrollment_trends_gpd">View Enrollment Trends</a></li>
-                <li class="tab white-text"><a target="_self" href="/manage_students_gpd">Sugggest Course Plan</a></li></ul>}
+                <li class="tab white-text"><a target="_self" href="/suggest_course_plan_gpd">Sugggest Course Plan</a></li></ul>}
             options={{edge: 'left', preventScrolling: true}}>
             <Link to="/"><NavItem>Logout</NavItem></Link>
             </Navbar>

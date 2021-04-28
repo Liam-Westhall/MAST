@@ -11,6 +11,7 @@ import EnrollmentTrendsGPD from './GPDScreens/EnrollmentTrendsGPD';
 import StudentInfo from './StudentScreens/StudentInfo';
 import axios from 'axios'
 import UploadFileGPD from './GPDScreens/UploadFileGPD';
+import SuggestCoursePlanGPD from './GPDScreens/SuggestCoursePlanGPD';
 
 class App extends Component{
   state = {
@@ -46,6 +47,8 @@ class App extends Component{
           <Route exact path="/student_info_stu" component ={StudentInfo}>
           </Route>
           <Route exact path="/enrollment_trends_gpd" component={EnrollmentTrendsGPD}>
+          </Route>
+          <Route exact path = "/suggest_course_plan_gpd" component={SuggestCoursePlanGPD}>
           </Route>
         </Switch>
       </BrowserRouter>
