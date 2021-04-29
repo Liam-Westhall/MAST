@@ -10,11 +10,19 @@ router.post('/', async(req, res) => {
     try {
 
         let check = await User.findOne({where : {email: email}})
-        
+        let req_semester = ""
+        let req_year = ""
         if (check) {
             return res.status(409).send("User already exists")
         }
 
+        if(entrySemester.charAt(0) == "F"){
+            req_semester = "Fall"
+        }
+        else if(entrySemester.charAt(0) == "S"){
+            req_semester = "Spring"
+        }
+        req_year = (2000 + parseInt(entrySemester.substring(1))).toString();
         let user = await User.create({
             firstName: firstName,
             lastName: lastName,
@@ -28,6 +36,10 @@ router.post('/', async(req, res) => {
             department: department,
             track: track,
             entrySemester: entrySemester,
+            graduation_semester, graduation_semester,
+            graduation_year: graduation_year,
+            requirement_version_semester: req_semester,
+            requirement_version_year: req_year,
             UserId: user.id
         });
 

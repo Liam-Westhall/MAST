@@ -97,7 +97,7 @@ class EditStudentGPD extends Component{
             if(this.state.track == "Computational Applied Mathematics"){
                 dropdown = <div>
                     <Collapsible class="disabled">
-                        {this.state.degreeData.requirements.tracks.comp.map((course) => (
+                        {this.state.degreeData.requirements.tracks.comp.courses.map((course) => (
                             <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
                         ))}
                         <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
@@ -107,7 +107,7 @@ class EditStudentGPD extends Component{
             else if(this.state.track == "Operations Research"){
                 dropdown = <div>
                 <Collapsible class="disabled">
-                    {this.state.degreeData.requirements.tracks.op.map((course) => (
+                    {this.state.degreeData.requirements.tracks.op.courses.map((course) => (
                         <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
                     ))}
                     <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
@@ -117,7 +117,7 @@ class EditStudentGPD extends Component{
             else if(this.state.track == "Computational Biology"){
                 dropdown = <div>
                 <Collapsible class="disabled">
-                    {this.state.degreeData.requirements.tracks.bio.map((course) => (
+                    {this.state.degreeData.requirements.tracks.bio.courses.map((course) => (
                         <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
                     ))}
                     <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
@@ -127,7 +127,7 @@ class EditStudentGPD extends Component{
             else if(this.state.track == "Statistics"){
                 dropdown = <div>
                 <Collapsible class="disabled">
-                    {this.state.degreeData.requirements.tracks.stats.map((course) => (
+                    {this.state.degreeData.requirements.tracks.stats.courses.map((course) => (
                         <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
                     ))}
                     <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
@@ -137,7 +137,7 @@ class EditStudentGPD extends Component{
             else if(this.state.track == "Quanitative Finance"){
                 dropdown = <div>
                 <Collapsible class="disabled">
-                    {this.state.degreeData.requirements.tracks.quan.map((course) => (
+                    {this.state.degreeData.requirements.tracks.quan.courses.map((course) => (
                         <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
                     ))}
                     <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
