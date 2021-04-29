@@ -1,0 +1,41 @@
+{
+    "studentID": 1,
+    "semesters": {
+        "0": {
+            "0": {
+                "department": "CSE",
+                "courseNum": "502",
+                "credits": 3,
+                "semester": "Fall",
+                "year": "2017",
+                "grade": "B"
+            },
+            "1": {
+                "department": "CSE",
+                "courseNum": "503",
+                "credits": 3,
+                "semester": "Fall",
+                "year": "2017",
+                "grade": "A"
+            }
+        },
+        "1": {
+            "0": {
+                "department": "CSE",
+                "courseNum": "504",
+                "credits": 3,
+                "semester": "Spring",
+                "year": "2017",
+                "grade": "C"
+            },
+            "1": {
+                "department": "CSE",
+                "courseNum": "505",
+                "credits": 3,
+                "semester": "Spring",
+                "year": "2017",
+                "grade": "D"
+            }
+        }
+    }
+}

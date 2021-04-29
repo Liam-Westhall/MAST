@@ -83,6 +83,15 @@ class UploadFileGPD extends Component{
         await axios.post("/api/uploadfiles/student_data", body).catch((error) => console.log(error));
     }
     
+    onSubmitStudentGrades = async () => {
+        if(this.state.files.length < 1) return
+        const body = new formData()
+        body.append('gradesObj', this.state.files[0])
+
+        console.log(body)
+        await axios.post("/api/uploadfiles/student_grades", body).catch((error) => console.log(error));
+    }
+    
     onSubmit = () => {
         switch (this.state.upload_type) {
             case 'CouseOfferings':
@@ -96,7 +105,9 @@ class UploadFileGPD extends Component{
                 break;
             case 'CourseInformation':
                 this.onSubmitCourseInformation() 
-                break;   
+                break;
+            case 'StudentGrades':
+                this.onSubmitStudentGrades()
             default:
                 break;
         }
@@ -113,6 +124,7 @@ class UploadFileGPD extends Component{
                         <option value="DegreeRequirements">Degree Requirements</option>
                         <option value="StudentData">Student Data</option>
                         <option value="CourseInformation">Course Information</option>
+                        <option value="StudentGrades">Student Grades</option>
                     </select>
                 </div>
             <DropzoneAreaBase

@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
         },
 
         grade: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: false
         },
 
@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        
+
         section: {
             type: DataTypes.INTEGER(2),
             allowNull: false,

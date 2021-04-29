@@ -238,6 +238,33 @@ cleanData = (text, department) => {
     //
 }
 
+router.post('/student_grades', async (req, res) => {
+    const {gradesObj} = req.files;
+    let grades_json = JSON.parse(gradesObj.data);
+    console.log(grades_json)
+    try{
+        studentID = grades_json.studentID
+        for(var sem in grades_json.semesters){
+            console.log(grades_json.semesters[sem]);
+            for(var course in grades_json.semesters[sem]){
+                let student_course = await Student_Course.create({
+                    StudentId: studentID,
+                    department: grades_json.semesters[sem][course].department,
+                    course_num: grades_json.semesters[sem][course].courseNum,
+                    credits: grades_json.semesters[sem][course].credits,
+                    semester: grades_json.semesters[sem][course].semester,
+                    year: grades_json.semesters[sem][course].year,
+                    grade: grades_json.semesters[sem][course].grade,
+                    section: 0
+                });
+            }
+        }
+    }catch (error) {
+        console.log(error)
+        res.status(500).send("error importing student data")
+    }
+});
+
 
 router.post('/course_info', async (req, res) => {
     //console.log(req.files.file.data)
