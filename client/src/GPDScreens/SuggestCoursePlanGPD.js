@@ -16,18 +16,19 @@ class SuggestCoursePlanGPD extends Component {
             sbuID: this.props.location.state.currentEditStudent.sbuID,
             expectedGraduation: "",
             degreeData: [],
+            allCourses: [],
             maxCredits: 0,
             remainingSemesters: 0,
-            mondayTimeBegin: [],
-            mondayTimeEnd: [],
-            tuesdayTimeBegin: [],
-            tuesdayTimeEnd: [],
-            wednesdayTimeBegin: [],
-            wednesdayTimeEnd: [],
-            thursdayTimeBegin: [],
-            thursdayTimeEnd: [],
-            fridayTimeBegin: [],
-            fridayTimeEnd: [], 
+            mondayTimeBegin: "",
+            mondayTimeEnd: "",
+            tuesdayTimeBegin: "",
+            tuesdayTimeEnd: "",
+            wednesdayTimeBegin: "",
+            wednesdayTimeEnd: "",
+            thursdayTimeBegin: "",
+            thursdayTimeEnd: "",
+            fridayTimeBegin: "",
+            fridayTimeEnd: "", 
             currentSemester: ""
         };
     }
@@ -165,7 +166,19 @@ class SuggestCoursePlanGPD extends Component {
 
     }
 
+    //gets all courses from the database
     getAllCourses = async () => {
+        let courses = await axios.get("http://localhost:5000/api/courses/");
+        let courseData = courses.data
+        let courseNames = []
+        for(var course in courseData){
+            courseNames.push((courseData[course].department + " " + (courseData[course].courseNumber).toString()));
+        }
+        courseNames.sort();
+        this.setState({
+            allCourses: courseNames
+        });
+        console.log(this.state.allCourses);
 
     }
 
@@ -370,8 +383,17 @@ class SuggestCoursePlanGPD extends Component {
         }
     }
 
+    onChange = (event) => {
+        this.setState({[event.target.id]: event.target.value});
+    }
+
+    testSuggestCoursePlan = (event) => {
+        console.log("Haha");
+    }
+
     componentDidMount = async() => {
         this.getDegreeRequirements();
+        this.getAllCourses();
     }
 
     render(){
@@ -395,13 +417,13 @@ class SuggestCoursePlanGPD extends Component {
                         <Row>
                             <Col l={12}>
                                 <b><u>Max Credits:</u></b>
-                                <input type="number" id="credits" name="credits" step="1" min="0" max="24"></input>
+                                <input type="number" id="maxCredits" name="credits" step="1" min="0" max="24" onChange={this.onChange}></input>
                             </Col>
                         </Row>
                         <Row>
                             <Col l={12}>
                                 <b><u>Max Semesters:</u></b>
-                                <input type="number" id="credits" name="credits" step="1" min="0" max="4"></input>
+                                <input type="number" id="remainingSemesters" name="credits" step="1" min="0" max="4" onChange={this.onChange}></input>
                             </Col>
                         </Row>
                         <Row>
@@ -414,21 +436,11 @@ class SuggestCoursePlanGPD extends Component {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td data-field="Name"><Checkbox label={<span style={{color: "black"}}>Course</span>}></Checkbox></td>
-                                        </tr>
-                                        <tr>
-                                            <td data-field="Name"><Checkbox label={<span style={{color: "black"}}>Course</span>}></Checkbox></td>
-                                        </tr>
-                                        <tr>
-                                            <td data-field="Name"><Checkbox label={<span style={{color: "black"}}>Course</span>}></Checkbox></td>
-                                        </tr>
-                                        <tr>
-                                            <td data-field="Name"><Checkbox label={<span style={{color: "black"}}>Course</span>}></Checkbox></td>
-                                        </tr>
-                                        <tr>
-                                            <td data-field="Name"><Checkbox label={<span style={{color: "black"}}>Course</span>}></Checkbox></td>
-                                        </tr>
+                                        {this.state.allCourses.map((course) => (
+                                            <tr>
+                                                <td><Checkbox id={course + "prefer"} label={<span style={{color: "black"}}>{course}</span>}></Checkbox></td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </Table>
                             </Col>
@@ -443,21 +455,11 @@ class SuggestCoursePlanGPD extends Component {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td data-field="Name"><Checkbox label={<span style={{color: "black"}}>Course</span>}></Checkbox></td>
-                                        </tr>
-                                        <tr>
-                                            <td data-field="Name"><Checkbox label={<span style={{color: "black"}}>Course</span>}></Checkbox></td>
-                                        </tr>
-                                        <tr>
-                                            <td data-field="Name"><Checkbox label={<span style={{color: "black"}}>Course</span>}></Checkbox></td>
-                                        </tr>
-                                        <tr>
-                                            <td data-field="Name"><Checkbox label={<span style={{color: "black"}}>Course</span>}></Checkbox></td>
-                                        </tr>
-                                        <tr>
-                                            <td data-field="Name"><Checkbox label={<span style={{color: "black"}}>Course</span>}></Checkbox></td>
-                                        </tr>
+                                        {this.state.allCourses.map((course) => (
+                                            <tr>
+                                                <td><Checkbox id={course + "avoid"} label={<span style={{color: "black"}}>{course}</span>}></Checkbox></td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </Table>
                             </Col>
@@ -527,13 +529,13 @@ class SuggestCoursePlanGPD extends Component {
                                     <b><u>Monday</u></b>
                                 </Col>
                                 <Col l={3}>
-                                    <input type="time"></input>
+                                    <input type="time" id="mondayTimeBegin" onChange={this.onChange}></input>
                                 </Col>
                                 <Col l={3}>
                                     <b>to</b>
                                 </Col>
                                 <Col l={3}>
-                                    <input type="time"></input>
+                                    <input type="time" id="mondayTimeEnd" onChange={this.onChange}></input>
                                 </Col>
                             </Row>
                             <Row>
@@ -541,13 +543,13 @@ class SuggestCoursePlanGPD extends Component {
                                     <b><u>Tuesday</u></b>
                                 </Col>
                                 <Col l={3}>
-                                    <input type="time"></input>
+                                    <input type="time" id="tuesdayTimeBegin" onChange={this.onChange}></input>
                                 </Col>
                                 <Col l={3}>
                                     <b>to</b>
                                 </Col>
                                 <Col l={3}>
-                                    <input type="time"></input>
+                                    <input type="time" id="tuesdayTimeEnd" onChange={this.onChange}></input>
                                 </Col>
                             </Row>
                             <Row>
@@ -555,13 +557,13 @@ class SuggestCoursePlanGPD extends Component {
                                     <b><u>Wednesday</u></b>
                                 </Col>
                                 <Col l={3}>
-                                    <input type="time"></input>
+                                    <input type="time" id="wednesdayTimeBegin" onChange={this.onChange}></input>
                                 </Col>
                                 <Col l={3}>
                                     <b>to</b>
                                 </Col>
                                 <Col l={3}>
-                                    <input type="time"></input>
+                                    <input type="time" id="wednesdayTimeEnd" onChange={this.onChange}></input>
                                 </Col>
                             </Row>
                             <Row>
@@ -569,13 +571,13 @@ class SuggestCoursePlanGPD extends Component {
                                     <b><u>Thursday</u></b>
                                 </Col>
                                 <Col l={3}>
-                                    <input type="time"></input>
+                                    <input type="time" id="thursdayTimeBegin" onChange={this.onChange}></input>
                                 </Col>
                                 <Col l={3}>
                                     <b>to</b>
                                 </Col>
                                 <Col l={3}>
-                                    <input type="time"></input>
+                                    <input type="time" id="thursdayTimeEnd" onChange={this.onChange}></input>
                                 </Col>
                             </Row>
                             <Row>
@@ -583,15 +585,16 @@ class SuggestCoursePlanGPD extends Component {
                                     <b><u>Friday</u></b>
                                 </Col>
                                 <Col l={3}>
-                                    <input type="time"></input>
+                                    <input type="time" id="fridayTimeBegin" onChange={this.onChange}></input>
                                 </Col>
                                 <Col l={3}>
                                     <b>to</b>
                                 </Col>
                                 <Col l={3}>
-                                    <input type="time"></input>
+                                    <input type="time" id="fridayTimeEnd" onChange={this.onChange}></input>
                                 </Col>
                             </Row>
+                            <Button>Suggest Course Plan</Button>
                         </Card>
                     </Row>
                 </Col>

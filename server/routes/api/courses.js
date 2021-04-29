@@ -4,14 +4,25 @@ const fs = require('fs')
 const csv = require('csv-parser')
 const {Op, json} = require("sequelize")
 
-const {Course, Degree, Student, User, Student_Course} = require('../../models')
+const {Course, Degree, Student, User, Student_Course, Sequelize} = require('../../models')
 const db = require('../../models')
 const bodyParser = require("body-parser");
 
 const router = express.Router()
 
 router.get('/', async (req, res) => {
-    res.send("Test")
+    try {
+        let courses = await Course.findAll({
+            attributes: [
+                [Sequelize.fn('DISTINCT', Sequelize.col('courseNumber')), "courseNumber"],
+                "department"
+            ]
+        })
+        res.send(courses);
+    } catch (error) {
+        console.log(error)
+        res.status(500).send("COURSE LIST ERR")
+    }
 })
 
 router.post('/courselist', async (req, res) => {
@@ -34,6 +45,7 @@ router.post('/courselist', async (req, res) => {
     }
     
 })
+
 
 router.post('/getgrades', async (req, res) => {
     try {
