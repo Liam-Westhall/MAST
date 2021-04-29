@@ -104,6 +104,7 @@ class SuggestCoursePlanGPD extends Component {
         return body;
     }
 
+    //gets the remaining courses 
     getRemainingCourses = async () => {
         let grades = this.getGrades();
         let required_courses = []
@@ -138,6 +139,7 @@ class SuggestCoursePlanGPD extends Component {
         } 
     }
 
+    //gets the total credits from the remaining courses for the student to take
     getCreditsRemainingCourses = async (remainingCourses) => {
 
     }
@@ -163,17 +165,23 @@ class SuggestCoursePlanGPD extends Component {
 
     }
 
+    getAllCourses = async () => {
+
+    }
+
     suggestCoursePlan = async (remainingCourses, remainingElectiveCredits, preferredCourses, avoidedCourses) => {
         let totalRemainingCredits = this.getCreditsRemainingCourses(remainingCourses) + remainingElectiveCredits;
         let editElectiveCredits = remainingElectiveCredits;
         let remainingSemesters = this.state.remainingSemesters
         let loopNextSem = this.state.currentSemester;
         let coursePlan = []
+        let coursePlanWeight = 0
         if(totalRemainingCredits > (this.state.maxCredits * remainingSemesters)){
             return [] //can't be done with constraints provided
         }
         while(remainingSemesters > 0){
-            let semCourses = []
+            let semCourses = [];
+            let loopSemCredits = this.state.maxCredits;
             if(loopNextSem.charAt(0) == "F"){
                 loopNextSem = "S" + loopNextSem.substring(1);
             }
@@ -182,7 +190,8 @@ class SuggestCoursePlanGPD extends Component {
                 year = year + 1
                 loopNextSem = "F" + year.toString();
             }
-            for(let i = 0; i < preferredCourses; i++){
+            //start priority course loop
+            for(let i = 0; i < preferredCourses.length; i++){
                 let constraintViolated = false;
                 let electiveCourse = false;
                 //checks to see if any time constraints are violated, if so don't add course to plan
@@ -249,6 +258,114 @@ class SuggestCoursePlanGPD extends Component {
                         electiveCourse = true;
                     }
                 }
+                //finally pushes it to the semester plan
+                if(preferredCourses[i].credits >= loopSemCredits){
+                    semCourses.push(preferredCourses[i]);
+                    coursePlanWeight += 12;
+                    if(electiveCourse){
+                        editElectiveCredits = editElectiveCredits - preferredCourses[i].credits;
+                        loopSemCredits = loopSemCredits - preferredCourses[i].credits;
+                    }
+                    else{
+                        loopSemCredits -= preferredCourses[i].credits;
+                    }
+                }
+                if(loopSemCredits == 0){
+                    break;
+                }
+            }
+            //end of preferred course loop, check to see if the credit limit was reached for the semester
+            if(loopSemCredits == 0){
+                coursePlan.push(semCourses);
+                remainingSemesters = remainingSemesters - 1;
+            }
+            else{
+                let nonPreferredCourses = this.getAllCourses();
+                for(let i = 0; i < nonPreferredCourses.length; i++){
+                    let constraintViolated = false;
+                    let electiveCourse = false;
+                    //checks to see if any time constraints are violated, if so don't add course to plan
+                    let initSplit = nonPreferredCourses[i].days.split(" ");
+                    let daysSplit = initSplit[0].split("/");
+                    let timesSplit = initSplit[1].split("-");
+                    for(let temp = 0; temp < daysSplit.length; temp++){
+                        if(daysSplit[temp] == "M"){
+                            if(timesSplit[0] < this.state.mondayTimeBegin || timesSplit[1] > this.state.mondayTimeEnd){
+                                constraintViolated = true;
+                                break;
+                            }
+                        }
+                        else if(daysSplit[temp] == "Tu"){
+                            if(timesSplit[0] < this.state.tuesdayTimeBegin || timesSplit[1] > this.state.tuesdayTimeEnd){
+                                constraintViolated = true;
+                                break;
+                            }
+                        }
+                        else if(daysSplit[temp] == "W"){
+                            if(timesSplit[0] < this.state.wednesdayTimeBegin || timesSplit[1] > this.state.wednesdayTimeEnd){
+                                constraintViolated = true;
+                                break;
+                            }
+                        }
+                        else if(daysSplit[temp] == "Th"){
+                            if(timesSplit[0] < this.state.thursdayTimeBegin || timesSplit[1] > this.state.thursdayTimeEnd){
+                                constraintViolated = true;
+                                break;
+                            }
+                        }
+                        else if(daysSplit[temp] == "F"){
+                            if(timesSplit[0] < this.state.fridayTimeBegin || timesSplit[1] > this.state.fridayTimeEnd){
+                                constraintViolated = true;
+                                break;
+                            }
+                        }
+                    }
+                    //Now checks to see if semester constraint would be violated
+                    let courseOfferedSemester = nonPreferredCourses[i].semester
+                    if(loopNextSem != courseOfferedSemester)
+                    {
+                        constraintViolated = true;
+                    }
+                    if(constraintViolated){
+                        continue;
+                    }
+                    //Now checks degree requirement constraint
+                    let courseStr = nonPreferredCourses[i].department + " " + nonPreferredCourses[i].courseNumber;
+                    let degreeReqFound = false;
+                    for(let remainLoop = 0; remainLoop < remainingCourses.length; remainLoop++){
+                        let remainingCoursesSplit = remainingCourses[remainLoop].split("/");
+                        for(let splitLoop = 0; splitLoop < remainingCoursesSplit; splitLoop++){
+                            if(courseStr == remainingCoursesSplit[splitLoop]){
+                                degreeReqFound = true;
+                            }
+                        }
+                    }
+                    if(!degreeReqFound){
+                        if(nonPreferredCourses[i].credits < editElectiveCredits){
+                            continue;
+                        }
+                        else{
+                            electiveCourse = true;
+                        }
+                    }
+                    //finally pushes it to the semester plan
+                    if(nonPreferredCourses[i].credits >= loopSemCredits){
+                        semCourses.push(nonPreferredCourses[i]);
+                        coursePlanWeight += 10;
+                        if(electiveCourse){
+                            editElectiveCredits = editElectiveCredits - nonPreferredCourses[i].credits;
+                            loopSemCredits = loopSemCredits -nonPreferredCourses[i].credits;
+                        }
+                        else{
+                            loopSemCredits -= nonPreferredCourses[i].credits;
+                        }
+                    }
+                    if(loopSemCredits == 0){
+                        break;
+                    }
+                }
+                coursePlan.push(semCourses);
+                remainingSemesters = remainingSemesters - 1;
             }
         }
     }
