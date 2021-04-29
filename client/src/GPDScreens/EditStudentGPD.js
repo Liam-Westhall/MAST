@@ -1,6 +1,6 @@
 import React, { Component} from 'react'
 import { Card, Row, Col, Navbar, TextInput, Button, Collapsible, CollapsibleItem, Table } from 'react-materialize'
-import {Link} from 'react-router-dom'
+import {Link, Redirect} from 'react-router-dom'
 import axios from 'axios'
 import { Checkbox } from 'react-materialize';
 
@@ -22,7 +22,8 @@ class EditStudentGPD extends Component{
             degreeData: [],
             comments: this.props.location.state.comments,
             rerender: false,
-            currentComment: ""
+            currentComment: "",
+            suggestPlan: false
         };
     }
 
@@ -81,6 +82,11 @@ class EditStudentGPD extends Component{
         }
     }
 
+    confirmSuggestPlan = async () => {
+        this.setState({
+            suggestPlan: true
+        });
+    }
     componentDidMount = () => {
         this.getDegreeRequirements();
     }
@@ -369,6 +375,7 @@ class EditStudentGPD extends Component{
             }
         }
         return(
+            this.state.suggestPlan ? <Redirect to={{pathname: "suggest_course_plan_gpd", state: {currentEditStudent: this.state.currentStudent}}}></Redirect> :
             <div align="left">
                 <Navbar className="blue"></Navbar>
                 <br></br>
@@ -509,6 +516,7 @@ class EditStudentGPD extends Component{
                             </Table>
                         </Col>
                         </Row>
+                        <Button onClick={this.confirmSuggestPlan}>Suggest Course Plan</Button>
                     </Card>
                     </Col>
                     <Col l={6}>

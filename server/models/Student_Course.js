@@ -33,6 +33,11 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
 
+        credits: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        
         section: {
             type: DataTypes.INTEGER(2),
             allowNull: false,

@@ -2,8 +2,8 @@
     "name": "BMI",
     "version": "S21",
     "requirements": {
-        "seminar": ["BMI 592 (required all semesters)"],
-        "general": ["BMI 501", "BMI 502 or BMI 503"],
+        "seminar": ["BMI 592, BMI 592, BMI 592, BMI 592"],
+        "general": ["BMI 501", "BMI 502/BMI 503"],
         "project": {
             "imaging": ["BMI 513", "BMI 514", "BMI 520", "BMI 530", "BMI 540"],
             "clinical": ["BMI 512", "BMI 540", "BMI 550", "BMI 551"],

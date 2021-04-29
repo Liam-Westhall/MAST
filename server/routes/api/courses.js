@@ -35,4 +35,20 @@ router.post('/courselist', async (req, res) => {
     
 })
 
+router.post('/getgrades', async (req, res) => {
+    try {
+        const {id} = req.body;
+
+        let grades = await Student_Course.findAll({
+            where: {
+                StudentId: id
+            }
+        });
+        res.send(grades)
+    } catch(error) {
+        console.log(error)
+        res.status(500).send("GET GRADES ERR")
+    }
+})
+
 module.exports = router;
