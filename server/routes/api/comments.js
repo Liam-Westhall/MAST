@@ -25,4 +25,17 @@ router.post('/add_comment', async (req, res) => {
     });
 
 })
+
+router.post('/delete_comment', async (req, res) => {
+    try{ 
+        const {sbuID, currentComment} = req.body
+        var student = await Student.findOne({where: {sbuID: sbuID}});
+        const comment = await Comment.findOne({where: {id: currentComment.id}});
+        await comment.destroy();
+    } catch (error) {
+        console.log(error)
+        res.status(500).send("COURSE LIST ERR")
+    }
+})
+
 module.exports = router;

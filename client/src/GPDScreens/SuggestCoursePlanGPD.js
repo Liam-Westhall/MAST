@@ -65,7 +65,7 @@ class SuggestCoursePlanGPD extends Component {
     }
 
     //compares grades with required courses for major and track to check what courses still need to be taken
-    searchCourses = async (grades, required_courses, elective_credits) => {
+    searchCoursesAMS = async (grades, required_courses, elective_credits) => {
         let finished_courses = []
         let temp_elective_credits = elective_credits
         for(let i = 0; i < grades.length; i++){
@@ -105,6 +105,18 @@ class SuggestCoursePlanGPD extends Component {
         return body;
     }
 
+    searchCoursesBMI = async () => {
+
+    }
+
+    searchCoursesCSE = async () => {
+
+    }
+
+    searchCoursesESE = async () => {
+
+    }
+
     //gets the remaining courses 
     getRemainingCourses = async () => {
         let grades = this.getGrades();
@@ -115,27 +127,27 @@ class SuggestCoursePlanGPD extends Component {
             if(this.state.track == "Computational Applied Mathematics"){
                 required_courses = this.state.degreeData.requirements.tracks.comp.courses
                 elective_credits = this.state.degreeData.requirements.tracks.comp.elective_creds
-                remaining_courses = this.searchCourses(grades, required_courses);
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
             }
             else if(this.state.track == "Computational Biology"){
                 required_courses = this.state.degreeData.requirements.tracks.bio.courses
                 elective_credits = this.state.degreeData.requirements.tracks.bio.elective_creds
-                remaining_courses = this.searchCourses(grades, required_courses);
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
             }
             else if(this.state.track == "Operations Research"){
                 required_courses = this.state.degreeData.requirements.tracks.op.courses
                 elective_credits = this.state.degreeData.requirements.tracks.op.elective_creds
-                remaining_courses = this.searchCourses(grades, required_courses);
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
             }
             else if(this.state.track == "Statistics"){
                 required_courses = this.state.degreeData.requirements.tracks.stats.courses
                 elective_credits = this.state.degreeData.requirements.tracks.stats.elective_creds
-                remaining_courses = this.searchCourses(grades, required_courses);
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
             }
             else if(this.state.track == "Quanitative Finance"){
                 required_courses = this.state.degreeData.requirements.tracks.quan.courses
                 elective_credits = this.state.degreeData.requirements.tracks.quan.elective_creds
-                remaining_courses = this.searchCourses(grades, required_courses);
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
             }
         } 
     }
@@ -385,10 +397,6 @@ class SuggestCoursePlanGPD extends Component {
 
     onChange = (event) => {
         this.setState({[event.target.id]: event.target.value});
-    }
-
-    testSuggestCoursePlan = (event) => {
-        console.log("Haha");
     }
 
     componentDidMount = async() => {

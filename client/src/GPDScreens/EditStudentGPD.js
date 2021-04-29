@@ -23,7 +23,8 @@ class EditStudentGPD extends Component{
             comments: this.props.location.state.comments,
             rerender: false,
             currentComment: "",
-            suggestPlan: false
+            suggestPlan: false,
+            currentCommentIndex: 0
         };
     }
 
@@ -82,6 +83,26 @@ class EditStudentGPD extends Component{
         }
     }
 
+    onChangeComment = async (index) => { 
+        console.log(this.state.currentCommentIndex)
+        this.setState({
+            currentCommentIndex: index
+        });
+        
+    }
+
+    onDeleteComment = async () => {
+        let body = {sbuID: this.state.sbuID, currentComment: this.state.comments[this.state.currentCommentIndex]}
+        let header = {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }; 
+        let comments = this.state.comments
+        comments.splice(this.state.currentCommentIndex, 1);
+        let res = await axios.post("http://localhost:5000/api/comments/delete_comment", body, header).then(this.setState({comments: comments}));
+    }
+
     confirmSuggestPlan = async () => {
         this.setState({
             suggestPlan: true
@@ -98,7 +119,7 @@ class EditStudentGPD extends Component{
                 dropdown = <div>
                     <Collapsible class="disabled">
                         {this.state.degreeData.requirements.tracks.comp.courses.map((course) => (
-                            <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
+                            <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
                         ))}
                         <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
                     </Collapsible>
@@ -465,14 +486,15 @@ class EditStudentGPD extends Component{
                             <Row>
                                 <Col l={6}>
                                     <Collapsible>
-                                        {this.state.comments.map((comment) =>
-                                        (<CollapsibleItem header={comment.message}></CollapsibleItem>))}
+                                        {this.state.comments.map((comment, index) =>
+                                        (<CollapsibleItem header={comment.message} onClick={this.onChangeComment.bind(this, index)}></CollapsibleItem>))}
                                     </Collapsible>
                                 </Col>
                                 <Col><TextInput placeholder="Comment..." class="white" value={this.state.currentComment} onChange={this.onChange} id="currentComment"></TextInput></Col>
                             </Row>
                             <Row>
                                 <Col l={6}>
+                                    <Button onClick={this.onDeleteComment}>Delete Comment</Button>
                                 </Col>
                                 <Col l={6}>
                                     <Button onClick={this.confirmAddComment}>Add Comment</Button>
