@@ -69,28 +69,35 @@ class SuggestCoursePlanGPD extends Component {
         let finished_courses = []
         let temp_elective_credits = elective_credits
         for(let i = 0; i < grades.length; i++){
+            //checks letter grades to see if it is a valid grade (C to pass)
             if(grades[i].grade.charAt(0) <= "C"){
                 if(grades[i].grade.length > 1){
                     if(grades[i].grade.charAt(1) != "-"){
+                        //then split the required courses by / if there are multiple required courses that could fit one requirement
                         for(let j = 0; j < required_courses.length; j++){
                             let temp_courses = required_courses[j].split('/');
                             let found_course = false;
                             for(let k = 0; k < temp_courses.length; k++){
+                                //checks to see if there is a grade that matches a required course
                                 if((grades[i].department + " " + grades[i].course_num) == temp_courses[k]){
+                                    //if so that course is finished, push to finished courses and remove it from required courses
                                     finished_courses.push(grades[i].department + " " + grades[i].course_num);
                                     required_courses.splice(j, 1);
                                     found_course = true;
                                     break;
                                 }
                             }
+                            //if no direct course that requirements are solved, check to see if it can satisfy an elective course
                             if(!found_course){
                                 let duplicate = false;
                                 for(let l = 0; l < finished_courses.length; l++){
+                                    //if the grade is already accounted for, don't account for it again
                                     if((grades[i].department + " " + grades[i].course_num) == finished_courses[l]){
                                         duplicate = true;
                                         break;
                                     }
                                 }
+                                //if not, have it satisfy elective credits
                                 if(!duplicate){
                                     finished_courses.push(grades[i].department + " " + grades[i].course_num);
                                     temp_elective_credits = temp_elective_credits - (grades[i].credits);
