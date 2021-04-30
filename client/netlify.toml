@@ -1,6 +1,6 @@
 [[redirects]]
-from = 'https://mast-null-pointers.netlify.app/*'
-to = 'https://mast-null-pointers.herokuapp.com/:splat'
+from = 'https://mast-null-pointers.netlify.app/api/*'
+to = 'https://mast-null-pointers.herokuapp.com/api/:splat'
 status = 200
 
 [[redirects]]
