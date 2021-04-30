@@ -18,6 +18,47 @@ class EditStudentGPD extends Component{
             entrySemester: this.props.location.state.currentEditStudent.entrySemester,
             track: this.props.location.state.currentEditStudent.track,
             sbuID: this.props.location.state.currentEditStudent.sbuID,
+            coursePlan: {
+                "studentID": 1,
+                "semesters": {
+                    "F17": {
+                        "0": {
+                            "department": "AMS",
+                            "courseNum": "501",
+                            "credits": 3,
+                            "semester": "Fall",
+                            "year": "2017",
+                            "grade": "B"
+                        },
+                        "1": {
+                            "department": "CSE",
+                            "courseNum": "503",
+                            "credits": 3,
+                            "semester": "Fall",
+                            "year": "2017",
+                            "grade": "A"
+                        }
+                    },
+                    "S17": {
+                        "0": {
+                            "department": "CSE",
+                            "courseNum": "504",
+                            "credits": 3,
+                            "semester": "Spring",
+                            "year": "2017",
+                            "grade": "C"
+                        },
+                        "1": {
+                            "department": "CSE",
+                            "courseNum": "505",
+                            "credits": 3,
+                            "semester": "Spring",
+                            "year": "2017",
+                            "grade": "D"
+                        }
+                    }
+                }
+            },
             expectedGraduation: "",
             degreeData: [],
             comments: this.props.location.state.comments,
@@ -46,9 +87,9 @@ class EditStudentGPD extends Component{
               "Content-Type": "application/json",
             },
           };    
-        axios.post("http://localhost:5000/api/edit_student", body, header).catch((error) => console.log(error));
+        axios.post("/api/edit_student", body, header).catch((error) => console.log(error));
 
-        await axios.get('/api/students')        
+        await axios.get('/api/students').catch((err) => console.log('caught', err));
     }
 
     confirmAddComment = async () => {
@@ -62,16 +103,16 @@ class EditStudentGPD extends Component{
               "Content-Type": "application/json",
             },
           }; 
-        let res = await axios.post("http://localhost:5000/api/comments/add_comment", body, header).then(this.setState({comments: newComments})).catch((err) => console.log(err));
+        await axios.post("/api/comments/add_comment", body, header).then(this.setState({comments: newComments})).catch((err) => console.log(err));
     }
 
     getDegreeRequirements = async () => {
-        let degrees = await axios.get('api/degrees');
+        let degrees = await axios.get('/api/degrees').catch((err) => console.log('caught', err));
         let degreeData = degrees.data
         for(let i = 0; i < degreeData.length; i++){
             let tempDegree = degreeData[i];
             console.log(tempDegree);
-            if(this.state.major.replace(/ /g,'') == tempDegree.department){
+            if(this.state.major.replace(/ /g,'') === tempDegree.department){
                 console.log(this.state.degreeData)
                 this.setState({
                     degreeData: degreeData[i].json,
@@ -100,7 +141,7 @@ class EditStudentGPD extends Component{
           }; 
         let comments = this.state.comments
         comments.splice(this.state.currentCommentIndex, 1);
-        let res = await axios.post("http://localhost:5000/api/comments/delete_comment", body, header).then(this.setState({comments: comments}));
+        await axios.post("/api/comments/delete_comment", body, header).then(this.setState({comments: comments})).catch((err) => console.log('caught', err));
     }
 
     confirmSuggestPlan = async () => {
@@ -112,20 +153,88 @@ class EditStudentGPD extends Component{
         this.getDegreeRequirements();
     }
 
+    checkCompletedCourse = async (course) => {
+        let header = {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }; 
+        let courseStrArr = course.split("/")
+        console.log(courseStrArr);
+        console.log("Haha");
+        for(let i = 0; i < courseStrArr.length; i++){
+            let courseStrSpace = courseStrArr[i].split(" ");
+            let courseNum = parseInt(courseStrSpace[1]);
+            let department = courseStrSpace[0]
+            let body = {department: department, courseNum: courseNum, studentID: this.state.studentID}
+            console.log(body)
+            let res = await axios.post("/api/courses/checkcompleted", body, header).catch((err) => console.log('caught error'));
+            let grade = res.data
+            if(grade != ""){
+                if(grade[0].grade[0] == "A" || grade[0].grade[0] == "B") {
+                    return true;
+                }
+                else if(grade[0].grade[0] == "C"){
+                    if(grade[0].grade.length > 1){
+                        if(grade[0].grade[1] != "-"){
+                            return true;
+                        }
+                    }
+                    else{
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    checkCourseInProgress  = (arr, course) => {
+        console.log("Yes")
+        let courseStrArr = course.split("/")
+        for(let i = 0; i < courseStrArr.length; i++){
+            for(let j = 0; j < arr.length; j++){
+                let courseStr = arr[j].department + " " + arr[j].courseNum;
+                if(courseStrArr[i] == courseStr){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     render(){
         let dropdown;
-        if (this.state.major.replace(/ /g,'') == "AMS" && this.state.rerender) {
-            if(this.state.track == "Computational Applied Mathematics"){
+        var arrCourses = [];
+        let tempCoursePlan = this.state.coursePlan
+        Object.keys(tempCoursePlan).forEach(function (key){
+            Object.keys(tempCoursePlan[key]).forEach(function (key2){
+                    Object.keys(tempCoursePlan[key][key2]).forEach(function (key3){
+                        arrCourses.push(tempCoursePlan[key][key2][key3])
+                    }) 
+            })
+        });
+        console.log(arrCourses);
+        if (this.state.major.replace(/ /g,'') === "AMS" && this.state.rerender) {
+            if(this.state.track === "Computational Applied Mathematics"){
                 dropdown = <div>
                     <Collapsible class="disabled">
-                        {this.state.degreeData.requirements.tracks.comp.courses.map((course) => (
-                            <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
-                        ))}
+                        {this.state.degreeData.requirements.tracks.comp.courses.map(course => {
+                            if(this.checkCompletedCourse(course) == true){
+                                return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                            else if(this.checkCourseInProgress(arrCourses, course) == true){
+                                return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                            else{
+                                return <CollapsibleItem icon={<Checkbox disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                        })}
                         <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
                     </Collapsible>
                 </div>;
             }
-            else if(this.state.track == "Operations Research"){
+            else if(this.state.track === "Operations Research"){
                 dropdown = <div>
                 <Collapsible class="disabled">
                     {this.state.degreeData.requirements.tracks.op.courses.map((course) => (
@@ -135,7 +244,7 @@ class EditStudentGPD extends Component{
                 </Collapsible>
                 </div>;
             }
-            else if(this.state.track == "Computational Biology"){
+            else if(this.state.track === "Computational Biology"){
                 dropdown = <div>
                 <Collapsible class="disabled">
                     {this.state.degreeData.requirements.tracks.bio.courses.map((course) => (
@@ -145,7 +254,7 @@ class EditStudentGPD extends Component{
                 </Collapsible>
                 </div>;
             }
-            else if(this.state.track == "Statistics"){
+            else if(this.state.track === "Statistics"){
                 dropdown = <div>
                 <Collapsible class="disabled">
                     {this.state.degreeData.requirements.tracks.stats.courses.map((course) => (
@@ -155,7 +264,7 @@ class EditStudentGPD extends Component{
                 </Collapsible>
                 </div>;
             }
-            else if(this.state.track == "Quanitative Finance"){
+            else if(this.state.track === "Quanitative Finance"){
                 dropdown = <div>
                 <Collapsible class="disabled">
                     {this.state.degreeData.requirements.tracks.quan.courses.map((course) => (
@@ -166,8 +275,8 @@ class EditStudentGPD extends Component{
                 </div>;
             }
         }
-        else if (this.state.major.replace(/ /g,'') == "BMI" && this.state.rerender){
-            if(this.state.track = "Project/Imaging Informatics"){
+        else if (this.state.major.replace(/ /g,'') === "BMI" && this.state.rerender){
+            if(this.state.track === "Project/Imaging Informatics"){
                 dropdown = <div>
                 <Collapsible class="disabled">
                     {this.state.degreeData.requirements.seminar.map((course) => (
@@ -185,7 +294,7 @@ class EditStudentGPD extends Component{
                 </Collapsible>
                 </div>;
             }
-            else if(this.state.track == "Project/Clinical Informatics"){
+            else if(this.state.track === "Project/Clinical Informatics"){
                 dropdown = <div>
                 <Collapsible class="disabled">
                     {this.state.degreeData.requirements.seminar.map((course) => (
@@ -203,7 +312,7 @@ class EditStudentGPD extends Component{
                 </Collapsible>
                 </div>;
             }
-            else if(this.state.track == "Project/Translational Bio-Informatics"){
+            else if(this.state.track === "Project/Translational Bio-Informatics"){
                 dropdown = <div>
                 <Collapsible class="disabled">
                     {this.state.degreeData.requirements.seminar.map((course) => (
@@ -221,7 +330,7 @@ class EditStudentGPD extends Component{
                 </Collapsible>
                 </div>;
             }
-            else if(this.state.track == "Thesis/Clinical Informatics"){
+            else if(this.state.track === "Thesis/Clinical Informatics"){
                 dropdown = <div>
                 <Collapsible class="disabled">
                     {this.state.degreeData.requirements.seminar.map((course) => (
@@ -239,7 +348,7 @@ class EditStudentGPD extends Component{
                 </Collapsible>
                 </div>;
             }
-            else if(this.state.track == "Thesis/Translational Bio-Informatics"){
+            else if(this.state.track === "Thesis/Translational Bio-Informatics"){
                 dropdown = <div>
                 <Collapsible class="disabled">
                     {this.state.degreeData.requirements.seminar.map((course) => (
@@ -257,7 +366,7 @@ class EditStudentGPD extends Component{
                 </Collapsible>
                 </div>;
             }
-            else if(this.state.track = "Thesis/Imaging Informatics"){
+            else if(this.state.track === "Thesis/Imaging Informatics"){
                 dropdown = <div>
                 <Collapsible class="disabled">
                     {this.state.degreeData.requirements.seminar.map((course) => (
@@ -276,8 +385,8 @@ class EditStudentGPD extends Component{
                 </div>;
             }
         }
-        else if(this.state.major.replace(/ /g,'') == "CSE" && this.state.rerender){
-            if(this.state.track == "Basic Project"){
+        else if(this.state.major.replace(/ /g,'') === "CSE" && this.state.rerender){
+            if(this.state.track === "Basic Project"){
                 dropdown = <div>
                 <Collapsible class="disabled">
                     <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.registration}></CollapsibleItem>
@@ -299,7 +408,7 @@ class EditStudentGPD extends Component{
                 </Collapsible>
                 </div>;
             }
-            else if(this.state.track == "Advanced Project"){
+            else if(this.state.track === "Advanced Project"){
                 dropdown = <div>
                 <Collapsible class="disabled">
                     <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.registration}></CollapsibleItem>
@@ -321,7 +430,7 @@ class EditStudentGPD extends Component{
                 </Collapsible>
                 </div>;
             }
-            else if(this.state.track == "Thesis"){
+            else if(this.state.track === "Thesis"){
                 dropdown = <div>
                 <Collapsible class="disabled">
                     <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.registration}></CollapsibleItem>
@@ -344,8 +453,8 @@ class EditStudentGPD extends Component{
                 </div>;
             }
         }
-        else if(this.state.major.replace(/ /g,'') == "CE" && this.state.rerender){
-            if(this.state.track == "Non-Thesis"){
+        else if(this.state.major.replace(/ /g,'') === "CE" && this.state.rerender){
+            if(this.state.track === "Non-Thesis"){
                 dropdown = <div>
                 <Collapsible class="disabled">
                 {this.state.degreeData.requirements.credit.map((course) => (
@@ -370,7 +479,7 @@ class EditStudentGPD extends Component{
                 </Collapsible>
                 </div>;
             }
-            else if(this.state.track == "Thesis"){
+            else if(this.state.track === "Thesis"){
                 dropdown = <div>
                 <Collapsible class="disabled">
                     <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.credit}></CollapsibleItem>
@@ -514,29 +623,25 @@ class EditStudentGPD extends Component{
                 <Row>
                     <Col l={6}>
                     <Card className="blue-grey">
-                        <Row>
-                        <Col l={12}>
-                            <Table className="white">
-                                <thead>
-                                    <tr>
-                                    <th>Course</th>
-                                    <th>Credit(s)</th>
-                                    <th>Time</th>
-                                    <th>Professor</th>
-                                    <th>Location</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>AMS 501</td>
-                                        <td>3</td>
-                                        <td>T/Th 4:00PM-5:20PM</td>
-                                        <td>John Doe</td>
-                                        <td>Javits 100</td>
-                                    </tr>
-                                </tbody>
-                            </Table>
-                        </Col>
+                        <Row className="white">
+                            <Col l={12}>
+                                <Table>
+                                    <thead>
+                                        <th>Course</th>
+                                        <th>Credits</th>
+                                        <th>Semester</th>
+                                    </thead>
+                                    <tbody>
+                                        {arrCourses.map((course) => (
+                                            <tr>
+                                                <td>{course.department + " " + course.courseNum}</td>
+                                                <td>{course.credits}</td>
+                                                <td>{course.semester + " " + course.year}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </Table>
+                            </Col>
                         </Row>
                         <Button onClick={this.confirmSuggestPlan}>Suggest Course Plan</Button>
                     </Card>

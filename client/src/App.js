@@ -1,9 +1,7 @@
 
 import './App.css';
 import React, { Component} from 'react'
-import {Router, Switch, Route, BrowserRouter} from 'react-router-dom'
-import Navbar from './GPDScreens/NavbarGPD';
-import NavbarGPD from './GPDScreens/NavbarGPD';
+import {Switch, Route, BrowserRouter} from 'react-router-dom'
 import ManageStudentsGPD from './GPDScreens/ManageStudentsGPD';
 import EditStudentGPD from './GPDScreens/EditStudentGPD';
 import LoginScreen from './LoginScreens/LoginScreen';
@@ -23,7 +21,7 @@ class App extends Component{
   }
 
   callBackendAPI = async () => {
-    const response = await axios.get("/api/users");
+    const response = await axios.get("/api/users").catch((err) => console.log('caught', err));
     this.setState({data: response.data});
     console.log(this.state.data)
 

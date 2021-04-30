@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
                 [Sequelize.fn('DISTINCT', Sequelize.col('courseNumber')), "courseNumber"],
                 "department"
             ]
-        })
+        }).catch((err) => console.log('caught it'));
         res.send(courses);
     } catch (error) {
         console.log(error)
@@ -36,7 +36,7 @@ router.post('/courselist', async (req, res) => {
                 semester: {[Op.in]: semesters.split(',') }
             },
             raw: true
-        })
+        }).catch((err) => console.log('caught it'));
 
         res.send(courses)
     } catch (error) {
@@ -55,11 +55,29 @@ router.post('/getgrades', async (req, res) => {
             where: {
                 StudentId: id
             }
-        });
+        }).catch((err) => console.log('caught it'));
         res.send(grades)
     } catch(error) {
         console.log(error)
         res.status(500).send("GET GRADES ERR")
+    }
+})
+
+router.post('/checkcompleted', async (req, res) => {
+    try{
+        const {department, courseNum, studentID} = req.body;
+
+        let grade = await Student_Course.findOne({
+            where: {
+                StudentId: studentID,
+                department: department,
+                course_num: courseNum
+            }
+        }).catch((err) => console.log('caught it'))
+        res.send(grade)
+    } catch(error) {
+        console.log(error)
+        res.status(500).send("CHECK COMPLETED ERR")
     }
 })
 

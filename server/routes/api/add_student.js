@@ -9,7 +9,7 @@ router.post('/', async(req, res) => {
     const {firstName, lastName, email, password, department, entrySemester, track, graduation_semester, graduation_year} = req.body;
     try {
 
-        let check = await User.findOne({where : {email: email}})
+        let check = await User.findOne({where : {email: email}}).catch((err) => console.log('caught it'));
         let req_semester = ""
         let req_year = ""
         if (check) {
@@ -29,7 +29,7 @@ router.post('/', async(req, res) => {
             email: email,
             password: password,
             isStudent: true
-        });
+        }).catch((err) => console.log('caught it'));
 
         let student = await Student.create({
             sbuID: id.toString(),
@@ -41,7 +41,7 @@ router.post('/', async(req, res) => {
             requirement_version_semester: req_semester,
             requirement_version_year: req_year,
             UserId: user.id
-        });
+        }).catch((err) => console.log('caught it'));
 
         id = id + 1;
 

@@ -10,7 +10,7 @@ router.post('/', async (req, res) => {
    const {email, password} = req.body
 
 
-   var user = await User.findOne({where: {email: email}})
+   var user = await User.findOne({where: {email: email}}).catch((err) => console.log('caught it'));
    if(!user){ 
 
       return res.status(401).json({erros: [{msg: "invalid credential"}]})

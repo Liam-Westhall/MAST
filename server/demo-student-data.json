@@ -1,7 +1,7 @@
 {
     "studentID": 1,
     "semesters": {
-        "0": {
+        "F17": {
             "0": {
                 "department": "CSE",
                 "courseNum": "502",
@@ -19,7 +19,7 @@
                 "grade": "A"
             }
         },
-        "1": {
+        "S17": {
             "0": {
                 "department": "CSE",
                 "courseNum": "504",

@@ -43,14 +43,14 @@ class StudentInfo extends Component{
                   "Content-Type": "application/json",
                 },
               }; 
-            let res = await axios.post("http://localhost:5000/api/comments/add_comment", body, header).then(this.setState({comments: newComments})).catch((err) => console.log(err));
+            let res = await axios.post("/api/comments/add_comment", body, header).then(this.setState({comments: newComments})).catch((err) => console.log(err));
         }
 
         findStudent = async () => {
             console.log(this.props.location.state.email);
             let body = {email: this.props.location.state.email}
             console.log(body);
-            let res = await axios.post("/api/students/find_student", body);
+            let res = await axios.post("/api/students/find_student", body).catch((err) => console.log('caught', err));
             let people = res.data;
             console.log(people);
             this.setState({
@@ -66,7 +66,7 @@ class StudentInfo extends Component{
         }   
 
         getDegreeRequirements = async () => {
-            let degrees = await axios.get('api/degrees');
+            let degrees = await axios.get('/api/degrees').catch((err) => console.log('caught', err));
             let degreeData = degrees.data
             for(let i = 0; i < degreeData.length; i++){
                 let tempDegree = degreeData[i];

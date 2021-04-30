@@ -140,7 +140,7 @@ class EnrollmentTrendsGPD extends Component{
             body.append('courselist', this.state.selectedCourseData)
             body.append('semesters', this.state.selectedSemData)
 
-            var courses = await axios.post('/api/courses/courselist', body);
+            var courses = await axios.post('/api/courses/courselist', body).catch((err) => console.log('caught it'));
             let x = Array.from(courses.data);
 
             dept = this.state.selectedDepartment;

@@ -2,8 +2,8 @@ import axios from 'axios';
 import React, {Component} from 'react'
 import { Button, Card, Navbar, TextInput } from 'react-materialize'
 import { Redirect } from 'react-router';
-import ManageStudentsGPD from '../GPDScreens/ManageStudentsGPD';
 import jwt_decode from "jwt-decode";
+
 class LoginScreen extends Component{
     constructor(props){
         super(props);
@@ -23,11 +23,10 @@ class LoginScreen extends Component{
               "Content-Type": "application/json",
             },
           };  
-        let response = null;
-        const res = await axios.post("http://localhost:5000/api/auth/", body, header).then((res) =>  {
+        await axios.post("/api/auth/", body, header).then((res) =>  {
             if(res.data.hasOwnProperty("token")){
                 const payload = jwt_decode(res.data.token);
-                if(payload.isStudent == true){
+                if(payload.isStudent === true){
                     this.state.redirectStudent = true;
                     this.setState({isLogin: true, loginError: false, redirectURL:"/student_info_stu", email: this.state.email})
                     console.log(this.state.redirectURL)
