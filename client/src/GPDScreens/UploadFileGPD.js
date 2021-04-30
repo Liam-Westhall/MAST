@@ -1,5 +1,5 @@
-import React, { Component} from 'react'
-import {Button} from 'react-materialize'
+import React, { Component, Fragment} from 'react'
+import {Button, Card, Navbar, Tab, Icon, NavItem, Tabs} from 'react-materialize'
 import '../style.css'
 import NavbarGPD from './NavbarGPD';
 import {DropzoneAreaBase} from 'material-ui-dropzone'
