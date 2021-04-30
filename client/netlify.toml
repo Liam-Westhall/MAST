@@ -1,4 +1,9 @@
 [[redirects]]
+from = 'https://mast-null-pointers.netlify.app/api/*'
+to = 'https://mast-null-pointers.herokuapp.com/api/:splat'
+status = 200
+
+[[redirects]]
 from = '/*'
 to = '/index.html'
 status = 200
