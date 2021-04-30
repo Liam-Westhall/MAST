@@ -50,5 +50,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://mast-null-pointers.herokuapp.com"
+  "proxy": "https://mast-server.herokuapp.com"
 }
