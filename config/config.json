@@ -14,10 +14,7 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "b4c090ccca3c14",
-    "password": "9152273e",
-    "database": "heroku_b3977e42dfd0589",
-    "host": "us-cdbr-east-03.cleardb.com",
+    "use_env_variable": "JAWSDB_URL",
     "dialect": "mysql"
   }
 }
