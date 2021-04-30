@@ -1,0 +1,28 @@
+{
+    "name": "CE",
+    "version": "S21",
+    "requirements": {
+        "credit": ["Credits Required: 30", "Maximum of 6 credits between these 3 courses: ESE 597, ESE 599, ESE 698", "Maximum of 3 credits in ESE 698", "Maximum of 3 Credits in ESE 597"],
+        "no_thesis": {
+            "description": "At least one course must be taken from each of the following sub-areas",
+            "hardware": ["Hardware", "ESE/CSE 536", "ESE 545", "ESE 566", "ESE 587" ],
+            "networking": ["Networking", "ESE 505", "ESE 506", "ESE 546", "ESE 548"],
+            "cad": ["CAD and VLSI", "ESE 507", "ESE 530", "ESE 549", "ESE 555", "ESE 556", "ESE 575"],
+            "description_2": "At least 2 courses must be taken from this sub-area:",
+            "theory": ["Theory and Software", "ESE 501", "ESE 533", "ESE 534", "ESE 543", "ESE 554", "ESE 558", "ESE 588", "ESE 589", "CSE 506", "CSE 526", "CSE 548/AMS 542"],
+            "lecture": "Minimum of 3 lecture courses required",
+            "other": "At least one (maximum 3) credits of ESE 597"
+        },
+        "thesis": {
+            "description": "At least one course must be taken from each of the following sub-areas",
+            "hardware": ["Hardware", "ESE/CSE 536", "ESE 545", "ESE 566", "ESE 587" ],
+            "networking": ["Networking", "ESE 505", "ESE 506", "ESE 546", "ESE 548"],
+            "cad": ["CAD and VLSI", "ESE 507", "ESE 530", "ESE 549", "ESE 555", "ESE 556", "ESE 575"],
+            "description_2": "At least 2 courses must be taken from this sub-area:",
+            "theory": ["Theory and Software", "ESE 501", "ESE 533", "ESE 534", "ESE 543", "ESE 554", "ESE 558", "ESE 588", "ESE 589", "CSE 506", "CSE 526", "CSE 548/AMS 542"],
+            "lecture": "Minimum of 3 lecture courses required",
+            "other": "At least one (maximum 3) credits of ESE 597",
+            "thesis": "Thesis"
+        }
+    }
+}

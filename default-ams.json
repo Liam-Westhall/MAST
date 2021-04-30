@@ -1,0 +1,35 @@
+{
+    "name": "AMS",
+    "version": "S21",
+    "requirements": {
+        "tracks": {
+            "comp": {
+                "courses": ["AMS 501", "AMS 503", "AMS 510", "AMS 526", "AMS 527", "AMS 528", "AMS 595"],
+                "elective_creds": 12
+            },
+            "bio": {
+                "courses": ["AMS 507", "AMS 510", "MCB 520", "CHE 541", "AMS 531", "AMS 532", "AMS 533", "AMS 535", "AMS 537", "AMS 539", "CSE 549"],
+                "elective_creds": 9
+            },
+            "op": {
+                "courses": ["AMS 507", "AMS 510", "AMS 540", "AMS 550", "AMS 553/CSE 529", "AMS 570/AMS 571/AMS 572/AMS 573/AMS 574/AMS 575/AMS 576/AMS 577/AMS 578/AMS 579/AMS 580/AMS 581/AMS 582/AMS 583/AMS 584/AMS 585/AMS 586", "AMS 595"],
+                "elective_creds": 12
+            },
+            "stats": { 
+                "courses": ["AMS 507", "AMS 510", "AMS 570", "AMS 572", "AMS 573", "AMS 578", "AMS 582", "AMS 597", "Elective", "Elective"],
+                "elective_creds": 6
+            },
+            "quan": {
+                "courses": ["AMS 507", "AMS 510", "AMS 511", "AMS 512", "AMS 513", "AMS 514", "AMS 516", "AMS 517", "AMS 518", "AMS 572", "FIN 539", "Elective"],
+                "elective_creds": 3
+            }
+        },
+        "final_recommendation": {
+                "name": "Final Recommendation"
+            },
+        "time_limit": {
+                "name": "Time Limit",
+                "semesters": 2
+        }
+    }
+}
