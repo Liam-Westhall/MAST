@@ -1,9 +1,9 @@
 import React, { Component} from 'react'
 import NavbarGPD from './NavbarGPD'
-import {Navbar, Row, Column, Col, TextInput, Button, Table, Modal} from 'react-materialize'
+import { Row, Col, TextInput, Button, Table, Modal} from 'react-materialize'
 import axios from 'axios'
-import EditStudentGPD from './EditStudentGPD'
-import { Link, Redirect, useHistory } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
+
 class ManageStudentsGPD extends Component{
     constructor(props){
         super(props)
@@ -42,7 +42,7 @@ class ManageStudentsGPD extends Component{
 
         let values = this.state.query.split(" ")
 
-        if (this.state.query.length == 0) return 
+        if (this.state.query.length === 0) return 
 
         if(values.length > 2) {
             values = values.filter((item) => item.length > 0)
@@ -51,9 +51,9 @@ class ManageStudentsGPD extends Component{
         if(values.length > 2) return
         
 
-        let path = values.length == 1 ?  "/api/students/search?firstName=" + values[0] : "/api/students/search?firstName=" + values[0] + "&lastName=" + values[1]
+        let path = values.length === 1 ?  "/api/students/search?firstName=" + values[0] : "/api/students/search?firstName=" + values[0] + "&lastName=" + values[1]
         console.log("path is:::", path)
-        let res = await axios.get(path)
+        let res = await axios.get(path).catch((err) => console.log('caught', err));
         
         this.setState({students: res.data})
     }
@@ -94,7 +94,7 @@ class ManageStudentsGPD extends Component{
         }
 
 
-        let res = await axios.get(path)
+        let res = await axios.get(path).catch((err) => console.log('caught', err));
         this.setState({students: res.data})
 
     }
@@ -116,25 +116,25 @@ class ManageStudentsGPD extends Component{
               "Content-Type": "application/json",
             },
           };    
-        await axios.post("http://localhost:5000/api/add_student/", body, header).catch((error) => console.log(error));
+        await axios.post("/api/add_student/", body, header).catch((error) => console.log(error));
         this.loadStudents()
     }
 
     deleteStudentCallback = () => {
         let body = []
-        axios.post("http://localhost:5000/api/students/delete_all", body).catch((error) => console.log(error));
+        axios.post("/api/students/delete_all", body).catch((error) => console.log(error));
         this.setState({students: []});
     }
 
     editStudent = async (student) => {
         let body = {id: student.sbuID};
         console.log(body);
-        let res = await axios.post('api/comments', body).then((res) => this.setState({comments: res.data, currentEditStudent: student, editStudent: true})).catch((err) => console.log(err));
+        await axios.post('/api/comments', body).then((res) => this.setState({comments: res.data, currentEditStudent: student, editStudent: true})).catch((err) => console.log(err));
         console.log(this.state.comments);
     }
 
     loadStudents = async () => {
-        var students = await axios.get('/api/students')
+        var students = await axios.get('/api/students').catch((err) => console.log('caught', err));
         console.log(students.data)
         this.setState({students: students.data})
     }

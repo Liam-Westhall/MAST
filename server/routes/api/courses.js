@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
                 [Sequelize.fn('DISTINCT', Sequelize.col('courseNumber')), "courseNumber"],
                 "department"
             ]
-        })
+        }).catch((err) => console.log('caught it'));
         res.send(courses);
     } catch (error) {
         console.log(error)
@@ -36,7 +36,7 @@ router.post('/courselist', async (req, res) => {
                 semester: {[Op.in]: semesters.split(',') }
             },
             raw: true
-        })
+        }).catch((err) => console.log('caught it'));
 
         res.send(courses)
     } catch (error) {
@@ -55,7 +55,7 @@ router.post('/getgrades', async (req, res) => {
             where: {
                 StudentId: id
             }
-        });
+        }).catch((err) => console.log('caught it'));
         res.send(grades)
     } catch(error) {
         console.log(error)

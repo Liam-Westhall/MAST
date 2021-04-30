@@ -6,7 +6,7 @@ const {Student, User, sequelize, Sequelize, Comment} = require('../../models')
 
 router.get('/', async (req, res) => {
 
-    var students = await Student.findAll({include:[User]})
+    var students = await Student.findAll({include:[User]}).catch((err) => console.log('caught it'));
     res.send(students)
 })
 
@@ -27,7 +27,7 @@ router.get('/search?', async (req, res) => {
     }
     try {
 
-        var students = await Student.findAll({include: [{model: User, where: user_obj }], where: student_obj })
+        var students = await Student.findAll({include: [{model: User, where: user_obj }], where: student_obj }).catch((err) => console.log('caught it'));
         res.send(students)
         
     }catch (err) {
@@ -39,9 +39,9 @@ router.get('/search?', async (req, res) => {
 
 router.post('/find_student', async (req, res) => {
     const {email} = req.body;
-    var user = await User.findOne({where: {email: email}});
-    var student = await Student.findOne({where: {UserID: user.id}});
-    var comments = await Comment.findAll({where: {StudentID: student.id}})
+    var user = await User.findOne({where: {email: email}}).catch((err) => console.log('caught it'));
+    var student = await Student.findOne({where: {UserID: user.id}}).catch((err) => console.log('caught it'));
+    var comments = await Comment.findAll({where: {StudentID: student.id}}).catch((err) => console.log('caught it'));
     var people = {user: user, student: student, comments: comments};
     res.send(people);
 })
@@ -49,7 +49,7 @@ router.post('/find_student', async (req, res) => {
 router.post('/delete_all', async (req, res) => {
     await Student.destroy({
         truncate: true
-    });
+    }).catch((err) => console.log('caught it'));
 }
 )
 
@@ -65,7 +65,7 @@ router.get('/new', async (req, res) => {
             track: "Security",
             entrySemester: "2021",
             UserId: "1"
-        })
+        }).catch((err) => console.log('caught it'));
         
 
     }catch (err) {

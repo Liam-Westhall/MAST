@@ -1,7 +1,8 @@
 import React, { Component} from 'react'
-import {Button, Card, Navbar, Tab, Icon, NavItem, Tabs} from 'react-materialize'
+import {Navbar, NavItem} from 'react-materialize'
 import '../style.css'
-import {Link, Redirect} from 'react-router-dom'
+import {Link} from 'react-router-dom'
+
 class NavbarGPD extends Component{
     constructor(props){
         super(props);

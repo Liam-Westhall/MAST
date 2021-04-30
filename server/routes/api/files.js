@@ -27,19 +27,19 @@ router.post('/degree_req', async (req, res) => {
         console.log(degree_json);
         console.log(degree_json.name);
         
-        let name_check = await Degree.findOne({where: {department: degree_json.name}});
+        let name_check = await Degree.findOne({where: {department: degree_json.name}}).catch((err) => console.log('caught it'));
 
         if(name_check){
             await Degree.update({
                 json: degree_json
-               }, {where : {department: degree_json.name}})
+               }, {where : {department: degree_json.name}}).catch((err) => console.log('caught it'));
         }
         else{
             await Degree.create({
                 department: degree_json.name,
                 track: degree_json.version,
                 json: degree_json
-            })
+            }).catch((err) => console.log('caught it'));
         }
     }
     catch (error) {
@@ -68,7 +68,7 @@ router.post('/course', async (req, res) => {
         bufferStream.pipe(csv())
         .on('data', (data) => results.push(data))
         .on('end', async () => {
-            await Course.destroy({truncate: true})
+            await Course.destroy({truncate: true}).catch((err) => console.log('caught it'));
             for (const data in results){
 
                 console.log(data)
@@ -85,7 +85,7 @@ router.post('/course', async (req, res) => {
                     description: '',
                     credits: 0,
                     totalStudents: 0
-                })
+                }).catch((err) => console.log('caught it'));
 
             }
            
@@ -125,12 +125,12 @@ router.post('/student_data', async (req, res) => {
             
             for (const data in results){
 
-                let check = await User.findOne({where : {email: results[data].email}})
+                let check = await User.findOne({where : {email: results[data].email}}).catch((err) => console.log('caught it'));
 
                 if (check) {
-                    let previousStudentProfile = await Student.findOne({where: {UserId: check.id}})
-                    await check.destroy()
-                    await previousStudentProfile.destroy()
+                    let previousStudentProfile = await Student.findOne({where: {UserId: check.id}}).catch((err) => console.log('caught it'));
+                    await check.destroy().catch((err) => console.log('caught it'));
+                    await previousStudentProfile.destroy().catch((err) => console.log('caught it'));
                 }
 
                 console.log(data)
@@ -143,7 +143,7 @@ router.post('/student_data', async (req, res) => {
                     email: results[data].email,
                     password: results[data].password,
                     isStudent: true
-                });
+                }).catch((err) => console.log('caught it'));
 
                 await Student.create({
                     sbuID: results[data].sbu_id,
@@ -156,7 +156,7 @@ router.post('/student_data', async (req, res) => {
                     graduation_year: results[data].graduation_year,
                     UserId: user.id
                     
-                });
+                }).catch((err) => console.log('caught it'));
 
             }
            
@@ -256,7 +256,7 @@ router.post('/student_grades', async (req, res) => {
                     year: grades_json.semesters[sem][course].year,
                     grade: grades_json.semesters[sem][course].grade,
                     section: 0
-                });
+                }).catch((err) => console.log('caught it'));
             }
         }
     }catch (error) {

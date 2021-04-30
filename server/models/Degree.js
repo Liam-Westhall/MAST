@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
                 }
         },
         json: {
-            type: DataTypes.JSON,
+            type: DataTypes.STRING,
             allowNull: false,
         }
         }, {timestamps: false})

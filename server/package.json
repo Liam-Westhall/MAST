@@ -24,6 +24,7 @@
     "mysql2": "^2.2.5",
     "nodemon": "^2.0.7",
     "path": "^0.12.7",
+    "pdfreader": "^1.2.8",
     "sequelize": "^6.6.2"
   }
 }

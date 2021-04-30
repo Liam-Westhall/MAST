@@ -5,7 +5,7 @@ const {User} = require('../../models')
 
 router.get('/', async (req, res) => {
 
-    var users = await User.findAll()
+    var users = await User.findAll().catch((err) => console.log('caught it'));
     res.send(users)
 })
 
@@ -20,7 +20,7 @@ router.get('/new', async (req, res) => {
             email: "johnDoe@mail.com",
             password: "123",
             isStudent: false
-        })
+        }).catch((err) => console.log('caught it'));
         
 
     }catch (err) {

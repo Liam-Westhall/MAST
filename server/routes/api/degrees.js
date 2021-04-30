@@ -6,7 +6,7 @@ const {Student, User, sequelize, Sequelize, Degree} = require('../../models')
 
 router.get('/', async (req, res) => {
 
-    var degrees = await Degree.findAll()
+    var degrees = await Degree.findAll().catch((err) => console.log('caught it'));
     res.send(degrees)
 })
 

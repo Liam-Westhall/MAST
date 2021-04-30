@@ -15,13 +15,13 @@ router.post('/', async(req, res) => {
             lastName: lastName,
             entrySemester: entrySemester,
             email: email
-           }, {where : {id: userID}})
+           }, {where : {id: userID}}).catch((err) => console.log('caught it'));
 
         let studenttemp = await Student.update({
             department: major,
             track: track,
             sbuID: sbuID
-           }, {where : {id: studentID}})
+           }, {where : {id: studentID}}).catch((err) => console.log('caught it'));
 
         res.send({usertemp});
     }

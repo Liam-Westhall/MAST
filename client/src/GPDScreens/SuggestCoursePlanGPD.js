@@ -41,10 +41,10 @@ class SuggestCoursePlanGPD extends Component {
               "Content-Type": "application/json",
             },
           }; 
-        let res = await axios.post("http://localhost:5000/api/courses/getgrades").catch((err) => console.log(err));
+        let res = await axios.post("/api/courses/getgrades").catch((err) => console.log(err));
         return res.data;
     }
-
+/*
     calcGPA = async () => {
         //get grades from databse
         let grades4GPA = this.getGrades
@@ -138,11 +138,11 @@ class SuggestCoursePlanGPD extends Component {
             return finalGPA
         }
     }
-
+*/
 
     //gets all the degree requirements for a specific major/track
     getDegreeRequirements = async () => {
-        let degrees = await axios.get('api/degrees');
+        let degrees = await axios.get('api/degrees').catch((err) => console.log('caught it'));
         let degreeData = degrees.data
         for(let i = 0; i < degreeData.length; i++){
             let tempDegree = degreeData[i];
