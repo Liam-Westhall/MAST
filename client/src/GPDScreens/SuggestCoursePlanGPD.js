@@ -292,7 +292,7 @@ class SuggestCoursePlanGPD extends Component {
 
     //gets all courses from the database
     getAllCourses = async () => {
-        let courses = await axios.get("http://localhost:5000/api/courses/");
+        let courses = await axios.get("/api/courses/").catch((err) => console.log('caught', err));
         let courseData = courses.data
         let courseNames = []
         for(var course in courseData){
