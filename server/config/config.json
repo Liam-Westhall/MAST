@@ -1,6 +1,6 @@
 {
   "development": {
-    "username": "cse416",
+    "username": "root",
     "password": "cse416",
     "database": "mast",
     "host": "localhost",
