@@ -15,7 +15,7 @@ router.get('/search?', async (req, res) => {
     var student_obj = {}
     var user_obj = {}
     var filters = req.query
-
+   
     for (const [key, value] of Object.entries(filters)) {
     
         if (key == "firstName" || key == "lastName" || key == "email"){
