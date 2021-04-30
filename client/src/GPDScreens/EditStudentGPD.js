@@ -153,19 +153,54 @@ class EditStudentGPD extends Component{
         this.getDegreeRequirements();
     }
 
-    checkCompletedCourse = (course) => {
+    checkCompletedCourse = async (course) => {
         let header = {
             headers: {
               "Content-Type": "application/json",
             },
           }; 
         let courseStrArr = course.split("/")
+        console.log(courseStrArr);
+        console.log("Haha");
         for(let i = 0; i < courseStrArr.length; i++){
-            let courseStrSpace = courseStrAarr[i].split(" ");
-            let body = {department: courseStrSpace[0], courseNum: parseInt(courseStrSpace[1]), studentID: this.state.studentID}
-            let grade = await axios.post()
+            let courseStrSpace = courseStrArr[i].split(" ");
+            let courseNum = parseInt(courseStrSpace[1]);
+            let department = courseStrSpace[0]
+            let body = {department: department, courseNum: courseNum, studentID: this.state.studentID}
+            console.log(body)
+            let res = await axios.post("/api/courses/checkcompleted", body, header).catch((err) => console.log('caught error'));
+            let grade = res.data
+            if(grade != ""){
+                if(grade[0].grade[0] == "A" || grade[0].grade[0] == "B") {
+                    return true;
+                }
+                else if(grade[0].grade[0] == "C"){
+                    if(grade[0].grade.length > 1){
+                        if(grade[0].grade[1] != "-"){
+                            return true;
+                        }
+                    }
+                    else{
+                        return true;
+                    }
+                }
+            }
         }
-        
+        return false;
+    }
+
+    checkCourseInProgress  = (arr, course) => {
+        console.log("Yes")
+        let courseStrArr = course.split("/")
+        for(let i = 0; i < courseStrArr.length; i++){
+            for(let j = 0; j < arr.length; j++){
+                let courseStr = arr[j].department + " " + arr[j].courseNum;
+                if(courseStrArr[i] == courseStr){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     render(){
@@ -184,9 +219,17 @@ class EditStudentGPD extends Component{
             if(this.state.track === "Computational Applied Mathematics"){
                 dropdown = <div>
                     <Collapsible class="disabled">
-                        {this.state.degreeData.requirements.tracks.comp.courses.map((course) => (
-                            <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
-                        ))}
+                        {this.state.degreeData.requirements.tracks.comp.courses.map(course => {
+                            if(this.checkCompletedCourse(course) == true){
+                                return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                            else if(this.checkCourseInProgress == true){
+                                return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                            else{
+                                return <CollapsibleItem icon={<Checkbox disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                        })}
                         <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
                     </Collapsible>
                 </div>;
