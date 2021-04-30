@@ -64,7 +64,7 @@ module.exports = (sequelize, DataTypes) => {
         
         Student.hasMany(models.Student_Course, {
             foreignKey: {
-                allowNull: false
+                allowNull: true
             }
         }),
         
