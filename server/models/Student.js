@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         coursePlan: {
             type: DataTypes.JSON,
-            allowNull: true,
+            allowNull: false,
         }
         
     }, {timestamps: false})
