@@ -101,8 +101,6 @@ router.post('/course', async (req, res) => {
 
 
 router.post('/student_data', async (req, res) => {
-
-
     //console.log(req.body.file)
     // console.log(req.files.file)
 
