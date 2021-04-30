@@ -63,4 +63,22 @@ router.post('/getgrades', async (req, res) => {
     }
 })
 
+router.post('/checkcompleted', async (req, res) => {
+    try{
+        const {department, courseNum, studentID} = req.body;
+
+        let grade = await Student_Course.findOne({
+            where: {
+                StudentId: studentID,
+                department: department,
+                course_num: courseNum
+            }
+        }).catch((err) => console.log('caught it'))
+        res.send(grade)
+    } catch(error) {
+        console.log(error)
+        res.status(500).send("CHECK COMPLETED ERR")
+    }
+})
+
 module.exports = router;

@@ -153,11 +153,25 @@ class EditStudentGPD extends Component{
         this.getDegreeRequirements();
     }
 
+    checkCompletedCourse = (course) => {
+        let header = {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }; 
+        let courseStrArr = course.split("/")
+        for(let i = 0; i < courseStrArr.length; i++){
+            let courseStrSpace = courseStrAarr[i].split(" ");
+            let body = {department: courseStrSpace[0], courseNum: parseInt(courseStrSpace[1]), studentID: this.state.studentID}
+            let grade = await axios.post()
+        }
+        
+    }
+
     render(){
         let dropdown;
         var arrCourses = [];
         let tempCoursePlan = this.state.coursePlan
-        
         Object.keys(tempCoursePlan).forEach(function (key){
             Object.keys(tempCoursePlan[key]).forEach(function (key2){
                     Object.keys(tempCoursePlan[key][key2]).forEach(function (key3){
