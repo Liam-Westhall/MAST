@@ -1,4 +1,4 @@
-import React, { Component} from 'react'
+import React, { Component, Fragment} from 'react'
 import {Button, Card, Navbar, Tab, Icon, NavItem, Tabs} from 'react-materialize'
 import '../style.css'
 import {Link} from 'react-router-dom'
@@ -13,6 +13,7 @@ class UploadFileGPD extends Component{
         super(props);
         this.state = {
             files: [],
+            studentCoursePlan: [],
             upload_type: '',
 
             departmentOptions: [
@@ -75,12 +76,17 @@ class UploadFileGPD extends Component{
     }
 
     onSubmitStudentData = async () => {
-        if (this.state.files.length < 1) return 
+        if (this.state.files.length < 1 || this.state.studentCoursePlan.length < 1) return 
         const body = new formData()
         body.append('studentProfile', this.state.files[0])
+        // body.append("studentCoursePlan", this.state.studentCoursePlan[0])
 
         console.log(body)
         await axios.post("/api/uploadfiles/student_data", body).catch((error) => console.log(error));
+
+        const course_data_body = new formData()
+        course_data_body.append("studentCoursePlan", this.state.studentCoursePlan[0])
+        await axios.post("/api/uploadfiles/student_course_data", course_data_body).catch((error) => console.log(error));
     }
     
     onSubmitStudentGrades = async () => {
@@ -127,10 +133,26 @@ class UploadFileGPD extends Component{
                         <option value="StudentGrades">Student Grades</option>
                     </select>
                 </div>
+
+            {this.state.upload_type === "StudentData" ? 
+            
+            <Fragment> 
+                 <h1>Student Data: </h1>
+                <DropzoneAreaBase
+                onDrop={(files) => {this.setState({files: files})}}
+                maxFileSize={7000000}            
+            > </DropzoneAreaBase>
+                <h1>Course Data: </h1>
+                <DropzoneAreaBase
+                onDrop={(files) => {this.setState({studentCoursePlan: files})}}
+                maxFileSize={7000000}            
+            > </DropzoneAreaBase>
+            </Fragment> : 
+            
             <DropzoneAreaBase
-            onDrop={(files) => {this.setState({files: files})}}
-            maxFileSize={7000000}            
-            ></DropzoneAreaBase>
+                onDrop={(files) => {this.setState({files: files})}}
+                maxFileSize={7000000}            
+            ></DropzoneAreaBase>}
             <br></br>
             <Button onClick={() => this.onSubmit()} 
             disabled={this.state.upload_type === "CourseInformation" && (this.state.selectedDepartment.length === 0 || this.state.selectedSemester.length === 0)} >Submit File</Button>

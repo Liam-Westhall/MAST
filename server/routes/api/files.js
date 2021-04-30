@@ -109,22 +109,26 @@ router.post('/student_data', async (req, res) => {
     try{
 
         if(!req.files) res.status(500).send({error: "No file"})
+
+        console.log(req.files)
         const studentProfile = req.files.studentProfile
-        //const studentCoursePlan = req.files.studentCoursePlan
+        const studentCoursePlan = req.files.studentCoursePlan
         const results = []
+        const course_results = []
         const departments = ['CSE', 'AMS', 'CE', 'BMI']
 
 
         var studentProfile_bufferStream = new stream.PassThrough()
         studentProfile_bufferStream.end(studentProfile.data)
-
+        console.log("Updating Student data...")
         studentProfile_bufferStream.pipe(csv())
         .on('data', (data) => {console.log(data) 
             results.push(data)})
         .on('end', async () => {
             
             for (const data in results){
-
+                console.log("CURRENT ITEM")
+                console.log(results[data])
                 let check = await User.findOne({where : {email: results[data].email}})
 
                 if (check) {
@@ -154,50 +158,143 @@ router.post('/student_data', async (req, res) => {
                     requirement_version_year: results[data].requirement_version_year,
                     graduation_semester: results[data].graduation_semester,
                     graduation_year: results[data].graduation_year,
-                    UserId: user.id
+                    UserId: user.id,
+                    coursePlan: {"studentID": results[data].sbu_id,
+                                "semesters": {}
+                            }
                     
                 });
 
             }
            
-        });
+        })
 
-        // results = []
+        // console.log("Updating course info...")
+        // // while(results.length > 0) {
+        // //     results.pop();
+        // // }
+
         // var studentCourse_bufferStream = new stream.PassThrough()
         // studentCourse_bufferStream.end(studentCoursePlan.data)
 
-        // studentCourse_bufferStream.pipe(csv())
-        // .on('data', (data) => results.push(data))
+        // await studentCourse_bufferStream.pipe(csv())
+        // .on('data', (data) => course_results.push(data))
         // .on('end', async () => {
             
-        //     for (const data in results){
+        //     for (const data in course_results){
 
-        //         var student = await Student.findOne({where: {sbu_id: results[data].sbu_id}})
+        //         var semesterExists = false;
+
+        //         var student = await Student.findOne({where: {sbu_id: course_results[data].sbu_id}})
+
+        //         var sem = (course_results[data].entry_semester === 'Fall' ? 'F' + course_results[data].entry_year.slice(-2) 
+        //         : 'S' + course_results[data].entry_year.slice(-2))
 
         //         if (!student) throw 'Student not found!'
-                
-        //         var courses = await student.getCourses()
-        //         var course = await courses.get(Student_Course, {where: {
-        //             department: results[data].department, 
-        //             course_num: results[data].course_num,
 
+        //         var coursePlan = student.coursePlan
+
+        //         // var course = await courses.get(Student_Course, {where: {
+        //         //     department: course_results[data].department, 
+        //         //     course_num: course_results[data].course_num,
+
+        //         // }})
+
+        //         semesterExists = coursePlan["semester"][sem] ?  true : false;
+
+        //         if(semesterExists){
+        //             var updated = false;
+
+        //             for(var course in coursePlan["semester"][sem]){
+
+        //                 if(course.department == course_results[data].department && course.courseNum == course_results[data].course_num){
+        //                     course.semester = course_results[data].semester
+        //                     course.year = course_results[data].year
+        //                     course.grade = course_results[data].grade
+        //                     updated = true;
+        //                 }
+
+        //             }
+
+        //             if(!updated){
+        //                 var num_of_courses = Object.keys(coursePlan["semester"][sem]).length
+
+        //                 coursePlan["semester"][sem][num_of_courses - 1] = {
+
+        //                     "department": course_results[data].department,
+        //                     "courseNum": course_results[data].course_num,
+        //                     "credits": -1,
+        //                     "semester": course_results[data].semester,
+        //                     "year": course_results[data].year,
+        //                     "grade": course_results[data].grade
+
+        //                 }
+
+        //             }
+        //         }else {
+                    
+        //             coursePlan["semester"][sem] = {
+        //                 "0": {
+        //                     "department": course_results[data].department,
+        //                     "courseNum": course_results[data].course_num,
+        //                     "credits": -1,
+        //                     "semester": course_results[data].semester,
+        //                     "year": course_results[data].year,
+        //                     "grade": course_results[data].grade
+        //                 }
+        //             }
+
+        //         }
+
+
+        //         var student_course= Student_Course.findOne({where: {
+        //             StudentId: course_results[data].sbu_id,
+        //             department: course_results[data].department,
+        //             course_num: course_results[data].course_num,
         //         }})
 
-        //         if(course.length > 0) {
-        //             //update course
-        //         }else {
-        //             let newCourse = await Student_Course.create({
-        //                 department: results[data].department, 
-        //                 course_num: results[data].course_num,
-        //                 semester: results[data].semester,
-        //                 year: results[data].year,
-        //                 grade: results[data].grade,
-        //                 section: results[data].section
+        //         if(student_course){
+        //             await student_course.update({
+        //                 StudentId: course_results[data].sbu_id,
+        //                 department: course_results[data].department,
+        //                 course_num: course_results[data].course_num,
+        //                 semester: course_results[data].semester,
+        //                 year: course_results[data].year,
+        //                 grade: course_results[data].grade,
+        //                 section: course_results[data].section
         //             })
-
-        //             await courses.add(newCourse)
+        //         }else {
+        //                 let newCourse = await Student_Course.create({
+        //                     StudentId: course_results[data].sbu_id,
+        //                     department: course_results[data].department, 
+        //                     course_num: course_results[data].course_num,
+        //                     semester: course_results[data].semester,
+        //                     year: course_results[data].year,
+        //                     grade: course_results[data].grade,
+        //                     section: course_results[data].section
+        //          })
         //         }
+    
+
+        //         // if(course.length > 0) {
+        //         //     //update course
+        //         // }else {
+        //         //     let newCourse = await Student_Course.create({
+        //         //         department: results[data].department, 
+        //         //         course_num: results[data].course_num,
+        //         //         semester: results[data].semester,
+        //         //         year: results[data].year,
+        //         //         grade: results[data].grade,
+        //         //         section: results[data].section
+        //         //     })
+
+        //         //     await courses.add(newCourse)
+        //         // }
+
+        //         student.update({coursePlan: coursePlan})
         //     }
+
+
            
         // });
 
@@ -211,6 +308,154 @@ router.post('/student_data', async (req, res) => {
         res.status(500).send("error importing student file")
     }
 })
+
+
+
+router.post('/student_course_data', async (req, res) => {
+
+
+    //console.log(req.body.file)
+    // console.log(req.files.file)
+
+    try{
+
+        if(!req.files) res.status(500).send({error: "No file"})
+
+        console.log(req.files)
+        const studentCoursePlan = req.files.studentCoursePlan
+        const course_results = []
+        const departments = ['CSE', 'AMS', 'CE', 'BMI']
+
+
+        
+
+        console.log("Updating course info...")
+        // while(results.length > 0) {
+        //     results.pop();
+        // }
+
+        var studentCourse_bufferStream = new stream.PassThrough()
+        studentCourse_bufferStream.end(studentCoursePlan.data)
+
+        await studentCourse_bufferStream.pipe(csv())
+        .on('data', (data) => course_results.push(data))
+        .on('end', async () => {
+            
+            for (const data in course_results){
+                console.log(course_results[data])
+                var semesterExists = false;
+
+                var student = await Student.findOne({where: {sbuID: course_results[data].sbu_id}})
+
+                var sem = (course_results[data].semester === 'Fall' ? 'F' + course_results[data].year.slice(-2) 
+                : 'S' + course_results[data].year.slice(-2))
+
+                if (!student) throw 'Student not found!'
+
+                var coursePlan = student.coursePlan
+
+
+                semesterExists = coursePlan["semesters"][sem] ?  true : false;
+
+                if(semesterExists){
+                    var updated = false;
+
+                    for(var course in coursePlan["semesters"][sem]){
+
+                        if(course.department == course_results[data].department && course.courseNum == course_results[data].course_num){
+                            course.semester = course_results[data].semester
+                            course.year = course_results[data].year
+                            course.grade = course_results[data].grade
+                            updated = true;
+                        }
+
+                    }
+
+                    if(!updated){
+                        var num_of_courses = Object.keys(coursePlan["semesters"][sem]).length
+
+                        coursePlan["semesters"][sem][num_of_courses - 1] = {
+
+                            "department": course_results[data].department,
+                            "courseNum": course_results[data].course_num,
+                            "credits": -1,
+                            "semester": course_results[data].semester,
+                            "year": course_results[data].year,
+                            "grade": course_results[data].grade
+
+                        }
+
+                    }
+                }else {
+                    
+                    coursePlan["semesters"][sem] = {
+                        "0": {
+                            "department": course_results[data].department,
+                            "courseNum": course_results[data].course_num,
+                            "credits": -1,
+                            "semester": course_results[data].semester,
+                            "year": course_results[data].year,
+                            "grade": course_results[data].grade
+                        }
+                    }
+
+                }
+
+
+                var student_course= Student_Course.findOne({where: {
+                    StudentId: course_results[data].sbu_id,
+                    department: course_results[data].department,
+                    course_num: course_results[data].course_num,
+                }})
+
+                if(student_course){
+                    await Student_Course.update({
+                        StudentId: course_results[data].sbu_id,
+                        department: course_results[data].department,
+                        course_num: course_results[data].course_num,
+                        semester: course_results[data].semester,
+                        year: course_results[data].year,
+                        grade: course_results[data].grade,
+                        section: course_results[data].section
+                    }, {where: {
+                        StudentId: course_results[data].sbu_id,
+                        department: course_results[data].department,
+                        course_num: course_results[data].course_num,
+                    }})
+                }else {
+                        let newCourse = await Student_Course.create({
+                            StudentId: course_results[data].sbu_id,
+                            department: course_results[data].department, 
+                            course_num: course_results[data].course_num,
+                            semester: course_results[data].semester,
+                            year: course_results[data].year,
+                            grade: course_results[data].grade,
+                            section: course_results[data].section
+                 })
+                }
+    
+
+
+                await Student.update({coursePlan: coursePlan}, {where: {sbuID: course_results[data].sbu_id}})
+            }
+
+
+           
+        });
+
+
+
+        
+        
+        res.send("Succesful")
+    }catch (error) {
+        console.log(error)
+        res.status(500).send("error importing student file")
+    }
+})
+
+
+
 
 cleanData = (text, department) => {
     var isdept = false;
