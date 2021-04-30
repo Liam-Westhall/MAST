@@ -46,42 +46,51 @@ class SuggestCoursePlanGPD extends Component {
     }
 
     calcGPA = async () => {
+        //get grades from databse
         let grades4GPA = this.getGrades
         let totalCredits = 0
+        let finalGPA = 0
+        //loop through and get total credits
         for(let i = 0; i < grades4GPA.length; i++){
             totalCredits += grades4GPA[i].credits
         }
+        //loop through grades that are length two A-, b+, c+ etc...
         for(let i = 0; i < grades4GPA.length; i++){
             if(grades4GPA[i].grade.length == 2){
                 if(grades4GPA[i].grade.charAt(0) == "A"){
                     if(grades4GPA[i].grade.charAt(1) == "-"){
                         let gradeValue = 3.67
                         let creditValue = grades4GPA[i].credits
-                        GPAValue = gradeValue * creditValue
+                        let GPAValue = gradeValue * creditValue
+                        finalGPA += GPAValue
                     }
                 }
                 if(grades4GPA[i].grade.charAt(0) == "B"){
                     if(grades4GPA[i].grade.charAt(1) == "+"){
                         let gradeValue = 3.33
                         let creditValue = grades4GPA[i].credits
-                        GPAValue = gradeValue * creditValue
+                        let GPAValue = gradeValue * creditValue
+                        finalGPA += GPAValue
                     }
                     if(grades4GPA[i].grade.charAt(1) == "-"){
                         let gradeValue = 2.67
                         let creditValue = grades4GPA[i].credits
-                        GPAValue = gradeValue * creditValue
+                        let GPAValue = gradeValue * creditValue
+                        finalGPA += GPAValue
                     }
                 }
                 if(grades4GPA[i].grade.charAt(0) == "C"){
                     if(grades4GPA[i].grade.charAt(1) == "+"){
                         let gradeValue = 2.33
                         let creditValue = grades4GPA[i].credits
-                        GPAValue = gradeValue * creditValue
+                        let GPAValue = gradeValue * creditValue
+                        finalGPA += GPAValue
                     }
                     if(grades4GPA[i].grade.charAt(1) == "-"){
                         let gradeValue = 1.67
                         let creditValue = grades4GPA[i].credits
-                        GPAValue = gradeValue * creditValue
+                        let GPAValue = gradeValue * creditValue
+                        finalGPA += GPAValue
                     }
                     
                 }
@@ -89,35 +98,44 @@ class SuggestCoursePlanGPD extends Component {
                     if(grades4GPA[i].grade.charAt(1) == "+"){
                         let gradeValue = 1.33
                         let creditValue = grades4GPA[i].credits
-                        GPAValue = gradeValue * creditValue
+                        let GPAValue = gradeValue * creditValue
+                        finalGPA += GPAValue
                     }
                 }
             }
+            //Loop through classes get their grade and credit and mulitply for GPA Value
             if(grades4GPA[i].grade.charAt(0) == "A"){
                 let gradeValue = 4.0
                 let creditValue = grades4GPA[i].credits 
-                GPAValue = gradeValue * creditValue
+                let GPAValue = gradeValue * creditValue
+                finalGPA += GPAValue
             }
             if(grades4GPA[i].grade.charAt(0) == "B"){
                 let gradeValue = 3.0
-                let creditValue = grades[i].credits 
-                GPAValue = gradeValue * creditValue
+                let creditValue = grades4GPA[i].credits 
+                let GPAValue = gradeValue * creditValue
+                finalGPA += GPAValue
             }
             if(grades4GPA[i].grade.charAt(0) == "C"){
                 let gradeValue = 2.0
                 let creditValue = grades[i].credits 
-                GPAValue = gradeValue * creditValue
+                let GPAValue = gradeValue * creditValue
+                finalGPA += GPAValue
             }
             if(grades4GPA[i].grade.charAt(0) == "D"){
                 let gradeValue = 1.0
                 let creditValue = grades[i].credits
-                GPAValue = gradeValue * creditValue
+                let GPAValue = gradeValue * creditValue
+                finalGPA += GPAValue
             }
             if(grades4GPA[i].grade.charAt(0) == "F"){
                 let gradeValue = 0.0
                 let creditValue = grades[i].credits
-                GPAValue = gradeValue * creditValue
+                let GPAValue = gradeValue * creditValue
+                finalGPA += GPAValue
             }
+            finalGPA = finalGPA / totalCredits //get the actual final GPA
+            return finalGPA
         }
     }
 
