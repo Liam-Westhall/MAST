@@ -23,8 +23,8 @@ class EditStudentGPD extends Component{
                 "semesters": {
                     "F17": {
                         "0": {
-                            "department": "CSE",
-                            "courseNum": "502",
+                            "department": "AMS",
+                            "courseNum": "501",
                             "credits": 3,
                             "semester": "Fall",
                             "year": "2017",
@@ -223,8 +223,8 @@ class EditStudentGPD extends Component{
                             if(this.checkCompletedCourse(course) == true){
                                 return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
                             }
-                            else if(this.checkCourseInProgress == true){
-                                return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
+                            else if(this.checkCourseInProgress(arrCourses, course) == true){
+                                return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
                             }
                             else{
                                 return <CollapsibleItem icon={<Checkbox disabled id={course}/>} header={course}></CollapsibleItem>
