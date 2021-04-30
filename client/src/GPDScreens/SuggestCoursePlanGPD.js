@@ -45,6 +45,83 @@ class SuggestCoursePlanGPD extends Component {
         return res.data;
     }
 
+    calcGPA = async () => {
+        let grades4GPA = this.getGrades
+        let totalCredits = 0
+        for(let i = 0; i < grades4GPA.length; i++){
+            totalCredits += grades4GPA[i].credits
+        }
+        for(let i = 0; i < grades4GPA.length; i++){
+            if(grades4GPA[i].grade.length == 2){
+                if(grades4GPA[i].grade.charAt(0) == "A"){
+                    if(grades4GPA[i].grade.charAt(1) == "-"){
+                        let gradeValue = 3.67
+                        let creditValue = grades4GPA[i].credits
+                        GPAValue = gradeValue * creditValue
+                    }
+                }
+                if(grades4GPA[i].grade.charAt(0) == "B"){
+                    if(grades4GPA[i].grade.charAt(1) == "+"){
+                        let gradeValue = 3.33
+                        let creditValue = grades4GPA[i].credits
+                        GPAValue = gradeValue * creditValue
+                    }
+                    if(grades4GPA[i].grade.charAt(1) == "-"){
+                        let gradeValue = 2.67
+                        let creditValue = grades4GPA[i].credits
+                        GPAValue = gradeValue * creditValue
+                    }
+                }
+                if(grades4GPA[i].grade.charAt(0) == "C"){
+                    if(grades4GPA[i].grade.charAt(1) == "+"){
+                        let gradeValue = 2.33
+                        let creditValue = grades4GPA[i].credits
+                        GPAValue = gradeValue * creditValue
+                    }
+                    if(grades4GPA[i].grade.charAt(1) == "-"){
+                        let gradeValue = 1.67
+                        let creditValue = grades4GPA[i].credits
+                        GPAValue = gradeValue * creditValue
+                    }
+                    
+                }
+                if(grades4GPA[i].grade.charAt(0) == "D"){
+                    if(grades4GPA[i].grade.charAt(1) == "+"){
+                        let gradeValue = 1.33
+                        let creditValue = grades4GPA[i].credits
+                        GPAValue = gradeValue * creditValue
+                    }
+                }
+            }
+            if(grades4GPA[i].grade.charAt(0) == "A"){
+                let gradeValue = 4.0
+                let creditValue = grades4GPA[i].credits 
+                GPAValue = gradeValue * creditValue
+            }
+            if(grades4GPA[i].grade.charAt(0) == "B"){
+                let gradeValue = 3.0
+                let creditValue = grades[i].credits 
+                GPAValue = gradeValue * creditValue
+            }
+            if(grades4GPA[i].grade.charAt(0) == "C"){
+                let gradeValue = 2.0
+                let creditValue = grades[i].credits 
+                GPAValue = gradeValue * creditValue
+            }
+            if(grades4GPA[i].grade.charAt(0) == "D"){
+                let gradeValue = 1.0
+                let creditValue = grades[i].credits
+                GPAValue = gradeValue * creditValue
+            }
+            if(grades4GPA[i].grade.charAt(0) == "F"){
+                let gradeValue = 0.0
+                let creditValue = grades[i].credits
+                GPAValue = gradeValue * creditValue
+            }
+        }
+    }
+
+
     //gets all the degree requirements for a specific major/track
     getDegreeRequirements = async () => {
         let degrees = await axios.get('api/degrees');
@@ -63,6 +140,7 @@ class SuggestCoursePlanGPD extends Component {
             }
         }
     }
+//get_creditsd_reamining takes remaining courses paramter and gets the total credits of the courses and see how many credits they still need to take
 
     //compares grades with required courses for major and track to check what courses still need to be taken
     searchCoursesAMS = async (grades, required_courses, elective_credits) => {
@@ -116,7 +194,7 @@ class SuggestCoursePlanGPD extends Component {
 
     }
 
-    searchCoursesCSE = async () => {
+    searchCoursesCSE = async (grades, required_courses, elective_creditd) => {
 
     }
 
@@ -157,6 +235,15 @@ class SuggestCoursePlanGPD extends Component {
                 remaining_courses = this.searchCoursesAMS(grades, required_courses);
             }
         } 
+        if(this.state.major.replace(/ /g, '') == 'BMI'){
+
+        }
+        if(this.state.major.replace(/ /g, '') == 'CSE'){
+
+        }
+        if(this.state.major.replace(/ /g, '') == 'ESE'){
+
+        }
     }
 
     //gets the total credits from the remaining courses for the student to take
