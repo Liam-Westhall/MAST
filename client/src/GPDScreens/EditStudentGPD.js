@@ -18,6 +18,47 @@ class EditStudentGPD extends Component{
             entrySemester: this.props.location.state.currentEditStudent.entrySemester,
             track: this.props.location.state.currentEditStudent.track,
             sbuID: this.props.location.state.currentEditStudent.sbuID,
+            coursePlan: {
+                "studentID": 1,
+                "semesters": {
+                    "F17": {
+                        "0": {
+                            "department": "CSE",
+                            "courseNum": "502",
+                            "credits": 3,
+                            "semester": "Fall",
+                            "year": "2017",
+                            "grade": "B"
+                        },
+                        "1": {
+                            "department": "CSE",
+                            "courseNum": "503",
+                            "credits": 3,
+                            "semester": "Fall",
+                            "year": "2017",
+                            "grade": "A"
+                        }
+                    },
+                    "S17": {
+                        "0": {
+                            "department": "CSE",
+                            "courseNum": "504",
+                            "credits": 3,
+                            "semester": "Spring",
+                            "year": "2017",
+                            "grade": "C"
+                        },
+                        "1": {
+                            "department": "CSE",
+                            "courseNum": "505",
+                            "credits": 3,
+                            "semester": "Spring",
+                            "year": "2017",
+                            "grade": "D"
+                        }
+                    }
+                }
+            },
             expectedGraduation: "",
             degreeData: [],
             comments: this.props.location.state.comments,
@@ -114,6 +155,17 @@ class EditStudentGPD extends Component{
 
     render(){
         let dropdown;
+        var arrCourses = [];
+        let tempCoursePlan = this.state.coursePlan
+        let tempCourse
+        Object.keys(tempCoursePlan).forEach(function (key){
+            Object.keys(tempCoursePlan[key]).forEach(function (key2){
+                    Object.keys(tempCoursePlan[key][key2]).forEach(function (key3){
+                        arrCourses.push(tempCoursePlan[key][key2][key3])
+                    }) 
+            })
+        });
+        console.log(arrCourses);
         if (this.state.major.replace(/ /g,'') == "AMS" && this.state.rerender) {
             if(this.state.track == "Computational Applied Mathematics"){
                 dropdown = <div>
@@ -514,29 +566,25 @@ class EditStudentGPD extends Component{
                 <Row>
                     <Col l={6}>
                     <Card className="blue-grey">
-                        <Row>
-                        <Col l={12}>
-                            <Table className="white">
-                                <thead>
-                                    <tr>
-                                    <th>Course</th>
-                                    <th>Credit(s)</th>
-                                    <th>Time</th>
-                                    <th>Professor</th>
-                                    <th>Location</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>AMS 501</td>
-                                        <td>3</td>
-                                        <td>T/Th 4:00PM-5:20PM</td>
-                                        <td>John Doe</td>
-                                        <td>Javits 100</td>
-                                    </tr>
-                                </tbody>
-                            </Table>
-                        </Col>
+                        <Row className="white">
+                            <Col l={12}>
+                                <Table>
+                                    <thead>
+                                        <th>Course</th>
+                                        <th>Credits</th>
+                                        <th>Semester</th>
+                                    </thead>
+                                    <tbody>
+                                        {arrCourses.map((course) => (
+                                            <tr>
+                                                <td>{course.department + " " + course.courseNum}</td>
+                                                <td>{course.credits}</td>
+                                                <td>{course.semester + " " + course.year}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </Table>
+                            </Col>
                         </Row>
                         <Button onClick={this.confirmSuggestPlan}>Suggest Course Plan</Button>
                     </Card>

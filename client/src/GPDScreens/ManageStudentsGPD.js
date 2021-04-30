@@ -35,7 +35,6 @@ class ManageStudentsGPD extends Component{
             searchByDepartment_input: "",
             searchByEmail_input: "",
             searchByTrack_input: ""
-        
         }
     }
 
