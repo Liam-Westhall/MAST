@@ -60,6 +60,7 @@ router.post('/course', async (req, res) => {
         const file = req.files.file
         const results = []
         const departments = ['CSE', 'AMS', 'CE', 'BMI']
+        const semesters_deleted = []
 
 
         var bufferStream = new stream.PassThrough()
@@ -68,12 +69,21 @@ router.post('/course', async (req, res) => {
         bufferStream.pipe(csv())
         .on('data', (data) => results.push(data))
         .on('end', async () => {
-            await Course.destroy({truncate: true}).catch((err) => console.log('caught it'));
+           
             for (const data in results){
 
+            
                 console.log(data)
                 if (results[data].semester !== 'Fall' && results[data].semester !== 'Spring') throw results[data].semester + 'Semester string is not correct'
                 if (departments.indexOf(results[data].department) <= -1) throw 'Not a correct department'
+                
+                var sem = (results[data].semester === 'Fall' ? 'F' + results[data].year.slice(-2) : 'S' + results[data].year.slice(-2))
+                if (!semesters_deleted.includes(sem)){
+                    await Course.destroy({where: {semester: sem}}).catch((err) => console.log('caught it'));
+                    semesters_deleted.push(sem)
+                }
+            
+
 
                 await Course.create({
                     department: results[data].department,
@@ -129,9 +139,13 @@ router.post('/student_data', async (req, res) => {
                 let check = await User.findOne({where : {email: results[data].email}}).catch((err) => console.log('caught it'));
 
                 if (check) {
-                    let previousStudentProfile = await Student.findOne({where: {UserId: check.id}}).catch((err) => console.log('caught it'));
-                    await check.destroy().catch((err) => console.log('caught it'));
-                    await previousStudentProfile.destroy().catch((err) => console.log('caught it'));
+                    try {
+                    let previousStudentProfile = await Student.findOne({where: {UserId: check.id}})
+                    await check.destroy()
+                    await previousStudentProfile.destroy()
+                    }catch (e) {
+                        console.log(e)
+                    }
                 }
 
                 console.log(data)
