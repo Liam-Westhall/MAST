@@ -50,12 +50,12 @@ router.post('/courselist', async (req, res) => {
 router.post('/getgrades', async (req, res) => {
     try {
         const {id} = req.body;
-
+        console.log(id);
         let grades = await Student_Course.findAll({
             where: {
                 StudentId: id
             }
-        }).catch((err) => console.log('caught it'));
+        }).catch((err) => console.log(err));
         res.send(grades)
     } catch(error) {
         console.log(error)

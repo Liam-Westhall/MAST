@@ -65,7 +65,8 @@ class EditStudentGPD extends Component{
             rerender: false,
             currentComment: "",
             suggestPlan: false,
-            currentCommentIndex: 0
+            currentCommentIndex: 0,
+            grades: []
         };
     }
 
@@ -81,7 +82,6 @@ class EditStudentGPD extends Component{
     //Is called when the confirm button in the edit student information section is pressed
     confirmEdit = async () => {
         let body = {userID: this.state.userID, studentID: this.state.studentID, firstName: this.state.firstName, lastName: this.state.lastName, email: this.state.email, sbuID: this.state.sbuID, major: this.state.major, entrySemester: this.state.entrySemester, track: this.state.track};        
-        console.log(body)
         let header = {
             headers: {
               "Content-Type": "application/json",
@@ -94,9 +94,7 @@ class EditStudentGPD extends Component{
 
     confirmAddComment = async () => {
         let newComments = this.state.comments
-        console.log(this.state.currentComment);
         newComments.push({message: this.state.currentComment});
-        console.log(newComments);
         let body = {sbuID: this.state.sbuID, comment: this.state.currentComment};
         let header = {
             headers: {
@@ -111,21 +109,17 @@ class EditStudentGPD extends Component{
         let degreeData = degrees.data
         for(let i = 0; i < degreeData.length; i++){
             let tempDegree = degreeData[i];
-            console.log(tempDegree);
             if(this.state.major.replace(/ /g,'') === tempDegree.department){
-                console.log(this.state.degreeData)
                 this.setState({
                     degreeData: degreeData[i].json,
                     rerender: true
                 });
-                console.log(this.state.degreeData)
                 break;
             }
         }
     }
 
     onChangeComment = async (index) => { 
-        console.log(this.state.currentCommentIndex)
         this.setState({
             currentCommentIndex: index
         });
@@ -149,48 +143,53 @@ class EditStudentGPD extends Component{
             suggestPlan: true
         });
     }
-    componentDidMount = () => {
+    componentDidMount = async () => {
         this.getDegreeRequirements();
+        this.getAllGrades();
     }
 
-    checkCompletedCourse = async (course) => {
+    getCompletedCourse = (course) => {
+        return this.checkCompletedCourse(course);
+    }
+
+    getAllGrades = async () => {
         let header = {
             headers: {
               "Content-Type": "application/json",
             },
           }; 
+        let body = {id: this.props.location.state.currentEditStudent.id}
+        console.log(body);
+        let res = await axios.post("/api/courses/getgrades", body, header).catch((err) => console.log('caught error'));
+        this.setState({grades: res.data})
+    }
+
+    checkCompletedCourse = (course) => {
         let courseStrArr = course.split("/")
-        console.log(courseStrArr);
-        console.log("Haha");
         for(let i = 0; i < courseStrArr.length; i++){
-            let courseStrSpace = courseStrArr[i].split(" ");
-            let courseNum = parseInt(courseStrSpace[1]);
-            let department = courseStrSpace[0]
-            let body = {department: department, courseNum: courseNum, studentID: this.state.studentID}
-            console.log(body)
-            let res = await axios.post("/api/courses/checkcompleted", body, header).catch((err) => console.log('caught error'));
-            let grade = res.data
-            if(grade != ""){
-                if(grade[0].grade[0] == "A" || grade[0].grade[0] == "B") {
-                    return true;
-                }
-                else if(grade[0].grade[0] == "C"){
-                    if(grade[0].grade.length > 1){
-                        if(grade[0].grade[1] != "-"){
-                            return true;
-                        }
-                    }
-                    else{
+            for(var grade in this.state.grades){
+                if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString())
+                {
+                    if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
                         return true;
+                    }
+                    else if(this.state.grades[grade].grade == "C"){
+                        if(this.state.grades[grade].grade.length > 1){
+                            if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                return true;
+                            }
+                        }
+                        else{
+                            return false;
+                        }
                     }
                 }
             }
         }
         return false;
-    }
+    }   
 
     checkCourseInProgress  = (arr, course) => {
-        console.log("Yes")
         let courseStrArr = course.split("/")
         for(let i = 0; i < courseStrArr.length; i++){
             for(let j = 0; j < arr.length; j++){
@@ -201,6 +200,10 @@ class EditStudentGPD extends Component{
             }
         }
         return false;
+    }
+
+    returnTrueVal = (value) => {
+        return value;
     }
 
     render(){
@@ -214,13 +217,14 @@ class EditStudentGPD extends Component{
                     }) 
             })
         });
-        console.log(arrCourses);
         if (this.state.major.replace(/ /g,'') === "AMS" && this.state.rerender) {
             if(this.state.track === "Computational Applied Mathematics"){
                 dropdown = <div>
                     <Collapsible class="disabled">
-                        {this.state.degreeData.requirements.tracks.comp.courses.map(course => {
-                            if(this.checkCompletedCourse(course) == true){
+                        {this.state.degreeData.requirements.tracks.comp.courses.map((course) => {
+                            let completedCheck = false;
+                            let trueVal = this.checkCompletedCourse(course);
+                            if(trueVal == true){
                                 return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
                             }
                             else if(this.checkCourseInProgress(arrCourses, course) == true){
