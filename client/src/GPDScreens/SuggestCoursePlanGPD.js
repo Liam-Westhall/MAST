@@ -212,8 +212,119 @@ class SuggestCoursePlanGPD extends Component {
 
     }
 
-    searchCoursesCSE = async (grades, required_courses, elective_creditd) => {
+    searchCoursesCSE = (grades, breath_course_list, required_courses, num_of_additional_courses, elective_credits) => {
+        //remove the first item from the lists
+        breath_course_list.theory.shift()
+        breath_course_list.systems.shift()
+        breath_course_list.information.shift()
+        let theory =  breath_course_list.theory
+        let systems = breath_course_list.systems
+        let information = breath_course_list.information
 
+        // true if at least one course have been completed from a specified breath_list
+        let theory_completed = false
+        let systems_completed = false
+        let information_complete = false
+        let course_completed = true
+
+        
+        let required_courses_map = new Map() 
+        let completed_courses_map = new Map()
+        let required_credits = elective_credits
+
+        for(const course in required_courses){
+            required_courses_map.set(required_courses[course], false)
+        }
+
+
+        for(const grade_item in grades){
+            let course_title = grades[grade_item].department + " " + grades[grade_item].course_num
+            
+            // console.log(grades[grade_item])
+            if(grades[grade_item].grade.search(/[A-D][+-]?|C[+]?/g) > -1){
+
+                if(required_courses_map.has(course_title)){
+                    required_courses_map.set(course_title, true)
+                    required_credits = required_credits - grades[grade_item].credits
+                    continue
+                }
+
+                if(theory.includes(course_title)){
+
+                    theory.splice(theory.indexOf(course_title), 1)
+                    num_of_additional_courses = num_of_additional_courses - 1
+                    theory_completed = true
+                    required_credits = required_credits - grades[grade_item].credits
+                    continue
+
+                }
+
+                if(systems.includes(course_title)){
+
+                    systems.splice(systems.indexOf(course_title), 1)
+                    num_of_additional_courses = num_of_additional_courses - 1
+                    systems_completed = true
+                    required_credits = required_credits - grades[grade_item].credits
+                    continue
+                }
+
+                if(information.includes(course_title)){
+
+                    information.splice(information.indexOf(course_title), 1)
+                    num_of_additional_courses = num_of_additional_courses - 1
+                    information_complete = true
+                    required_credits = required_credits - grades[grade_item].credits
+                    continue
+
+                }
+
+
+
+
+            }
+
+        }
+
+        //check if there are uncompleted courses
+        let missing_courses = []
+        for(let [key, value] of required_courses_map){
+            
+            course_completed = course_completed && value
+
+            if(!value){
+                missing_courses.push(key)
+            }
+
+        }
+
+
+        let body = {
+
+            credits_remaining: required_credits, 
+
+            theory: {
+                completed: theory_completed,
+                available: theory
+            },
+
+            systems: {
+                completed: systems_completed,
+                available: systems
+            },
+
+            information: {
+                completed: information_complete,
+                available: information
+            },
+
+            course: {
+                completed: course_completed,
+                remaining: missing_courses
+            }
+
+        }
+
+        return body
     }
 
     searchCoursesESE = async () => {
@@ -257,7 +368,28 @@ class SuggestCoursePlanGPD extends Component {
 
         }
         if(this.state.major.replace(/ /g, '') == 'CSE'){
-
+            if(this.state.track == "basic"){
+                let breadth_course_list = this.state.degreeData.requirements.breadth
+                required_courses = this.state.degreeData.requirements.course.basic.splice(0, 1)
+                let num_of_additional_courses = 8
+                elective_credits = this.state.degreeData.requirements.credit
+                remaining_courses = this.searchCoursesCSE(grades, breadth_course_list ,required_courses, num_of_additional_courses, elective_credits);
+            }
+            else if(this.state.track == "advanced"){
+                let breadth_course_list = this.state.degreeData.requirements.breadth
+                required_courses = this.state.degreeData.requirements.course.advanced.splice(0, 2)
+                let num_of_additional_courses = 7
+                elective_credits = this.state.degreeData.requirements.credit
+                remaining_courses = this.searchCoursesCSE(grades, breadth_course_list ,required_courses, num_of_additional_courses, elective_credits);
+            }
+            else if(this.state.track == "thesis"){
+                let breadth_course_list = this.state.degreeData.requirements.breadth
+                required_courses = this.state.degreeData.requirements.course.thesis.splice(0, 1)
+                let num_of_additional_courses = 6
+                elective_credits = this.state.degreeData.requirements.credit
+                remaining_courses = this.searchCoursesCSE(grades, breadth_course_list ,required_courses, num_of_additional_courses, elective_credits);
+            }
+            
         }
         if(this.state.major.replace(/ /g, '') == 'ESE'){
 
