@@ -298,10 +298,49 @@ class SuggestCoursePlanGPD extends Component {
         }
 
 
+        let requiered_courses_list = missing_courses;
+        
+        if(!theory_completed){
+            let string1 = ""
+            let size = theory.length
+
+            for(const index in theory){
+                string1 = (size - 1) > index ? string1.concat(theory[index] + "/") : string1.concat(theory[index]) 
+            }
+
+            requiered_courses_list = requiered_courses_list.concat(string1)
+        }
+
+        if(!systems_completed){
+            let string1 = ""
+            let size = systems.length
+
+            for(const index in systems){
+                string1 = (size - 1) > index ? string1.concat(systems[index] + "/") : string1.concat(systems[index]) 
+            }
+
+            requiered_courses_list = requiered_courses_list.concat(string1)
+        }
+
+        if(!information_complete){
+            let string1 = ""
+            let size = information.length
+
+            for(const index in information){
+                string1 = (size - 1) > index ? string1.concat(information[index] + "/") : string1.concat(information[index]) 
+            }
+
+            requiered_courses_list = requiered_courses_list.concat(string1)
+        }
+
+        
+
         let body = {
 
-            credits_remaining: required_credits, 
+            elective_credits: required_credits, 
 
+            required_courses: requiered_courses_list,
+            remaining_courses: num_of_additional_courses,
             theory: {
                 completed: theory_completed,
                 available: theory
