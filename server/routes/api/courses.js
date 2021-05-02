@@ -63,6 +63,17 @@ router.post('/getgrades', async (req, res) => {
     }
 })
 
+router.post('/getallgrades', async (req, res) => {
+    try {
+        let grades = await Student_Course.findAll().catch((err) => console.log(err));
+        res.send(grades);
+    }
+    catch(error) {
+        console.log(error)
+        res.status(500).send("GET GRADES ERR")
+    }
+})
+
 router.post('/checkcompleted', async (req, res) => {
     try{
         const {department, courseNum, studentID} = req.body;

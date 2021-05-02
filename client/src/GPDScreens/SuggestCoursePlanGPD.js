@@ -277,12 +277,7 @@ class SuggestCoursePlanGPD extends Component {
                     continue
 
                 }
-
-
-
-
             }
-
         }
 
         //check if there are uncompleted courses

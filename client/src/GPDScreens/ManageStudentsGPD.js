@@ -34,7 +34,9 @@ class ManageStudentsGPD extends Component{
             searchByLastName_input: "",
             searchByDepartment_input: "",
             searchByEmail_input: "",
-            searchByTrack_input: ""
+            searchByTrack_input: "",
+            degreeData: [],
+            grades: []
         }
     }
 
@@ -99,6 +101,16 @@ class ManageStudentsGPD extends Component{
 
     }
 
+    getAllGrades = async () => {
+        let header = {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }; 
+        let res = await axios.post("/api/courses/getallgrades", header).catch((err) => console.log('caught error'));
+        this.setState({grades: res.data})
+    }
+
     onChangeSearchQuery = (event) => {
 
         this.setState({query: event.target.value})
@@ -140,7 +152,148 @@ class ManageStudentsGPD extends Component{
     }
 
     async componentDidMount() {
-        this.loadStudents()
+        await this.loadStudents();
+        await this.getDegreeRequirements();
+        await this.getAllGrades();
+    }
+
+    getDegreeRequirements = async () => {
+        let degrees = await axios.get('/api/degrees').catch((err) => console.log('caught', err));
+        let degreeData = degrees.data
+        console.log(degreeData);
+        this.setState({degreeData: degreeData})
+    }
+
+    checkCompletedRequirements = (student) => {
+        let completedCourses = 0;
+        for(let i = 0; i < this.state.degreeData.length; i++){
+            let tempDegree = this.state.degreeData[i];
+            if(student.department.replace(/ /g,'') === tempDegree.department){
+                if(student.department.replace(/ /g,'') == "AMS"){
+                    if(student.track == "Computational Applied Mathematics"){
+                        let courses = tempDegree.json.requirements.tracks.comp.courses
+                        console.log(courses);
+                        for(var course in courses){
+                            let courseStrArr = courses[course].split("/")
+                            for(let i = 0; i < courseStrArr.length; i++){
+                                for(var grade in this.state.grades){
+                                    if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                    {
+                                        if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                            completedCourses = completedCourses + 1;
+                                        }
+                                        else if(this.state.grades[grade].grade == "C"){
+                                            if(this.state.grades[grade].grade.length > 1){
+                                                if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                    completedCourses = completedCourses + 1
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else if(student.track == "Operations Research"){
+                    let courses = tempDegree.json.requirements.tracks.op.courses
+                    console.log(courses);
+                    for(var course in courses){
+                        let courseStrArr = courses[course].split("/")
+                        for(let i = 0; i < courseStrArr.length; i++){
+                            for(var grade in this.state.grades){
+                                if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                {
+                                    if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                        completedCourses = completedCourses + 1;
+                                    }
+                                    else if(this.state.grades[grade].grade == "C"){
+                                        if(this.state.grades[grade].grade.length > 1){
+                                            if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                completedCourses = completedCourses + 1
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else if(student.track == "Computational Biology"){
+                    let courses = tempDegree.json.requirements.tracks.bio.courses
+                    console.log(courses);
+                    for(var course in courses){
+                        let courseStrArr = courses[course].split("/")
+                        for(let i = 0; i < courseStrArr.length; i++){
+                            for(var grade in this.state.grades){
+                                if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                {
+                                    if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                        completedCourses = completedCourses + 1;
+                                    }
+                                    else if(this.state.grades[grade].grade == "C"){
+                                        if(this.state.grades[grade].grade.length > 1){
+                                            if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                completedCourses = completedCourses + 1
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else if(student.track == "Statistics"){
+                    let courses = tempDegree.json.requirements.tracks.stats.courses
+                    console.log(courses);
+                    for(var course in courses){
+                        let courseStrArr = courses[course].split("/")
+                        for(let i = 0; i < courseStrArr.length; i++){
+                            for(var grade in this.state.grades){
+                                if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                {
+                                    if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                        completedCourses = completedCourses + 1;
+                                    }
+                                    else if(this.state.grades[grade].grade == "C"){
+                                        if(this.state.grades[grade].grade.length > 1){
+                                            if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                completedCourses = completedCourses + 1
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else if(student.track == "Quanitative Finance"){
+                    let courses = tempDegree.json.requirements.tracks.quan.courses
+                    console.log(courses);
+                    for(var course in courses){
+                        let courseStrArr = courses[course].split("/")
+                        for(let i = 0; i < courseStrArr.length; i++){
+                            for(var grade in this.state.grades){
+                                if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                {
+                                    if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                        completedCourses = completedCourses + 1;
+                                    }
+                                    else if(this.state.grades[grade].grade == "C"){
+                                        if(this.state.grades[grade].grade.length > 1){
+                                            if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                completedCourses = completedCourses + 1
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } 
+            }
+        }
+        return completedCourses;
     }
 
     render(){
@@ -226,6 +379,7 @@ class ManageStudentsGPD extends Component{
                             <th data-field="Department">Department</th>
                             <th data-field="Track">Track</th>
                             <th data-field="Entry Semester">Entry Semester</th>
+                            <th data-field="Completed Courses">Completed Courses</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -237,6 +391,7 @@ class ManageStudentsGPD extends Component{
                                     <th data-field="Department">{student.department}</th>
                                     <th data-field="Track">{student.track}</th>
                                     <th data-field="Entry Semester">{student.entrySemester}</th>
+                                    <th data-field="Completed Courses">{this.checkCompletedRequirements(student)}</th>
                                 </tr>
                             ))
                         }
