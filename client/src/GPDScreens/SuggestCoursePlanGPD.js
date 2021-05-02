@@ -448,7 +448,7 @@ class SuggestCoursePlanGPD extends Component {
 
     //gets the preferred courses from the user input on the website
     getPreferredCourses = async () => {
-
+        
     }
 
     //gets the avoided courses from the user input on the website

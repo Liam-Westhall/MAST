@@ -23,8 +23,8 @@ class EditStudentGPD extends Component{
                 "semesters": {
                     "F17": {
                         "0": {
-                            "department": "AMS",
-                            "courseNum": "501",
+                            "department": "BMI",
+                            "courseNum": "592",
                             "credits": 3,
                             "semester": "Fall",
                             "year": "2017",
@@ -241,7 +241,7 @@ class EditStudentGPD extends Component{
             else if(this.state.track === "Operations Research"){
                 dropdown = <div>
                     <Collapsible class="disabled">
-                        {this.state.degreeData.requirements.tracks.comp.courses.map((course) => {
+                        {this.state.degreeData.requirements.tracks.bio.courses.map((course) => {
                             let completedCheck = false;
                             let trueVal = this.checkCompletedCourse(course);
                             if(trueVal == true){
@@ -261,7 +261,7 @@ class EditStudentGPD extends Component{
             else if(this.state.track === "Computational Biology"){
                 dropdown = <div>
                     <Collapsible class="disabled">
-                        {this.state.degreeData.requirements.tracks.comp.courses.map((course) => {
+                        {this.state.degreeData.requirements.tracks.op.courses.map((course) => {
                             let completedCheck = false;
                             let trueVal = this.checkCompletedCourse(course);
                             if(trueVal == true){
@@ -281,7 +281,7 @@ class EditStudentGPD extends Component{
             else if(this.state.track === "Statistics"){
                 dropdown = <div>
                     <Collapsible class="disabled">
-                        {this.state.degreeData.requirements.tracks.comp.courses.map((course) => {
+                        {this.state.degreeData.requirements.tracks.stats.courses.map((course) => {
                             let completedCheck = false;
                             let trueVal = this.checkCompletedCourse(course);
                             if(trueVal == true){
@@ -301,7 +301,7 @@ class EditStudentGPD extends Component{
             else if(this.state.track === "Quanitative Finance"){
                 dropdown = <div>
                     <Collapsible class="disabled">
-                        {this.state.degreeData.requirements.tracks.comp.courses.map((course) => {
+                        {this.state.degreeData.requirements.tracks.quan.courses.map((course) => {
                             let completedCheck = false;
                             let trueVal = this.checkCompletedCourse(course);
                             if(trueVal == true){
@@ -322,110 +322,116 @@ class EditStudentGPD extends Component{
         else if (this.state.major.replace(/ /g,'') === "BMI" && this.state.rerender){
             if(this.state.track === "Project/Imaging Informatics"){
                 dropdown = <div>
-                <Collapsible class="disabled">
-                    {this.state.degreeData.requirements.seminar.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.general.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.project.imaging.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.project.elective.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                </Collapsible>
+                    <Collapsible class="disabled">
+                        {this.state.degreeData.requirements.tracks.proj_imag.courses.map((course) => {
+                            let completedCheck = false;
+                            let trueVal = this.checkCompletedCourse(course);
+                            if(trueVal == true){
+                                return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                            else if(this.checkCourseInProgress(arrCourses, course) == true){
+                                return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                            else{
+                                return <CollapsibleItem icon={<Checkbox disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                        })}
+                    </Collapsible>
                 </div>;
             }
             else if(this.state.track === "Project/Clinical Informatics"){
                 dropdown = <div>
                 <Collapsible class="disabled">
-                    {this.state.degreeData.requirements.seminar.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.general.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.project.clinical.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.project.elective.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
+                    {this.state.degreeData.requirements.tracks.proj_clinical.courses.map((course) => {
+                        let completedCheck = false;
+                        let trueVal = this.checkCompletedCourse(course);
+                        if(trueVal == true){
+                            return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
+                        }
+                        else if(this.checkCourseInProgress(arrCourses, course) == true){
+                            return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
+                        }
+                        else{
+                            return <CollapsibleItem icon={<Checkbox disabled id={course}/>} header={course}></CollapsibleItem>
+                        }
+                    })}
                 </Collapsible>
-                </div>;
+            </div>;
             }
             else if(this.state.track === "Project/Translational Bio-Informatics"){
                 dropdown = <div>
-                <Collapsible class="disabled">
-                    {this.state.degreeData.requirements.seminar.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.general.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.project.translational.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.project.elective.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                </Collapsible>
+                    <Collapsible class="disabled">
+                        {this.state.degreeData.requirements.tracks.proj_trans.courses.map((course) => {
+                            let completedCheck = false;
+                            let trueVal = this.checkCompletedCourse(course);
+                            if(trueVal == true){
+                                return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                            else if(this.checkCourseInProgress(arrCourses, course) == true){
+                                return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                            else{
+                                return <CollapsibleItem icon={<Checkbox disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                        })}
+                    </Collapsible>
                 </div>;
             }
             else if(this.state.track === "Thesis/Clinical Informatics"){
                 dropdown = <div>
-                <Collapsible class="disabled">
-                    {this.state.degreeData.requirements.seminar.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.general.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.thesis.clinical.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.thesis.elective.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                </Collapsible>
+                    <Collapsible class="disabled">
+                        {this.state.degreeData.requirements.tracks.thesis_clinical.courses.map((course) => {
+                            let completedCheck = false;
+                            let trueVal = this.checkCompletedCourse(course);
+                            if(trueVal == true){
+                                return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                            else if(this.checkCourseInProgress(arrCourses, course) == true){
+                                return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                            else{
+                                return <CollapsibleItem icon={<Checkbox disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                        })}
+                    </Collapsible>
                 </div>;
             }
             else if(this.state.track === "Thesis/Translational Bio-Informatics"){
                 dropdown = <div>
-                <Collapsible class="disabled">
-                    {this.state.degreeData.requirements.seminar.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.general.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.thesis.translational.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.thesis.elective.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                </Collapsible>
+                    <Collapsible class="disabled">
+                        {this.state.degreeData.requirements.tracks.thesis_trans.courses.map((course) => {
+                            let completedCheck = false;
+                            let trueVal = this.checkCompletedCourse(course);
+                            if(trueVal == true){
+                                return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                            else if(this.checkCourseInProgress(arrCourses, course) == true){
+                                return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                            else{
+                                return <CollapsibleItem icon={<Checkbox disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                        })}
+                    </Collapsible>
                 </div>;
             }
             else if(this.state.track === "Thesis/Imaging Informatics"){
                 dropdown = <div>
-                <Collapsible class="disabled">
-                    {this.state.degreeData.requirements.seminar.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.general.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.thesis.imaging.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.thesis.elective.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                </Collapsible>
+                    <Collapsible class="disabled">
+                        {this.state.degreeData.requirements.tracks.thesis_imag.courses.map((course) => {
+                            let completedCheck = false;
+                            let trueVal = this.checkCompletedCourse(course);
+                            if(trueVal == true){
+                                return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                            else if(this.checkCourseInProgress(arrCourses, course) == true){
+                                return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                            else{
+                                return <CollapsibleItem icon={<Checkbox disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                        })}
+                    </Collapsible>
                 </div>;
             }
         }
@@ -501,50 +507,39 @@ class EditStudentGPD extends Component{
             if(this.state.track === "Non-Thesis"){
                 dropdown = <div>
                 <Collapsible class="disabled">
-                {this.state.degreeData.requirements.credit.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.no_thesis.description}></CollapsibleItem>
-                    {this.state.degreeData.requirements.no_thesis.hardware.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.no_thesis.networking.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.no_thesis.cad.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.no_thesis.description_2}></CollapsibleItem>
-                    {this.state.degreeData.requirements.no_thesis.theory.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.no_thesis.lecture}></CollapsibleItem>
-                    <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.no_thesis.other}></CollapsibleItem>
+                    {this.state.degreeData.requirements.tracks.non_thesis.courses.map((course) => {
+                        let completedCheck = false;
+                        let trueVal = this.checkCompletedCourse(course);
+                        if(trueVal == true){
+                            return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
+                        }
+                        else if(this.checkCourseInProgress(arrCourses, course) == true){
+                            return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
+                        }
+                        else{
+                            return <CollapsibleItem icon={<Checkbox disabled id={course}/>} header={course}></CollapsibleItem>
+                        }
+                    })}
                 </Collapsible>
-                </div>;
+            </div>;
             }
             else if(this.state.track === "Thesis"){
                 dropdown = <div>
-                <Collapsible class="disabled">
-                    <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.credit}></CollapsibleItem>
-                    <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.no_thesis.description}></CollapsibleItem>
-                    {this.state.degreeData.requirements.no_thesis.hardware.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.no_thesis.networking.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    {this.state.degreeData.requirements.no_thesis.cad.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.no_thesis.description_2}></CollapsibleItem>
-                    {this.state.degreeData.requirements.no_thesis.theory.map((course) => (
-                        <CollapsibleItem icon={<Checkbox />} header={course}></CollapsibleItem>
-                    ))}
-                    <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.no_thesis.lecture}></CollapsibleItem>
-                    <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.no_thesis.other}></CollapsibleItem>
-                    <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.no_thesis.thesis}></CollapsibleItem>
-                </Collapsible>
+                    <Collapsible class="disabled">
+                        {this.state.degreeData.requirements.tracks.thesis.courses.map((course) => {
+                            let completedCheck = false;
+                            let trueVal = this.checkCompletedCourse(course);
+                            if(trueVal == true){
+                                return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                            else if(this.checkCourseInProgress(arrCourses, course) == true){
+                                return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                            else{
+                                return <CollapsibleItem icon={<Checkbox disabled id={course}/>} header={course}></CollapsibleItem>
+                            }
+                        })}
+                    </Collapsible>
                 </div>;
             }
         }
