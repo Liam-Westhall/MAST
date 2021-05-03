@@ -234,7 +234,6 @@ class EditStudentGPD extends Component{
                                 return <CollapsibleItem icon={<Checkbox disabled id={course}/>} header={course}></CollapsibleItem>
                             }
                         })}
-                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
                     </Collapsible>
                 </div>;
             }
@@ -254,7 +253,6 @@ class EditStudentGPD extends Component{
                                 return <CollapsibleItem icon={<Checkbox disabled id={course}/>} header={course}></CollapsibleItem>
                             }
                         })}
-                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
                     </Collapsible>
                 </div>;
             }
@@ -274,7 +272,6 @@ class EditStudentGPD extends Component{
                                 return <CollapsibleItem icon={<Checkbox disabled id={course}/>} header={course}></CollapsibleItem>
                             }
                         })}
-                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
                     </Collapsible>
                 </div>;
             }
@@ -294,7 +291,6 @@ class EditStudentGPD extends Component{
                                 return <CollapsibleItem icon={<Checkbox disabled id={course}/>} header={course}></CollapsibleItem>
                             }
                         })}
-                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
                     </Collapsible>
                 </div>;
             }
@@ -314,7 +310,6 @@ class EditStudentGPD extends Component{
                                 return <CollapsibleItem icon={<Checkbox disabled id={course}/>} header={course}></CollapsibleItem>
                             }
                         })}
-                        <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
                     </Collapsible>
                 </div>;
             }

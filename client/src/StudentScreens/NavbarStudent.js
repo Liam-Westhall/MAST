@@ -16,9 +16,6 @@ class NavbarStudent extends Component{
             alignLinks="right"
             brand={<a className="brand-logo" href="/">MAST</a>}
             className = "blue"
-            extendWith={<ul className="tabs tabs-transparent">
-                <li class="tab white-text"><a target="_self" href="/student_info_stu">My Info</a></li>
-                </ul>}
             options={{edge: 'left', preventScrolling: true}}>
             <Link to="/"><NavItem>Logout</NavItem></Link>
             </Navbar>

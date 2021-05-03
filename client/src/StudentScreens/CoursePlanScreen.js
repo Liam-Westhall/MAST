@@ -3,6 +3,7 @@ import { Button, Row, Col, Table, Checkbox, Card, TimePicker } from 'react-mater
 import NavbarStudent from './NavbarStudent'
 import Select from 'react-select'
 import axios from 'axios'
+import { Redirect } from 'react-router';
 
 class CoursePlanScreen extends Component {
     constructor(props){
@@ -14,6 +15,7 @@ class CoursePlanScreen extends Component {
             entrySemester: this.props.location.state.currentEditStudent.entrySemester,
             track: this.props.location.state.currentEditStudent.track,
             sbuID: this.props.location.state.currentEditStudent.sbuID,
+            email: this.props.location.state.email,
             expectedGraduation: "",
             grades: [],
             degreeData: [],
@@ -35,7 +37,8 @@ class CoursePlanScreen extends Component {
             avoidedCourses: [],
             allCourseVals: [],
             currentCoursePlan: [],
-            returnHome: []
+            returnHome: [],
+            goHomeFlag: false
         };
     }
 
@@ -672,8 +675,13 @@ class CoursePlanScreen extends Component {
         this.getGrades();
     }
 
+    goHome = () => {
+        this.setState({goHomeFlag: true});
+    }
+
     render(){
         return(
+            this.state.goHomeFlag ? <Redirect to={{pathname: "student_info_stu", state: {email: this.state.email}}}></Redirect> :
             <div>
             <NavbarStudent />
             <br></br>
@@ -684,6 +692,11 @@ class CoursePlanScreen extends Component {
                             <Col l={12}>
                                 <Button>Smart Suggestion</Button>
                             </Col>
+                        </Row>
+                        <Row>
+                        <Col l={12}>
+                                    <Button onClick={this.goHome}>Return Home</Button>
+                        </Col>
                         </Row>
                         <Row>
                             <Col l={12}>

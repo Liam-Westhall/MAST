@@ -272,7 +272,6 @@ class StudentInfo extends Component{
                                     return <CollapsibleItem icon={<Checkbox disabled id={course}/>} header={course}></CollapsibleItem>
                                 }
                             })}
-                            <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
                         </Collapsible>
                     </div>;
                 }
@@ -292,7 +291,6 @@ class StudentInfo extends Component{
                                     return <CollapsibleItem icon={<Checkbox disabled id={course}/>} header={course}></CollapsibleItem>
                                 }
                             })}
-                            <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
                         </Collapsible>
                     </div>;
                 }
@@ -312,7 +310,6 @@ class StudentInfo extends Component{
                                     return <CollapsibleItem icon={<Checkbox disabled id={course}/>} header={course}></CollapsibleItem>
                                 }
                             })}
-                            <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
                         </Collapsible>
                     </div>;
                 }
@@ -332,7 +329,6 @@ class StudentInfo extends Component{
                                     return <CollapsibleItem icon={<Checkbox disabled id={course}/>} header={course}></CollapsibleItem>
                                 }
                             })}
-                            <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
                         </Collapsible>
                     </div>;
                 }
@@ -352,7 +348,6 @@ class StudentInfo extends Component{
                                     return <CollapsibleItem icon={<Checkbox disabled id={course}/>} header={course}></CollapsibleItem>
                                 }
                             })}
-                            <CollapsibleItem icon={<Checkbox />} header={this.state.degreeData.requirements.final_recommendation.name}></CollapsibleItem>
                         </Collapsible>
                     </div>;
                 }
@@ -573,9 +568,9 @@ class StudentInfo extends Component{
                 }
             }
             return(
-                this.state.suggestPlan ? <Redirect to={{pathname: "suggest_course_plan_stu", state: {currentEditStudent: this.state.currentStudent}}}></Redirect> :
+                this.state.suggestPlan ? <Redirect to={{pathname: "suggest_course_plan_stu", state: {currentEditStudent: this.state.currentStudent, email: this.state.email}}}></Redirect> :
                 <div align="left">
-                    <Navbar className="blue"></Navbar>
+                    <NavbarStudent />
                     <br></br>
                     <Row>
                         <Col l={6}>
@@ -724,9 +719,6 @@ class StudentInfo extends Component{
                         </Col>    
                     </Row>
                     <br></br>
-                    <Link to="/manage_students_gpd">
-                        <Button>Return Home</Button>
-                    </Link>
                 </div>
                 
             );
