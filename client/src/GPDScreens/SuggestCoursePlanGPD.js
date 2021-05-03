@@ -30,7 +30,7 @@ class SuggestCoursePlanGPD extends Component {
             thursdayTimeEnd: "23:59",
             fridayTimeBegin: "00:00",
             fridayTimeEnd: "23:59", 
-            currentSemester: "S17",
+            currentSemester: "S19",
             preferredCourses: [],
             avoidedCourses: [],
             allCourseVals: [],
@@ -344,6 +344,7 @@ class SuggestCoursePlanGPD extends Component {
     //gets the total credits from the remaining courses for the student to take
     getCreditsRemainingCourses = async (remainingCourses) => {
         
+        console.log(remainingCourses);
         let total = 0
         for(const course of remainingCourses){
             let values = course.split(" ")
@@ -444,6 +445,7 @@ class SuggestCoursePlanGPD extends Component {
         let remainingElectiveCredits = requirementsBody.elective_credits;
         let totalRemainingCredits = await this.getCreditsRemainingCourses(remainingCourses) + remainingElectiveCredits;
         let plans = await this.suggestCoursePlan(remainingCourses, remainingElectiveCredits, [], [], totalRemainingCredits);
+        console.log(plans);
         this.setState({currentCoursePlan: plans});
     }
 
@@ -631,6 +633,7 @@ class SuggestCoursePlanGPD extends Component {
                 if(constraintViolated){
                     continue;
                 }
+                console.log("Here")
                 //Now checks degree requirement constraint
                 let courseStr = nonPreferredCourses[i].department + " " + nonPreferredCourses[i].courseNumber;
                 let degreeReqFound = false;
