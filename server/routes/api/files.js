@@ -341,11 +341,14 @@ router.post('/student_grades', async (req, res) => {
     console.log(grades_json)
     try{
         studentID = grades_json.studentID
+        let student = await Student.findOne({
+            where: {sbuID: studentID}
+        }).catch((err) => console.log('caught it'));;
         for(var sem in grades_json.semesters){
             console.log(grades_json.semesters[sem]);
             for(var course in grades_json.semesters[sem]){
                 let student_course = await Student_Course.create({
-                    StudentId: studentID,
+                    StudentId: student.id,
                     department: grades_json.semesters[sem][course].department,
                     course_num: grades_json.semesters[sem][course].courseNum,
                     credits: grades_json.semesters[sem][course].credits,
