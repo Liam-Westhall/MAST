@@ -677,7 +677,7 @@ class SuggestCoursePlanGPD extends Component {
 
     approveCousePlan = async () => {
         
-        let approvedPlan ={"studentID": this.state.studentID, semesters: {}}
+        let approvedPlan ={sbuID: this.state.studentID, semesters: {}}
         let currentCousePlan = this.state.currentCoursePlan;
         let semesters = {}
         for (const semester of currentCousePlan){
@@ -695,7 +695,7 @@ class SuggestCoursePlanGPD extends Component {
 
         // approvedPlan.semesters = semesters
         // console.log(approvedPlan)
-        let body = {sbuID: this.state.sbuID, coursePlan: approvedPlan}
+        let body = {"studentID": this.state.sbuID, coursePlan: approvedPlan}
         let header = {
             headers: {
               "Content-Type": "application/json",
