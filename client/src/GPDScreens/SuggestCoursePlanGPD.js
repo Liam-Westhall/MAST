@@ -15,6 +15,7 @@ class SuggestCoursePlanGPD extends Component {
             track: this.props.location.state.currentEditStudent.track,
             sbuID: this.props.location.state.currentEditStudent.sbuID,
             expectedGraduation: "",
+            grades: [],
             degreeData: [],
             allCourses: [],
             maxCredits: 0,
@@ -29,22 +30,24 @@ class SuggestCoursePlanGPD extends Component {
             thursdayTimeEnd: "",
             fridayTimeBegin: "",
             fridayTimeEnd: "", 
-            currentSemester: "",
+            currentSemester: "S19",
             preferredCourses: [],
-            avoidedCourses: []
+            avoidedCourses: [],
+            allCourseVals: [],
+            currentCoursePlan: [],
         };
     }
 
     //gets all of the grades in the database for the current student
     getGrades = async () => {
-        let body = {id: this.state.sbuID};
+        let body = {id: this.state.studentID};
         let header = {
             headers: {
               "Content-Type": "application/json",
             },
           }; 
-        let res = await axios.post("/api/courses/getgrades").catch((err) => console.log(err));
-        return res.data;
+        let res = await axios.post("/api/courses/getgrades", body, header).catch((err) => console.log(err));
+        this.setState({grades: res.data});
     }
 
     calcGPA = async () => {
@@ -120,19 +123,19 @@ class SuggestCoursePlanGPD extends Component {
             }
             if(grades4GPA[i].grade.charAt(0) == "C"){
                 let gradeValue = 2.0
-                let creditValue = grades[i].credits 
+                let creditValue = grades4GPA[i].credits 
                 let GPAValue = gradeValue * creditValue
                 finalGPA += GPAValue
             }
             if(grades4GPA[i].grade.charAt(0) == "D"){
                 let gradeValue = 1.0
-                let creditValue = grades[i].credits
+                let creditValue = grades4GPA[i].credits
                 let GPAValue = gradeValue * creditValue
                 finalGPA += GPAValue
             }
             if(grades4GPA[i].grade.charAt(0) == "F"){
                 let gradeValue = 0.0
-                let creditValue = grades[i].credits
+                let creditValue = grades4GPA[i].credits
                 let GPAValue = gradeValue * creditValue
                 finalGPA += GPAValue
             }
@@ -147,14 +150,11 @@ class SuggestCoursePlanGPD extends Component {
         let degreeData = degrees.data
         for(let i = 0; i < degreeData.length; i++){
             let tempDegree = degreeData[i];
-            console.log(tempDegree);
             if(this.state.major.replace(/ /g,'') == tempDegree.department){
-                console.log(this.state.degreeData)
                 this.setState({
                     degreeData: degreeData[i].json,
                     rerender: true
                 });
-                console.log(this.state.degreeData)
                 break;
             }
         }
@@ -203,172 +203,47 @@ class SuggestCoursePlanGPD extends Component {
                         }
                     }
                 }
+                else{
+                    for(let j = 0; j < required_courses.length; j++){
+                        let temp_courses = required_courses[j].split('/');
+                        let found_course = false;
+                        for(let k = 0; k < temp_courses.length; k++){
+                            //checks to see if there is a grade that matches a required course
+                            if((grades[i].department + " " + grades[i].course_num) == temp_courses[k]){
+                                //if so that course is finished, push to finished courses and remove it from required courses
+                                finished_courses.push(grades[i].department + " " + grades[i].course_num);
+                                required_courses.splice(j, 1);
+                                found_course = true;
+                                break;
+                            }
+                        }
+                        //if no direct course that requirements are solved, check to see if it can satisfy an elective course
+                        if(!found_course){
+                            let duplicate = false;
+                            for(let l = 0; l < finished_courses.length; l++){
+                                //if the grade is already accounted for, don't account for it again
+                                if((grades[i].department + " " + grades[i].course_num) == finished_courses[l]){
+                                    duplicate = true;
+                                    break;
+                                }
+                            }
+                            //if not, have it satisfy elective credits
+                            if(!duplicate){
+                                finished_courses.push(grades[i].department + " " + grades[i].course_num);
+                                temp_elective_credits = temp_elective_credits - (grades[i].credits);
+                            }
+                        }
+                    }
+                }
             }
         }
         let body = {required_courses: required_courses, elective_credits: temp_elective_credits}
         return body;
     }
 
-    searchCoursesBMI = async () => {
-
-    }
-
-    searchCoursesCSE = (grades, breath_course_list, required_courses, num_of_additional_courses, elective_credits) => {
-        //remove the first item from the lists
-        breath_course_list.theory.shift()
-        breath_course_list.systems.shift()
-        breath_course_list.information.shift()
-        let theory =  breath_course_list.theory
-        let systems = breath_course_list.systems
-        let information = breath_course_list.information
-
-        // true if at least one course have been completed from a specified breath_list
-        let theory_completed = false
-        let systems_completed = false
-        let information_complete = false
-        let course_completed = true
-
-        
-        let required_courses_map = new Map() 
-        let completed_courses_map = new Map()
-        let required_credits = elective_credits
-
-        for(const course in required_courses){
-            required_courses_map.set(required_courses[course], false)
-        }
-
-
-        for(const grade_item in grades){
-            let course_title = grades[grade_item].department + " " + grades[grade_item].course_num
-            
-            // console.log(grades[grade_item])
-            if(grades[grade_item].grade.search(/[A-D][+-]?|C[+]?/g) > -1){
-
-                if(required_courses_map.has(course_title)){
-                    required_courses_map.set(course_title, true)
-                    required_credits = required_credits - grades[grade_item].credits
-                    continue
-                }
-
-                if(theory.includes(course_title)){
-
-                    theory.splice(theory.indexOf(course_title), 1)
-                    num_of_additional_courses = num_of_additional_courses - 1
-                    theory_completed = true
-                    required_credits = required_credits - grades[grade_item].credits
-                    continue
-
-                }
-
-                if(systems.includes(course_title)){
-
-                    systems.splice(systems.indexOf(course_title), 1)
-                    num_of_additional_courses = num_of_additional_courses - 1
-                    systems_completed = true
-                    required_credits = required_credits - grades[grade_item].credits
-                    continue
-                }
-
-                if(information.includes(course_title)){
-
-                    information.splice(information.indexOf(course_title), 1)
-                    num_of_additional_courses = num_of_additional_courses - 1
-                    information_complete = true
-                    required_credits = required_credits - grades[grade_item].credits
-                    continue
-
-                }
-            }
-        }
-
-        //check if there are uncompleted courses
-        let missing_courses = []
-        for(let [key, value] of required_courses_map){
-            
-            course_completed = course_completed && value
-
-            if(!value){
-                missing_courses.push(key)
-            }
-
-        }
-
-
-        let requiered_courses_list = missing_courses;
-        
-        if(!theory_completed){
-            let string1 = ""
-            let size = theory.length
-
-            for(const index in theory){
-                string1 = (size - 1) > index ? string1.concat(theory[index] + "/") : string1.concat(theory[index]) 
-            }
-
-            requiered_courses_list = requiered_courses_list.concat(string1)
-        }
-
-        if(!systems_completed){
-            let string1 = ""
-            let size = systems.length
-
-            for(const index in systems){
-                string1 = (size - 1) > index ? string1.concat(systems[index] + "/") : string1.concat(systems[index]) 
-            }
-
-            requiered_courses_list = requiered_courses_list.concat(string1)
-        }
-
-        if(!information_complete){
-            let string1 = ""
-            let size = information.length
-
-            for(const index in information){
-                string1 = (size - 1) > index ? string1.concat(information[index] + "/") : string1.concat(information[index]) 
-            }
-
-            requiered_courses_list = requiered_courses_list.concat(string1)
-        }
-
-        
-
-        let body = {
-
-            elective_credits: required_credits, 
-
-            required_courses: requiered_courses_list,
-            remaining_courses: num_of_additional_courses,
-            theory: {
-                completed: theory_completed,
-                available: theory
-            },
-
-            systems: {
-                completed: systems_completed,
-                available: systems
-            },
-
-            information: {
-                completed: information_complete,
-                available: information
-            },
-
-            course: {
-                completed: course_completed,
-                remaining: missing_courses
-            }
-
-        }
-
-        return body
-    }
-
-    searchCoursesESE = async () => {
-
-    }
-
     //gets the remaining courses 
     getRemainingCourses = async () => {
-        let grades = this.getGrades();
+        let grades = this.state.grades;
         let required_courses = []
         let elective_credits = 0
         let remaining_courses = []
@@ -376,7 +251,7 @@ class SuggestCoursePlanGPD extends Component {
             if(this.state.track == "Computational Applied Mathematics"){
                 required_courses = this.state.degreeData.requirements.tracks.comp.courses
                 elective_credits = this.state.degreeData.requirements.tracks.comp.elective_creds
-                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+                remaining_courses = await this.searchCoursesAMS(grades, required_courses, elective_credits);
             }
             else if(this.state.track == "Computational Biology"){
                 required_courses = this.state.degreeData.requirements.tracks.bio.courses
@@ -432,61 +307,61 @@ class SuggestCoursePlanGPD extends Component {
             }
         }
         if(this.state.major.replace(/ /g, '') == 'CSE'){
-            if(this.state.track == "basic"){
-                let breadth_course_list = this.state.degreeData.requirements.breadth
-                required_courses = this.state.degreeData.requirements.course.basic.splice(0, 1)
-                let num_of_additional_courses = 8
-                elective_credits = this.state.degreeData.requirements.credit
-                remaining_courses = this.searchCoursesCSE(grades, breadth_course_list ,required_courses, num_of_additional_courses, elective_credits);
+            if(this.state.track == "Basic"){
+                required_courses = this.state.degreeData.requirements.tracks.basic.courses
+                elective_credits = this.state.degreeData.requirements.tracks.basic.elective_creds
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
             }
-            else if(this.state.track == "advanced"){
-                let breadth_course_list = this.state.degreeData.requirements.breadth
-                required_courses = this.state.degreeData.requirements.course.advanced.splice(0, 2)
-                let num_of_additional_courses = 7
-                elective_credits = this.state.degreeData.requirements.credit
-                remaining_courses = this.searchCoursesCSE(grades, breadth_course_list ,required_courses, num_of_additional_courses, elective_credits);
+            else if(this.state.track == "Advanced"){
+                required_courses = this.state.degreeData.requirements.tracks.advanced.courses
+                elective_credits = this.state.degreeData.requirements.tracks.advanced.elective_creds
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
             }
-            else if(this.state.track == "thesis"){
-                let breadth_course_list = this.state.degreeData.requirements.breadth
-                required_courses = this.state.degreeData.requirements.course.thesis.splice(0, 1)
-                let num_of_additional_courses = 6
-                elective_credits = this.state.degreeData.requirements.credit
-                remaining_courses = this.searchCoursesCSE(grades, breadth_course_list ,required_courses, num_of_additional_courses, elective_credits);
+            else if(this.state.track == "Thesis"){
+                required_courses = this.state.degreeData.requirements.tracks.thesis.courses
+                elective_credits = this.state.degreeData.requirements.tracks.thesis.elective_creds
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
             }
-            
         }
-        if(this.state.major.replace(/ /g, '') == 'ESE'){
-
+        if(this.state.major.replace(/ /g, '') == 'CE'){
+            if(this.state.track == "Non-Thesis"){
+                required_courses = this.state.degreeData.requirements.tracks.non_thesis.courses
+                elective_credits = this.state.degreeData.requirements.tracks.non_thesis.elective_creds
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+            }
+            else if(this.state.track == "Thesis"){
+                required_courses = this.state.degreeData.requirements.tracks.thesis.courses
+                elective_credits = this.state.degreeData.requirements.tracks.thesis.elective_creds
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+            }
         }
+        return remaining_courses;
     }
 
     //gets the total credits from the remaining courses for the student to take
     getCreditsRemainingCourses = async (remainingCourses) => {
         
         let total = 0
-
         for(const course of remainingCourses){
-
             let values = course.split(" ")
             let retval = await axios.get("/api/courses/course?name=" + values[0] + "&number=" +values[1])
-            if(retval){
+            if(retval.data != ""){
                 total = total + retval.data.credits
             }
-
         }
-
         return total
     }
 
     //triggered when "Suggest Course Plan" Button is pressed
     onClickSuggestPlan = async () => {
-        let requirementsBody = this.getRemainingCourses();
+        let requirementsBody = await this.getRemainingCourses();
         let remainingCourses = requirementsBody.required_courses;
         let remainingElectiveCredits = requirementsBody.elective_credits;
-        let preferredCourses = this.getPreferredCourses();
-        let avoidedCourses = this.getAvoidedCourses();
-        let plans = this.suggestCoursePlan(remainingCourses, remainingElectiveCredits);
-
+        let preferredCourses = await this.getPreferredCourses();
+        let avoidedCourses = await this.getAvoidedCourses();
+        let plans = await this.suggestCoursePlan(remainingCourses, remainingElectiveCredits, preferredCourses, avoidedCourses);
+        this.setState({currentCoursePlan: plans});
+        console.log(this.state.currentCoursePlan);
     }
 
     //gets the preferred courses from the user input on the website
@@ -495,8 +370,8 @@ class SuggestCoursePlanGPD extends Component {
         for(const course of this.state.preferredCourses){
             let values = course.split(" ")
             let retval = await axios.get("/api/courses/course?name=" + values[0] + "&number=" +values[1])
-
-            if(retval){
+            
+            if(retval.data != ""){
                 courses.push(retval.data)
             }
         }
@@ -513,12 +388,11 @@ class SuggestCoursePlanGPD extends Component {
             let values = course.split(" ")
             let retval = await axios.get("/api/courses/course?name=" + values[0] + "&number=" +values[1])
 
-            if(retval){
+            if(retval.data != ""){
                 courses.push(retval.data)
             }
         }
-
-        
+        console.log(courses);
         return courses
 
     }
@@ -528,19 +402,42 @@ class SuggestCoursePlanGPD extends Component {
         let courses = await axios.get("/api/courses/").catch((err) => console.log('caught', err));
         let courseData = courses.data
         let courseNames = []
+        let courseVals = []
         for(var course in courseData){
+            courseVals.push(courseData[course]);
             courseNames.push((courseData[course].department + " " + (courseData[course].courseNumber).toString()));
         }
         courseNames.sort();
         this.setState({
-            allCourses: courseNames
+            allCourses: courseNames,
+            allCourseVals: courseVals
         });
-        console.log(this.state.allCourses);
+    }
+
+    convert24to12 = (str) => {
+        let [hours, minutes] = str.split(":");
+        let time = ""
+        if(hours === "12"){
+            hours = "00";
+        }
+        else if(hours.length == 1){
+            hours = "0" + hours;
+        }
+        if(minutes.substring(2) == "PM"){
+            hours = parseInt(hours) + 12;
+            time = hours + ":" + minutes.substring(0, 2);
+        }
+        else{
+            time = hours + ":" + minutes.substring(0, 2);
+        }
+        return time;
 
     }
 
     suggestCoursePlan = async (remainingCourses, remainingElectiveCredits, preferredCourses, avoidedCourses) => {
-        let totalRemainingCredits = this.getCreditsRemainingCourses(remainingCourses) + remainingElectiveCredits;
+        console.log(remainingCourses);
+        let totalRemainingCredits = await this.getCreditsRemainingCourses(remainingCourses) + remainingElectiveCredits;
+        console.log(totalRemainingCredits);
         let editElectiveCredits = remainingElectiveCredits;
         let remainingSemesters = this.state.remainingSemesters
         let loopNextSem = this.state.currentSemester;
@@ -560,6 +457,7 @@ class SuggestCoursePlanGPD extends Component {
                 year = year + 1
                 loopNextSem = "F" + year.toString();
             }
+            console.log(loopNextSem);
             //start priority course loop
             for(let i = 0; i < preferredCourses.length; i++){
                 let constraintViolated = false;
@@ -569,32 +467,26 @@ class SuggestCoursePlanGPD extends Component {
                 let daysSplit = initSplit[0].split("/");
                 let timesSplit = initSplit[1].split("-");
                 for(let temp = 0; temp < daysSplit.length; temp++){
-                    if(daysSplit[temp] == "M"){
-                        if(timesSplit[0] < this.state.mondayTimeBegin || timesSplit[1] > this.state.mondayTimeEnd){
+                    if(daysSplit[temp] == "MW"){
+                        if((this.convert24to12(timesSplit[0]) < this.state.mondayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.mondayTimeEnd) || (this.convert24to12(timesSplit[0]) < this.state.wednesdayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.wednesdayTimeEnd)){
                             constraintViolated = true;
                             break;
                         }
                     }
-                    else if(daysSplit[temp] == "Tu"){
-                        if(timesSplit[0] < this.state.tuesdayTimeBegin || timesSplit[1] > this.state.tuesdayTimeEnd){
+                    else if(daysSplit[temp] == "TUTH"){
+                        if((this.convert24to12(timesSplit[0]) < this.state.tuesdayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.tuesdayTimeEnd) || (this.convert24to12(timesSplit[0]) < this.state.thursdayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.thursdayTimeEnd)){
                             constraintViolated = true;
                             break;
                         }
                     }
-                    else if(daysSplit[temp] == "W"){
-                        if(timesSplit[0] < this.state.wednesdayTimeBegin || timesSplit[1] > this.state.wednesdayTimeEnd){
+                    else if(daysSplit[temp] == "MWF"){
+                        if((this.convert24to12(timesSplit[0]) < this.state.mondayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.mondayTimeEnd) || (this.convert24to12(timesSplit[0]) < this.state.wednesdayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.wednesdayTimeEnd)  && (this.convert24to12(timesSplit[0]) < this.state.fridayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.fridayTimeEnd)){
                             constraintViolated = true;
                             break;
                         }
                     }
-                    else if(daysSplit[temp] == "Th"){
-                        if(timesSplit[0] < this.state.thursdayTimeBegin || timesSplit[1] > this.state.thursdayTimeEnd){
-                            constraintViolated = true;
-                            break;
-                        }
-                    }
-                    else if(daysSplit[temp] == "F"){
-                        if(timesSplit[0] < this.state.fridayTimeBegin || timesSplit[1] > this.state.fridayTimeEnd){
+                    else if(daysSplit[temp] == "MF"){
+                        if((this.convert24to12(timesSplit[0]) < this.state.mondayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.mondayTimeEnd) || (this.convert24to12(timesSplit[0]) < this.state.fridayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.fridayTimeEnd)){
                             constraintViolated = true;
                             break;
                         }
@@ -602,6 +494,7 @@ class SuggestCoursePlanGPD extends Component {
                 }
                 //Now checks to see if semester constraint would be violated
                 let courseOfferedSemester = preferredCourses[i].semester
+                console.log(courseOfferedSemester);
                 if(loopNextSem != courseOfferedSemester)
                 {
                     constraintViolated = true;
@@ -614,7 +507,8 @@ class SuggestCoursePlanGPD extends Component {
                 let degreeReqFound = false;
                 for(let remainLoop = 0; remainLoop < remainingCourses.length; remainLoop++){
                     let remainingCoursesSplit = remainingCourses[remainLoop].split("/");
-                    for(let splitLoop = 0; splitLoop < remainingCoursesSplit; splitLoop++){
+                    for(let splitLoop = 0; splitLoop < remainingCoursesSplit.length; splitLoop++){
+                        console.log(remainingCoursesSplit[splitLoop]);
                         if(courseStr == remainingCoursesSplit[splitLoop]){
                             degreeReqFound = true;
                         }
@@ -629,8 +523,17 @@ class SuggestCoursePlanGPD extends Component {
                     }
                 }
                 //finally pushes it to the semester plan
-                if(preferredCourses[i].credits >= loopSemCredits){
+                if(preferredCourses[i].credits <= loopSemCredits){
                     semCourses.push(preferredCourses[i]);
+                    for(let j = 0; j < remainingCourses.length; j++){
+                        let remainingCoursesSplit = remainingCourses[j].split("/");
+                        for(let splitLoop = 0; splitLoop < remainingCoursesSplit.length; splitLoop++){
+                            console.log(remainingCoursesSplit[splitLoop]);
+                            if(courseStr == remainingCoursesSplit[splitLoop]){
+                                remainingCourses.splice(j, 1);
+                            }
+                        }
+                    }
                     coursePlanWeight += 12;
                     if(electiveCourse){
                         editElectiveCredits = editElectiveCredits - preferredCourses[i].credits;
@@ -650,94 +553,114 @@ class SuggestCoursePlanGPD extends Component {
                 remainingSemesters = remainingSemesters - 1;
             }
             else{
-                let nonPreferredCourses = this.getAllCourses();
+                console.log("Here");
+                await this.getAllCourses();
+                let nonPreferredCourses = this.state.allCourseVals;
+                console.log(nonPreferredCourses)
                 for(let i = 0; i < nonPreferredCourses.length; i++){
                     let constraintViolated = false;
                     let electiveCourse = false;
-                    //checks to see if any time constraints are violated, if so don't add course to plan
-                    let initSplit = nonPreferredCourses[i].days.split(" ");
-                    let daysSplit = initSplit[0].split("/");
-                    let timesSplit = initSplit[1].split("-");
-                    for(let temp = 0; temp < daysSplit.length; temp++){
-                        if(daysSplit[temp] == "M"){
-                            if(timesSplit[0] < this.state.mondayTimeBegin || timesSplit[1] > this.state.mondayTimeEnd){
-                                constraintViolated = true;
-                                break;
-                            }
-                        }
-                        else if(daysSplit[temp] == "Tu"){
-                            if(timesSplit[0] < this.state.tuesdayTimeBegin || timesSplit[1] > this.state.tuesdayTimeEnd){
-                                constraintViolated = true;
-                                break;
-                            }
-                        }
-                        else if(daysSplit[temp] == "W"){
-                            if(timesSplit[0] < this.state.wednesdayTimeBegin || timesSplit[1] > this.state.wednesdayTimeEnd){
-                                constraintViolated = true;
-                                break;
-                            }
-                        }
-                        else if(daysSplit[temp] == "Th"){
-                            if(timesSplit[0] < this.state.thursdayTimeBegin || timesSplit[1] > this.state.thursdayTimeEnd){
-                                constraintViolated = true;
-                                break;
-                            }
-                        }
-                        else if(daysSplit[temp] == "F"){
-                            if(timesSplit[0] < this.state.fridayTimeBegin || timesSplit[1] > this.state.fridayTimeEnd){
-                                constraintViolated = true;
-                                break;
-                            }
+                    let requiredCourseFlag = false;
+                    console.log(avoidedCourses);
+                    for(let j = 0; j < remainingCourses.length; j++){
+                        if(nonPreferredCourses[i].department + " " + nonPreferredCourses[i].courseNumber == remainingCourses[j]){
+                            requiredCourseFlag = true;
                         }
                     }
-                    //Now checks to see if semester constraint would be violated
-                    let courseOfferedSemester = nonPreferredCourses[i].semester
-                    if(loopNextSem != courseOfferedSemester)
-                    {
-                        constraintViolated = true;
+                    if(!requiredCourseFlag){
+                        continue;
+                    }
+                    for(let j = 0; j < avoidedCourses.length; j++){
+                        console.log(avoidedCourses[j]);
+                        if(nonPreferredCourses[i].department + " " + nonPreferredCourses[i].courseNumber == avoidedCourses[j].department + " " + avoidedCourses[j].courseNumber){
+                            constraintViolated = true;
+                        }
                     }
                     if(constraintViolated){
                         continue;
                     }
-                    //Now checks degree requirement constraint
-                    let courseStr = nonPreferredCourses[i].department + " " + nonPreferredCourses[i].courseNumber;
-                    let degreeReqFound = false;
-                    for(let remainLoop = 0; remainLoop < remainingCourses.length; remainLoop++){
-                        let remainingCoursesSplit = remainingCourses[remainLoop].split("/");
-                        for(let splitLoop = 0; splitLoop < remainingCoursesSplit; splitLoop++){
-                            if(courseStr == remainingCoursesSplit[splitLoop]){
-                                degreeReqFound = true;
-                            }
+                //checks to see if any time constraints are violated, if so don't add course to plan
+                let initSplit = nonPreferredCourses[i].days.split(" ");
+                let daysSplit = initSplit[0].split("/");
+                let timesSplit = initSplit[1].split("-");
+                for(let temp = 0; temp < daysSplit.length; temp++){
+                    if(daysSplit[temp] == "MW"){
+                        if((this.convert24to12(timesSplit[0]) < this.state.mondayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.mondayTimeEnd) || (this.convert24to12(timesSplit[0]) < this.state.wednesdayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.wednesdayTimeEnd)){
+                            constraintViolated = true;
+                            break;
                         }
                     }
-                    if(!degreeReqFound){
-                        if(nonPreferredCourses[i].credits < editElectiveCredits){
-                            continue;
-                        }
-                        else{
-                            electiveCourse = true;
+                    else if(daysSplit[temp] == "TUTH"){
+                        if((this.convert24to12(timesSplit[0]) < this.state.tuesdayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.tuesdayTimeEnd) || (this.convert24to12(timesSplit[0]) < this.state.thursdayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.thursdayTimeEnd)){
+                            constraintViolated = true;
+                            break;
                         }
                     }
-                    //finally pushes it to the semester plan
-                    if(nonPreferredCourses[i].credits >= loopSemCredits){
-                        semCourses.push(nonPreferredCourses[i]);
-                        coursePlanWeight += 10;
-                        if(electiveCourse){
-                            editElectiveCredits = editElectiveCredits - nonPreferredCourses[i].credits;
-                            loopSemCredits = loopSemCredits -nonPreferredCourses[i].credits;
-                        }
-                        else{
-                            loopSemCredits -= nonPreferredCourses[i].credits;
+                    else if(daysSplit[temp] == "MWF"){
+                        if((this.convert24to12(timesSplit[0]) < this.state.mondayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.mondayTimeEnd) || (this.convert24to12(timesSplit[0]) < this.state.wednesdayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.wednesdayTimeEnd)  && (this.convert24to12(timesSplit[0]) < this.state.fridayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.fridayTimeEnd)){
+                            constraintViolated = true;
+                            break;
                         }
                     }
-                    if(loopSemCredits == 0){
-                        break;
+                    else if(daysSplit[temp] == "MF"){
+                        if((this.convert24to12(timesSplit[0]) < this.state.mondayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.mondayTimeEnd) || (this.convert24to12(timesSplit[0]) < this.state.fridayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.fridayTimeEnd)){
+                            constraintViolated = true;
+                            break;
+                        }
                     }
+                }
+                //Now checks to see if semester constraint would be violated
+                let courseOfferedSemester = nonPreferredCourses[i].semester
+                console.log(courseOfferedSemester);
+                if(loopNextSem != courseOfferedSemester)
+                {
+                    constraintViolated = true;
+                }
+                if(constraintViolated){
+                    continue;
+                }
+                //Now checks degree requirement constraint
+                let courseStr = nonPreferredCourses[i].department + " " + nonPreferredCourses[i].courseNumber;
+                let degreeReqFound = false;
+                for(let remainLoop = 0; remainLoop < remainingCourses.length; remainLoop++){
+                    let remainingCoursesSplit = remainingCourses[remainLoop].split("/");
+                    for(let splitLoop = 0; splitLoop < remainingCoursesSplit.length; splitLoop++){
+                        console.log(remainingCoursesSplit[splitLoop]);
+                        if(courseStr == remainingCoursesSplit[splitLoop]){
+                            degreeReqFound = true;
+                            break;
+                        }
+                    }
+                }
+                if(!degreeReqFound){
+                    if(nonPreferredCourses[i].credits < editElectiveCredits){
+                        continue;
+                    }
+                    else{
+                        electiveCourse = true;
+                    }
+                }
+                //finally pushes it to the semester plan
+                if(nonPreferredCourses[i].credits <= loopSemCredits){
+                    semCourses.push(nonPreferredCourses[i]);
+                    coursePlanWeight += 10;
+                    if(electiveCourse){
+                        editElectiveCredits = editElectiveCredits - nonPreferredCourses[i].credits;
+                        loopSemCredits = loopSemCredits - nonPreferredCourses[i].credits;
+                    }
+                    else{
+                        loopSemCredits -= nonPreferredCourses[i].credits;
+                    }
+                }
+                if(loopSemCredits == 0){
+                    break;
+                }
                 }
                 coursePlan.push(semCourses);
                 remainingSemesters = remainingSemesters - 1;
             }
         }
+        return coursePlan;
     }
 
     onChange = (event) => {
@@ -747,6 +670,7 @@ class SuggestCoursePlanGPD extends Component {
     componentDidMount = async() => {
         this.getDegreeRequirements();
         this.getAllCourses();
+        this.getGrades();
     }
 
     render(){
@@ -839,36 +763,23 @@ class SuggestCoursePlanGPD extends Component {
                                             <th data-field="Name">Course</th>
                                             <th data-field="Credit">Credit(s)</th>
                                             <th data-field="Days">Days</th>
-                                            <th data-field="Time">Time</th>
-                                            <th data-field="Professor">Professor</th>
-                                            <th data-field="Location">Location</th>
+                                            <th data-field="Semester">Semester</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td data-field="Name">Course</td>
-                                            <td data-field="Credit">Credit(s)</td>
-                                            <td data-field="Days">Days</td>
-                                            <td data-field="Time">Time</td>
-                                            <td data-field="Professor">Professor</td>
-                                            <td data-field="Location">Location</td>
-                                        </tr>
-                                        <tr>
-                                            <td data-field="Name">Course</td>
-                                            <td data-field="Credit">Credit(s)</td>
-                                            <td data-field="Days">Days</td>
-                                            <td data-field="Time">Time</td>
-                                            <td data-field="Professor">Professor</td>
-                                            <td data-field="Location">Location</td>
-                                        </tr>
-                                        <tr>
-                                            <td data-field="Name">Course</td>
-                                            <td data-field="Credit">Credit(s)</td>
-                                            <td data-field="Days">Days</td>
-                                            <td data-field="Time">Time</td>
-                                            <td data-field="Professor">Professor</td>
-                                            <td data-field="Location">Location</td>
-                                        </tr>
+                                        {this.state.currentCoursePlan.map((semester) => {
+                                            let tempArr = semester;
+                                            console.log(semester);
+                                            return (semester.map((course) => {
+                                                console.log(course);
+                                                return(<tr>
+                                                    <td>{course.department + " " + course.courseNumber}</td>
+                                                    <td>{course.credits}</td>
+                                                    <td>{course.days}</td>
+                                                    <td>{course.semester}</td>
+                                                </tr>);
+                                            }));
+                                        })}
                                     </tbody>
                                 </Table>
                             </Col>
@@ -949,7 +860,7 @@ class SuggestCoursePlanGPD extends Component {
                                     <input type="time" id="fridayTimeEnd" onChange={this.onChange}></input>
                                 </Col>
                             </Row>
-                            <Button>Suggest Course Plan</Button>
+                            <Button onClick={this.onClickSuggestPlan}>Suggest Course Plan</Button>
                         </Card>
                     </Row>
                 </Col>
