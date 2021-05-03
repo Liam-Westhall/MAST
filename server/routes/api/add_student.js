@@ -40,7 +40,8 @@ router.post('/', async(req, res) => {
             graduation_year: graduation_year,
             requirement_version_semester: req_semester,
             requirement_version_year: req_year,
-            UserId: user.id
+            UserId: user.id,
+            coursePlan: {}
         }).catch((err) => console.log('caught it'));
 
         id = id + 1;
@@ -48,7 +49,6 @@ router.post('/', async(req, res) => {
         res.send({name: user.firstName + " " + user.lastName})
     }
     catch(error){
-        throw error;
         res.status(500).send("error ocurred adding the sudent")
     }
 })

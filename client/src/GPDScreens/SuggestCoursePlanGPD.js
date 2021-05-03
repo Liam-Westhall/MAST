@@ -46,7 +46,7 @@ class SuggestCoursePlanGPD extends Component {
         let res = await axios.post("/api/courses/getgrades").catch((err) => console.log(err));
         return res.data;
     }
-/*
+
     calcGPA = async () => {
         //get grades from databse
         let grades4GPA = this.getGrades
@@ -120,19 +120,19 @@ class SuggestCoursePlanGPD extends Component {
             }
             if(grades4GPA[i].grade.charAt(0) == "C"){
                 let gradeValue = 2.0
-                let creditValue = grades[i].credits 
+                let creditValue = grades4GPA[i].credits 
                 let GPAValue = gradeValue * creditValue
                 finalGPA += GPAValue
             }
             if(grades4GPA[i].grade.charAt(0) == "D"){
                 let gradeValue = 1.0
-                let creditValue = grades[i].credits
+                let creditValue = grades4GPA[i].credits
                 let GPAValue = gradeValue * creditValue
                 finalGPA += GPAValue
             }
             if(grades4GPA[i].grade.charAt(0) == "F"){
                 let gradeValue = 0.0
-                let creditValue = grades[i].credits
+                let creditValue = grades4GPA[i].credits
                 let GPAValue = gradeValue * creditValue
                 finalGPA += GPAValue
             }
@@ -140,7 +140,7 @@ class SuggestCoursePlanGPD extends Component {
             return finalGPA
         }
     }
-*/
+
 
     //gets all the degree requirements for a specific major/track
     getDegreeRequirements = async () => {
@@ -428,7 +428,11 @@ class SuggestCoursePlanGPD extends Component {
             
         }
         if(this.state.major.replace(/ /g, '') == 'ESE'){
+            if(this.state.track == "no_thesis"){
+            }
+            if(this.state.track == "thesis"){
 
+            }
         }
     }
 

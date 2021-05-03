@@ -2,19 +2,32 @@
     "name": "BMI",
     "version": "S21",
     "requirements": {
-        "seminar": ["BMI 592, BMI 592, BMI 592, BMI 592"],
-        "general": ["BMI 501", "BMI 502/BMI 503"],
-        "project": {
-            "imaging": ["BMI 513", "BMI 514", "BMI 520", "BMI 530", "BMI 540"],
-            "clinical": ["BMI 512", "BMI 540", "BMI 550", "BMI 551"],
-            "translational": ["BMI 511", "BMI 520", "BMI 530", "BMI 540"],
-            "elective": ["Elective Credits Required: 30", "    Max 6 Credits of BMI 598", "    Max 6 Credits of BMI 596 or BMI 696", "    BMI 502 or BMI 503 Applicable (not both)"]
-        },
-        "thesis": {
-            "imaging": ["BMI 513", "BMI 514", "BMI 520", "BMI 530", "BMI 540"],
-            "clinical": ["BMI 512", "BMI 540", "BMI 550", "BMI 551"],
-            "translational": ["BMI 511", "BMI 520", "BMI 530", "BMI 540"],
-            "elective": ["Elective Credits Required: 21", "    Max 12 Credits of BMI 599", "    Max 6 Credits of BMI 596 or BMI 696", "    BMI 502 or BMI 503 Applicable (not both)"]
+        "gpa_requirement": 3.0,
+        "tracks": {
+            "proj_imag": {
+                "courses": ["BMI 592", "BMI 592", "BMI 592", "BMI 592", "BMI 501", "BMI 502/BMI 503", "BMI 513", "BMI 514", "BMI 520", "BMI 530", "BMI 540", "BMI 598", "BMI 598"],
+                "elective_creds": 30
+            },
+            "proj_clinical": {
+                "courses": ["BMI 592", "BMI 592", "BMI 592", "BMI 592", "BMI 501", "BMI 502/BMI 503", "BMI 512", "BMI 540", "BMI 550", "BMI 551", "BMI 598", "BMI 598"],
+                "elective_creds": 30
+            },
+            "proj_trans": {
+                "courses": ["BMI 592", "BMI 592", "BMI 592", "BMI 592", "BMI 501", "BMI 502/BMI 503", "BMI 511", "BMI 520", "BMI 530", "BMI 540", "BMI 598", "BMI 598"],
+                "elective_creds": 30
+            },
+            "thesis_imag": {
+                "courses": ["BMI 592", "BMI 592", "BMI 592", "BMI 592", "BMI 501", "BMI 502/BMI 503", "BMI 513", "BMI 514", "BMI 520", "BMI 530", "BMI 540", "BMI 599", "BMI 599", "BMI 599", "BMI 599"],
+                "elective_creds": 21
+            },
+            "thesis_clinical": {
+                "courses": ["BMI 592", "BMI 592", "BMI 592", "BMI 592", "BMI 501", "BMI 502/BMI 503", "BMI 512", "BMI 540", "BMI 550", "BMI 551", "BMI 599", "BMI 599", "BMI 599", "BMI 599"],
+                "elective_creds": 21
+            },
+            "thesis_trans": {
+                "courses": ["BMI 592", "BMI 592", "BMI 592", "BMI 592", "BMI 501", "BMI 502/BMI 503", "BMI 511", "BMI 520", "BMI 530", "BMI 540", "BMI 599", "BMI 599", "BMI 599", "BMI 599"],
+                "elective_creds": 21
+            }
         }
     }
 }
