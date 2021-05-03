@@ -2,6 +2,7 @@
     "name": "AMS",
     "version": "S21",
     "requirements": {
+        "gpa_requirement": 3.0,
         "tracks": {
             "comp": {
                 "courses": ["AMS 501", "AMS 503", "AMS 510", "AMS 526", "AMS 527", "AMS 528", "AMS 595"],
@@ -16,11 +17,11 @@
                 "elective_creds": 12
             },
             "stats": { 
-                "courses": ["AMS 507", "AMS 510", "AMS 570", "AMS 572", "AMS 573", "AMS 578", "AMS 582", "AMS 597", "Elective", "Elective"],
+                "courses": ["AMS 507", "AMS 510", "AMS 570", "AMS 572", "AMS 573", "AMS 578", "AMS 582", "AMS 597"],
                 "elective_creds": 6
             },
             "quan": {
-                "courses": ["AMS 507", "AMS 510", "AMS 511", "AMS 512", "AMS 513", "AMS 514", "AMS 516", "AMS 517", "AMS 518", "AMS 572", "FIN 539", "Elective"],
+                "courses": ["AMS 507", "AMS 510", "AMS 511", "AMS 512", "AMS 513", "AMS 514", "AMS 516", "AMS 517", "AMS 518", "AMS 572", "FIN 539"],
                 "elective_creds": 3
             }
         },

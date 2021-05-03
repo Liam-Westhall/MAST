@@ -1,6 +1,7 @@
 const express = require('express')
 const jwt = require('jsonwebtoken')
 const router = express.Router()
+const bcrypt = require('bcrypt')
 
 const {Student, User} = require('../../models')
 
@@ -15,9 +16,8 @@ router.post('/', async (req, res) => {
 
       return res.status(401).json({erros: [{msg: "invalid credential"}]})
    }
-
     //not secured use bcrypt to encrypt password... for now it fine i guess
-   if (user.password != password)  return res.status(401).json({erros: [{msg: "invalid credential"}]})
+   if  (await !(bcrypt.compare(user.password, password)))  return res.status(401).json({erros: [{msg: "invalid credential"}]})
 
    const token = jwt.sign({email: user.email, isStudent: user.isStudent}, "SECRET", {expiresIn: "1d"})
    res.json({token})

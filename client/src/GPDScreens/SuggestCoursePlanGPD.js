@@ -29,7 +29,9 @@ class SuggestCoursePlanGPD extends Component {
             thursdayTimeEnd: "",
             fridayTimeBegin: "",
             fridayTimeEnd: "", 
-            currentSemester: ""
+            currentSemester: "",
+            preferredCourses: [],
+            avoidedCourses: []
         };
     }
 
@@ -44,7 +46,7 @@ class SuggestCoursePlanGPD extends Component {
         let res = await axios.post("/api/courses/getgrades").catch((err) => console.log(err));
         return res.data;
     }
-/*
+
     calcGPA = async () => {
         //get grades from databse
         let grades4GPA = this.getGrades
@@ -138,7 +140,6 @@ class SuggestCoursePlanGPD extends Component {
             return finalGPA
         }
     }
-*/
 
     //gets all the degree requirements for a specific major/track
     getDegreeRequirements = async () => {
@@ -399,7 +400,36 @@ class SuggestCoursePlanGPD extends Component {
             }
         } 
         if(this.state.major.replace(/ /g, '') == 'BMI'){
-
+            if(this.state.track == "Project/Imaging Informatics"){
+                required_courses = this.state.degreeData.requirements.tracks.proj_imag.courses
+                elective_credits = this.state.degreeData.requirements.tracks.proj_imag.elective_creds
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+            }
+            else if(this.state.track == "Project/Clinical Informatics"){
+                required_courses = this.state.degreeData.requirements.tracks.proj_clinical.courses
+                elective_credits = this.state.degreeData.requirements.tracks.proj_clinical.elective_creds
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+            }
+            else if(this.state.track == "Project/Translational Bio-Informatics"){
+                required_courses = this.state.degreeData.requirements.tracks.proj_trans.courses
+                elective_credits = this.state.degreeData.requirements.tracks.proj_trans.elective_creds
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+            }
+            else if(this.state.track == "Thesis/Clinical Informatics"){
+                required_courses = this.state.degreeData.requirements.tracks.thesis_clinical.courses
+                elective_credits = this.state.degreeData.requirements.tracks.thesis_clinical.elective_creds
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+            }
+            else if(this.state.track == "Thesis/Translational Bio-Informatics"){
+                required_courses = this.state.degreeData.requirements.tracks.thesis_trans.courses
+                elective_credits = this.state.degreeData.requirements.tracks.thesis_trans.elective_creds
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+            }
+            else if(this.state.track == "Thesis/Imaging Informatics"){
+                required_courses = this.state.degreeData.requirements.tracks.thesis_imag.courses
+                elective_credits = this.state.degreeData.requirements.tracks.thesis_imag.elective_creds
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+            }
         }
         if(this.state.major.replace(/ /g, '') == 'CSE'){
             if(this.state.track == "basic"){
@@ -432,7 +462,20 @@ class SuggestCoursePlanGPD extends Component {
 
     //gets the total credits from the remaining courses for the student to take
     getCreditsRemainingCourses = async (remainingCourses) => {
+        
+        let total = 0
 
+        for(const course of remainingCourses){
+
+            let values = course.split(" ")
+            let retval = await axios.get("/api/courses/course?name=" + values[0] + "&number=" +values[1])
+            if(retval){
+                total = total + retval.data.credits
+            }
+
+        }
+
+        return total
     }
 
     //triggered when "Suggest Course Plan" Button is pressed
@@ -448,11 +491,35 @@ class SuggestCoursePlanGPD extends Component {
 
     //gets the preferred courses from the user input on the website
     getPreferredCourses = async () => {
+        let courses = []
+        for(const course of this.state.preferredCourses){
+            let values = course.split(" ")
+            let retval = await axios.get("/api/courses/course?name=" + values[0] + "&number=" +values[1])
 
+            if(retval){
+                courses.push(retval.data)
+            }
+        }
+
+        
+        return courses
     }
 
     //gets the avoided courses from the user input on the website
     getAvoidedCourses = async () => {
+
+        let courses = []
+        for(const course of this.state.avoidedCourses){
+            let values = course.split(" ")
+            let retval = await axios.get("/api/courses/course?name=" + values[0] + "&number=" +values[1])
+
+            if(retval){
+                courses.push(retval.data)
+            }
+        }
+
+        
+        return courses
 
     }
 
@@ -724,7 +791,9 @@ class SuggestCoursePlanGPD extends Component {
                                     <tbody>
                                         {this.state.allCourses.map((course) => (
                                             <tr>
-                                                <td><Checkbox id={course + "prefer"} label={<span style={{color: "black"}}>{course}</span>}></Checkbox></td>
+                                                <td><Checkbox id={course + "prefer"} value={course} 
+                                                onChange={(e) => {this.state.avoidedCourses.includes(e.target.value) ? this.setState({avoidedCourses: this.state.avoidedCourses.filter((obj) => obj !== e.target.value)}) : this.setState({avoidedCourses: [...this.state.avoidedCourses, e.target.value]})}}  
+                                                label={<span style={{color: "black"}}>{course}</span>}></Checkbox></td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -743,7 +812,7 @@ class SuggestCoursePlanGPD extends Component {
                                     <tbody>
                                         {this.state.allCourses.map((course) => (
                                             <tr>
-                                                <td><Checkbox id={course + "avoid"} label={<span style={{color: "black"}}>{course}</span>}></Checkbox></td>
+                                                <td><Checkbox id={course + "avoid"} value={course} onChange={(e) => {this.state.preferredCourses.includes(e.target.value) ? this.setState({preferredCourses: this.state.preferredCourses.filter((obj) => obj !== e.target.value)}) : this.setState({preferredCourses: [...this.state.preferredCourses, e.target.value]})}} label={<span style={{color: "black"}}>{course}</span>}></Checkbox></td>
                                             </tr>
                                         ))}
                                     </tbody>

@@ -177,8 +177,8 @@ class EnrollmentTrendsGPD extends Component{
         return(
             <div>
                 <NavbarGPD />
-                <div class = "row"></div>
-                <div class = "row">
+                <div className = "row"></div>
+                <div className = "row">
                     <Select
                         isMulti
                         placeholder="Select Semester(s)"
@@ -202,7 +202,7 @@ class EnrollmentTrendsGPD extends Component{
                         onChange={e => this.onChangeCourses(e)}
                     />
                 </div>
-                <div class = "row">
+                <div className = "row">
                 </div>
                 <VictoryChart>
                     <VictoryLabel text="Enrollment Trends" x={225} y={20} textAnchor="middle"/>
