@@ -21,7 +21,7 @@ router.post('/', async (req, res) => {
 
     //not secured use bcrypt to encrypt password... for now it fine i guess
 
-   let result = bcrypt.compare(user.password, password);
+   let result = await bcrypt.compare(password, user.password);
    
    if (!result){
       return res.status(401).json({erros: [{msg: "invalid credential"}]})
