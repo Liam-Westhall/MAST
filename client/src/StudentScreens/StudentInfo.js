@@ -209,13 +209,15 @@ class StudentInfo extends Component{
             let dropdown;
             var arrCourses = [];
             let tempCoursePlan = this.state.coursePlan
-            Object.keys(tempCoursePlan).forEach(function (key){
-                Object.keys(tempCoursePlan[key]).forEach(function (key2){
-                        Object.keys(tempCoursePlan[key][key2]).forEach(function (key3){
-                            arrCourses.push(tempCoursePlan[key][key2][key3])
-                        }) 
-                })
-            });
+            if(tempCoursePlan){
+                Object.keys(tempCoursePlan).forEach(function (key){
+                    Object.keys(tempCoursePlan[key]).forEach(function (key2){
+                            Object.keys(tempCoursePlan[key][key2]).forEach(function (key3){
+                                arrCourses.push(tempCoursePlan[key][key2][key3])
+                            }) 
+                    })
+                });
+            }
             if (this.state.major.replace(/ /g,'') === "AMS" && this.state.rerender) {
                 if(this.state.track === "Computational Applied Mathematics"){
                     dropdown = <div>
