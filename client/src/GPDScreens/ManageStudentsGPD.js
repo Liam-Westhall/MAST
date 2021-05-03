@@ -925,6 +925,76 @@ class ManageStudentsGPD extends Component{
         </tr>)
     }
 
+    sortStudents = (e) => {
+         console.log("sorting...")
+        switch (e.target.value) {
+            case "name":
+                let sortedList = this.state.students.sort((a,b) => {
+                    let aFullname = a.User.firstName + a.User.lastName
+                    let bFullname = b.User.firstName + b.User.lastName
+                    
+                    aFullname = aFullname.replace(/\s+/g, '')
+                    bFullname = bFullname.replace(/\s+/g, '')
+
+                    return aFullname.localeCompare(bFullname)})
+
+                this.setState({students: [...sortedList]})
+                
+            break;
+
+            case "graduation_semester":
+                let sortedList_grad = this.state.students.sort((a,b) => {
+                    let aGradSem= a.graduation_semester
+                    let bGradSem = b.graduation_semester
+                    let aGradYear= parseInt(a.graduation_year)
+                    let bGradYear = parseInt(b.graduation_year)
+                    
+                    if (aGradSem === bGradSem){
+
+                        return aGradYear - bGradYear
+                    }else {
+
+                        if(aGradYear !== bGradYear) return aGradYear - bGradYear
+                        if(aGradSem === "Spring" && (bGradSem == "Fall" || bGradSem == "Summer" )) return -1
+                        if(aGradSem === "Fall" && (bGradSem == "Spring" || bGradSem == "Summer" )) return 1
+                        if(aGradSem === "Summer" && (bGradSem == "Spring")) return 1
+                        if(aGradSem === "Summer" && (bGradSem == "Fall")) return -1
+                        return 0
+                    }})
+                    
+
+                this.setState({students: [...sortedList_grad]})
+                break;
+        
+                    
+            case "num_of_semesters":
+                let sortedList_sem = this.state.students.sort((a,b) => {
+                    let aCoursePlan = a.coursePlan
+                    let bCoursePlan = b.coursePlan
+                    
+                    let aHasSemester = aCoursePlan.hasOwnProperty('semesters')
+                    let bHasSemester = bCoursePlan.hasOwnProperty('semesters')
+
+                    if (aHasSemester && !bHasSemester) return -1
+                    if (bHasSemester && !aHasSemester) return 1
+                    if (!bHasSemester && !aHasSemester) return 0
+
+                    let aNumSemesters = Object.keys(aCoursePlan.semesters).length
+                    let bNumSemesters = Object.keys(bCoursePlan.semesters).length
+                    return bNumSemesters - aNumSemesters
+                })
+
+
+
+                this.setState({students: [...sortedList_sem]})
+                break;
+                
+        
+            default:
+                break;
+        }
+    }
+
     render(){
         return(
             this.state.editStudent ? <Redirect to={{pathname: "edit_student_gpd", state: {currentEditStudent: this.state.currentEditStudent, comments: this.state.comments}}}></Redirect> : 
@@ -998,6 +1068,17 @@ class ManageStudentsGPD extends Component{
                         </Modal>
                         
                     </Col>
+                </Row>
+                <Row>
+                    
+                    <div className="input-field col s4">
+                        <select className="browser-default" defaultValue="" onChange={(e) => this.sortStudents(e)}>
+                            <option value="" disabled >Sort By</option>
+                            <option value="name">Name</option>
+                            <option value="graduation_semester">Graduation Semester</option>
+                            <option value="num_of_semesters">Number of Semester</option>
+                        </select>
+                    </div>
                 </Row>
                 <Table>
                     <thead>
