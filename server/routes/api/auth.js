@@ -16,12 +16,41 @@ router.post('/', async (req, res) => {
 
       return res.status(401).json({erros: [{msg: "invalid credential"}]})
    }
+
+   
+
     //not secured use bcrypt to encrypt password... for now it fine i guess
-   //let  bcryptEqual = await bcrypt.compare(user.password, password);
-   //if (!bcryptEqual)  return res.status(401).json({erros: [{msg: "invalid credential"}]})
+
+   let result = bcrypt.compare(user.password, password);
+   
+   if (!result){
+      return res.status(401).json({erros: [{msg: "invalid credential"}]})
+   }
 
    const token = jwt.sign({email: user.email, isStudent: user.isStudent}, "SECRET", {expiresIn: "1d"})
    res.json({token})
+
+})
+
+router.post('/newUser/', async(req, res) => {
+   const {firstName, lastName, email, password} = req.body;
+
+   var check = await User.findOne({where: {email: email}}).catch((err) => console.log('caught it'));
+   if(check){ 
+      return res.status(401).json({erros: [{msg: "Already Exists"}]})
+   }
+
+   let salt_rounds = 10;
+
+   const hashed = bcrypt.hashSync(password, salt_rounds);
+
+   let user = await User.create({
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      password: hashed,
+      isStudent: false
+   }).catch((err) => console.log('caught it1'));
 
 })
 

@@ -9,9 +9,10 @@ const {Student, User} = require('../../models')
 
 router.post('/', async(req, res) => {
     const {firstName, lastName, email, password, department, entrySemester, track, graduation_semester, graduation_year} = req.body;
-    try {
+    //try {
 
-        let check = await User.findOne({where : {email: email}}).catch((err) => console.log('caught it'));
+        let check = await User.findOne({where : {email: email}}).catch((err) => console.log('caught it3'));
+
         let req_semester = ""
         let req_year = ""
         let salt_rounds = 10
@@ -25,17 +26,20 @@ router.post('/', async(req, res) => {
         else if(entrySemester.charAt(0) == "S"){
             req_semester = "Spring"
         }
+        
         req_year = (2000 + parseInt(entrySemester.substring(1))).toString();
+
         //bcrypt here 
-        let salt = bcrypt.getSalt(salt_rounds)
-        let hashPassword =  bcrypt.hash(User.password, salt)
+
+        const hashed = bcrypt.hashSync(password, salt_rounds);
+
         let user = await User.create({
             firstName: firstName,
             lastName: lastName,
             email: email,
-            password: hashPassword,
+            password: hashed,
             isStudent: true
-        }).catch((err) => console.log('caught it'));
+        }).catch((err) => console.log('caught it1'));
 
         let student = await Student.create({
             sbuID: id.toString(),
@@ -48,15 +52,17 @@ router.post('/', async(req, res) => {
             requirement_version_year: req_year,
             UserId: user.id,
             coursePlan: {}
-        }).catch((err) => console.log('caught it'));
+        }).catch((err) => console.log('caught it2'));
 
         id = id + 1;
 
         res.send({name: user.firstName + " " + user.lastName})
-    }
+    
+    /*}
+
     catch(error){
         res.status(500).send("error ocurred adding the sudent")
-    }
+    }*/
 })
 
 module.exports = router;
