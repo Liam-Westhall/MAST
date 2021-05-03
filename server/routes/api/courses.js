@@ -13,10 +13,6 @@ const router = express.Router()
 router.get('/', async (req, res) => {
     try {
         let courses = await Course.findAll({
-            attributes: [
-                [Sequelize.fn('DISTINCT', Sequelize.col('courseNumber')), "courseNumber"],
-                "department"
-            ]
         }).catch((err) => console.log('caught it'));
         res.send(courses);
     } catch (error) {
@@ -30,6 +26,7 @@ router.get('/course?', async (req, res) => {
     try{
 
         let course = await Course.findOne({where: {courseNumber: req.query.number, department: req.query.name}})
+        console.log(course);
         res.send(course)
     }catch{
         console.log(error)
