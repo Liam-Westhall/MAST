@@ -427,7 +427,7 @@ setCourse = (text) => {
         let department = '';
         let courseNum = '';
         let title = '';
-        let desription = '';
+        let description = '';
         let credits = 0;
         let prereqs = '';
 
@@ -463,23 +463,39 @@ setCourse = (text) => {
                         titleIsDone = true;
                     }
 
+                    //If description is not done
                 } else if (!descriptionIsDone) {
                     let isPrereq = false;
                     let iscredit = false;
 
-                    if (text[i][j].substring(0, )) {
+                    let tempWords = text[i][j].split(" ");
+                    //Regex expression that matches line in bulletin with credit info
+                    if (tempWords[0].match(/(Fall,)|(Spring,)|(\d)|(Offered)|(\d-\d{1,2})/i)) {
+                        descriptionIsDone = true;
 
+                        //Find character that is a number, set credits
+                        for (let k = 0; k < tempWords.length; k++) {
+                            if (57 <= tempWords[k].charCodeAt(0) >= 48) {
+                                credits = parseInt(tempWords[k]);
+                            }
+                        }
+                    } else {
+                        //If not the credits(check if prereq?) add to description
+                        description += text[i][j];
                     }
 
-                } else {
-                    //
-                }
-
+                } 
 
             }
 
         }
+        console.log(department);
+        console.log(courseNum);
+        console.log(title);
+        console.log(description);
+        console.log(credits);
     }
+
 }
 
 
