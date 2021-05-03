@@ -365,24 +365,6 @@ class ManageStudentsGPD extends Component{
                         }
                     } 
                 }
-<<<<<<< HEAD
-                else if(student.track === "Computational Biology"){
-                    let courses = tempDegree.json.requirements.tracks.bio.courses
-                    console.log(courses);
-                    for(var course in courses){
-                        let courseStrArr = courses[course].split("/")
-                        for(let i = 0; i < courseStrArr.length; i++){
-                            for(var grade in this.state.grades){
-                                if(courseStrArr[i] === (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId === student.id)
-                                {
-                                    if(this.state.grades[grade].grade === "A" || this.state.grades[grade].grade === "B") {
-                                        completedCourses = completedCourses + 1;
-                                    }
-                                    else if(this.state.grades[grade].grade === "C"){
-                                        if(this.state.grades[grade].grade.length > 1){
-                                            if(this.state.grades[grade].grade.charAt(1) !== "-"){
-                                                completedCourses = completedCourses + 1
-=======
                 else if(student.department.replace(/ /g,'') == "BMI"){
                     if(student.track == "Project/Imaging Informatics"){
                         let courses = tempDegree.json.requirements.tracks.proj_imag.courses
@@ -437,7 +419,6 @@ class ManageStudentsGPD extends Component{
                                                     completedCourses = completedCourses + 1
                                                     completedCheck = true;
                                                 }
->>>>>>> fcdeee7f1888e9554b8a4cdeeee9b7ce15577202
                                             }
                                         }
                                     }
@@ -451,25 +432,6 @@ class ManageStudentsGPD extends Component{
                             }
                         }
                     }
-<<<<<<< HEAD
-                }
-                else if(student.track === "Statistics"){
-                    let courses = tempDegree.json.requirements.tracks.stats.courses
-                    console.log(courses);
-                    for(var course in courses){
-                        let courseStrArr = courses[course].split("/")
-                        for(let i = 0; i < courseStrArr.length; i++){
-                            for(var grade in this.state.grades){
-                                if(courseStrArr[i] === (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId === student.id)
-                                {
-                                    if(this.state.grades[grade].grade === "A" || this.state.grades[grade].grade === "B") {
-                                        completedCourses = completedCourses + 1;
-                                    }
-                                    else if(this.state.grades[grade].grade === "C"){
-                                        if(this.state.grades[grade].grade.length > 1){
-                                            if(this.state.grades[grade].grade.charAt(1) !== "-"){
-                                                completedCourses = completedCourses + 1
-=======
                     else if(student.track == "Project/Translational Bio-Informatics"){
                         let courses = tempDegree.json.requirements.tracks.proj_trans.courses
                         console.log(courses);
@@ -589,7 +551,6 @@ class ManageStudentsGPD extends Component{
                                                     completedCourses = completedCourses + 1
                                                     completedCheck = true;
                                                 }
->>>>>>> fcdeee7f1888e9554b8a4cdeeee9b7ce15577202
                                             }
                                         }
                                     }
@@ -604,24 +565,6 @@ class ManageStudentsGPD extends Component{
                         }
                     }
                 }
-<<<<<<< HEAD
-                else if(student.track === "Quanitative Finance"){
-                    let courses = tempDegree.json.requirements.tracks.quan.courses
-                    console.log(courses);
-                    for(var course in courses){
-                        let courseStrArr = courses[course].split("/")
-                        for(let i = 0; i < courseStrArr.length; i++){
-                            for(var grade in this.state.grades){
-                                if(courseStrArr[i] === (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId === student.id)
-                                {
-                                    if(this.state.grades[grade].grade === "A" || this.state.grades[grade].grade === "B") {
-                                        completedCourses = completedCourses + 1;
-                                    }
-                                    else if(this.state.grades[grade].grade === "C"){
-                                        if(this.state.grades[grade].grade.length > 1){
-                                            if(this.state.grades[grade].grade.charAt(1) !== "-"){
-                                                completedCourses = completedCourses + 1
-=======
                 else if(student.department.replace(/ /g,'') == "CE"){
                     if(student.track == "No Thesis"){
                         let courses = tempDegree.json.requirements.tracks.no_thesis.courses
@@ -679,7 +622,6 @@ class ManageStudentsGPD extends Component{
                                                     completedCheck = true;
                                                     break;
                                                 }
->>>>>>> fcdeee7f1888e9554b8a4cdeeee9b7ce15577202
                                             }
                                         }
                                     }
