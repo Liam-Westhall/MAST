@@ -680,25 +680,25 @@ class SuggestCoursePlanGPD extends Component {
 
     approveCousePlan = async () => {
         
-        let approvedPlan ={"studentID": this.state.studentID, semesters: {}}
-        let currentCousePlan = this.state.currentCoursePlan;
+        let approvedPlan ={sbuID: this.state.studentID, semesters: {}}
+        let currentCoursePlan = this.state.currentCoursePlan;
+        console.log(currentCoursePlan);
         let semesters = {}
-        for (const semester of currentCousePlan){
-            
+        for (const semester of currentCoursePlan){;
+            console.log(semester);
             for(const course of semester){
-
+                console.log(course);
                 if(semesters.hasOwnProperty(course.semester)){
-                    semesters[course.semester][Object.keys(course.semester).length,toString()] = course
+                    semesters[course.semester][Object.keys(course.semester).length.toString()] = course
                 }else{
-                    semesters[course.semester]["0"] = [course]
+                    semesters[course.semester] = { "0": course}
                 }
-
             }
         }
 
-        // approvedPlan.semesters = semesters
-        // console.log(approvedPlan)
-        let body = {sbuID: this.state.sbuID, coursePlan: approvedPlan}
+        approvedPlan.semesters = semesters
+        console.log(approvedPlan)
+        let body = {"studentID": this.state.sbuID, coursePlan: approvedPlan}
         let header = {
             headers: {
               "Content-Type": "application/json",
