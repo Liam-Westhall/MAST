@@ -1,5 +1,5 @@
 import React, { Component, Fragment} from 'react'
-import {Button, Card, Navbar, Tab, Icon, NavItem, Tabs} from 'react-materialize'
+import {Button} from 'react-materialize'
 import '../style.css'
 import NavbarGPD from './NavbarGPD';
 import {DropzoneAreaBase} from 'material-ui-dropzone'
@@ -123,9 +123,9 @@ class UploadFileGPD extends Component{
         return(
             <div>
                 <NavbarGPD />
-                <div class="input-field col s4">
-                    <select className="browser-default" onChange={(e) => this.setState({upload_type: e.target.value})}>
-                        <option value="" disabled selected>Choose your option</option>
+                <div className="input-field col s4">
+                    <select className="browser-default" defaultValue="" onChange={(e) => this.setState({upload_type: e.target.value})}>
+                        <option value="" disabled >Choose your option</option>
                         <option value="CouseOfferings">Couse Offerings</option>
                         <option value="DegreeRequirements">Degree Requirements</option>
                         <option value="StudentData">Student Data</option>
@@ -156,8 +156,8 @@ class UploadFileGPD extends Component{
             <br></br>
             <Button onClick={() => this.onSubmit()} 
             disabled={this.state.upload_type === "CourseInformation" && (this.state.selectedDepartment.length === 0 || this.state.selectedSemester.length === 0)} >Submit File</Button>
-            <div class = "row"></div>
-            <div class = "row">
+            <div className = "row"></div>
+            <div className = "row">
                     <Select
                         isDisabled={this.state.upload_type !== "CourseInformation"}
                         placeholder="Select a Semester/Year"

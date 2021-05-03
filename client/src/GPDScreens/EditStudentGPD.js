@@ -168,14 +168,14 @@ class EditStudentGPD extends Component{
         let courseStrArr = course.split("/")
         for(let i = 0; i < courseStrArr.length; i++){
             for(var grade in this.state.grades){
-                if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString())
+                if(courseStrArr[i] === (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString())
                 {
-                    if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                    if(this.state.grades[grade].grade === "A" || this.state.grades[grade].grade === "B") {
                         return true;
                     }
-                    else if(this.state.grades[grade].grade == "C"){
+                    else if(this.state.grades[grade].grade === "C"){
                         if(this.state.grades[grade].grade.length > 1){
-                            if(this.state.grades[grade].grade.charAt(1) != "-"){
+                            if(this.state.grades[grade].grade.charAt(1) !== "-"){
                                 return true;
                             }
                         }
@@ -194,7 +194,7 @@ class EditStudentGPD extends Component{
         for(let i = 0; i < courseStrArr.length; i++){
             for(let j = 0; j < arr.length; j++){
                 let courseStr = arr[j].department + " " + arr[j].courseNum;
-                if(courseStrArr[i] == courseStr){
+                if(courseStrArr[i] === courseStr){
                     return true;
                 }
             }
@@ -222,12 +222,12 @@ class EditStudentGPD extends Component{
                 dropdown = <div>
                     <Collapsible class="disabled">
                         {this.state.degreeData.requirements.tracks.comp.courses.map((course) => {
-                            let completedCheck = false;
+                            
                             let trueVal = this.checkCompletedCourse(course);
-                            if(trueVal == true){
+                            if(trueVal === true){
                                 return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
                             }
-                            else if(this.checkCourseInProgress(arrCourses, course) == true){
+                            else if(this.checkCourseInProgress(arrCourses, course) === true){
                                 return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
                             }
                             else{
@@ -242,12 +242,12 @@ class EditStudentGPD extends Component{
                 dropdown = <div>
                     <Collapsible class="disabled">
                         {this.state.degreeData.requirements.tracks.bio.courses.map((course) => {
-                            let completedCheck = false;
+                            
                             let trueVal = this.checkCompletedCourse(course);
-                            if(trueVal == true){
+                            if(trueVal === true){
                                 return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
                             }
-                            else if(this.checkCourseInProgress(arrCourses, course) == true){
+                            else if(this.checkCourseInProgress(arrCourses, course) === true){
                                 return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
                             }
                             else{
@@ -262,12 +262,12 @@ class EditStudentGPD extends Component{
                 dropdown = <div>
                     <Collapsible class="disabled">
                         {this.state.degreeData.requirements.tracks.op.courses.map((course) => {
-                            let completedCheck = false;
+                            
                             let trueVal = this.checkCompletedCourse(course);
-                            if(trueVal == true){
+                            if(trueVal === true){
                                 return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
                             }
-                            else if(this.checkCourseInProgress(arrCourses, course) == true){
+                            else if(this.checkCourseInProgress(arrCourses, course) === true){
                                 return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
                             }
                             else{
@@ -282,12 +282,12 @@ class EditStudentGPD extends Component{
                 dropdown = <div>
                     <Collapsible class="disabled">
                         {this.state.degreeData.requirements.tracks.stats.courses.map((course) => {
-                            let completedCheck = false;
+                            
                             let trueVal = this.checkCompletedCourse(course);
-                            if(trueVal == true){
+                            if(trueVal === true){
                                 return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
                             }
-                            else if(this.checkCourseInProgress(arrCourses, course) == true){
+                            else if(this.checkCourseInProgress(arrCourses, course) === true){
                                 return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
                             }
                             else{
@@ -302,12 +302,12 @@ class EditStudentGPD extends Component{
                 dropdown = <div>
                     <Collapsible class="disabled">
                         {this.state.degreeData.requirements.tracks.quan.courses.map((course) => {
-                            let completedCheck = false;
+                            
                             let trueVal = this.checkCompletedCourse(course);
-                            if(trueVal == true){
+                            if(trueVal === true){
                                 return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
                             }
-                            else if(this.checkCourseInProgress(arrCourses, course) == true){
+                            else if(this.checkCourseInProgress(arrCourses, course) === true){
                                 return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
                             }
                             else{
@@ -324,12 +324,12 @@ class EditStudentGPD extends Component{
                 dropdown = <div>
                     <Collapsible class="disabled">
                         {this.state.degreeData.requirements.tracks.proj_imag.courses.map((course) => {
-                            let completedCheck = false;
+                            
                             let trueVal = this.checkCompletedCourse(course);
-                            if(trueVal == true){
+                            if(trueVal === true){
                                 return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
                             }
-                            else if(this.checkCourseInProgress(arrCourses, course) == true){
+                            else if(this.checkCourseInProgress(arrCourses, course) === true){
                                 return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
                             }
                             else{
@@ -343,12 +343,12 @@ class EditStudentGPD extends Component{
                 dropdown = <div>
                 <Collapsible class="disabled">
                     {this.state.degreeData.requirements.tracks.proj_clinical.courses.map((course) => {
-                        let completedCheck = false;
+                        
                         let trueVal = this.checkCompletedCourse(course);
-                        if(trueVal == true){
+                        if(trueVal === true){
                             return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
                         }
-                        else if(this.checkCourseInProgress(arrCourses, course) == true){
+                        else if(this.checkCourseInProgress(arrCourses, course) === true){
                             return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
                         }
                         else{
@@ -362,12 +362,12 @@ class EditStudentGPD extends Component{
                 dropdown = <div>
                     <Collapsible class="disabled">
                         {this.state.degreeData.requirements.tracks.proj_trans.courses.map((course) => {
-                            let completedCheck = false;
+                            
                             let trueVal = this.checkCompletedCourse(course);
-                            if(trueVal == true){
+                            if(trueVal === true){
                                 return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
                             }
-                            else if(this.checkCourseInProgress(arrCourses, course) == true){
+                            else if(this.checkCourseInProgress(arrCourses, course) === true){
                                 return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
                             }
                             else{
@@ -381,12 +381,12 @@ class EditStudentGPD extends Component{
                 dropdown = <div>
                     <Collapsible class="disabled">
                         {this.state.degreeData.requirements.tracks.thesis_clinical.courses.map((course) => {
-                            let completedCheck = false;
+                            
                             let trueVal = this.checkCompletedCourse(course);
-                            if(trueVal == true){
+                            if(trueVal === true){
                                 return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
                             }
-                            else if(this.checkCourseInProgress(arrCourses, course) == true){
+                            else if(this.checkCourseInProgress(arrCourses, course) === true){
                                 return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
                             }
                             else{
@@ -400,12 +400,12 @@ class EditStudentGPD extends Component{
                 dropdown = <div>
                     <Collapsible class="disabled">
                         {this.state.degreeData.requirements.tracks.thesis_trans.courses.map((course) => {
-                            let completedCheck = false;
+                            
                             let trueVal = this.checkCompletedCourse(course);
-                            if(trueVal == true){
+                            if(trueVal === true){
                                 return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
                             }
-                            else if(this.checkCourseInProgress(arrCourses, course) == true){
+                            else if(this.checkCourseInProgress(arrCourses, course) === true){
                                 return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
                             }
                             else{
@@ -419,12 +419,12 @@ class EditStudentGPD extends Component{
                 dropdown = <div>
                     <Collapsible class="disabled">
                         {this.state.degreeData.requirements.tracks.thesis_imag.courses.map((course) => {
-                            let completedCheck = false;
+                            
                             let trueVal = this.checkCompletedCourse(course);
-                            if(trueVal == true){
+                            if(trueVal === true){
                                 return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
                             }
-                            else if(this.checkCourseInProgress(arrCourses, course) == true){
+                            else if(this.checkCourseInProgress(arrCourses, course) === true){
                                 return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
                             }
                             else{
@@ -508,12 +508,12 @@ class EditStudentGPD extends Component{
                 dropdown = <div>
                 <Collapsible class="disabled">
                     {this.state.degreeData.requirements.tracks.non_thesis.courses.map((course) => {
-                        let completedCheck = false;
+                        
                         let trueVal = this.checkCompletedCourse(course);
-                        if(trueVal == true){
+                        if(trueVal === true){
                             return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
                         }
-                        else if(this.checkCourseInProgress(arrCourses, course) == true){
+                        else if(this.checkCourseInProgress(arrCourses, course) === true){
                             return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
                         }
                         else{
@@ -527,12 +527,12 @@ class EditStudentGPD extends Component{
                 dropdown = <div>
                     <Collapsible class="disabled">
                         {this.state.degreeData.requirements.tracks.thesis.courses.map((course) => {
-                            let completedCheck = false;
+                            
                             let trueVal = this.checkCompletedCourse(course);
-                            if(trueVal == true){
+                            if(trueVal === true){
                                 return <CollapsibleItem icon={<Checkbox checked disabled id={course}/>} header={course}></CollapsibleItem>
                             }
-                            else if(this.checkCourseInProgress(arrCourses, course) == true){
+                            else if(this.checkCourseInProgress(arrCourses, course) === true){
                                 return <CollapsibleItem icon={<Checkbox indeterminate disabled id={course}/>} header={course}></CollapsibleItem>
                             }
                             else{

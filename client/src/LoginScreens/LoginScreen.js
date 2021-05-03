@@ -48,17 +48,17 @@ class LoginScreen extends Component{
                 </Navbar>
                 <br></br>
                 <Card className="blue-grey">
-                    <span class="white-text"><b>Username:</b></span>
-                    <TextInput class="white" onChange={this.handleChangeEmail} value={this.state.email}></TextInput>
-                    <span class="white-text"><b>Password:</b></span>                    
-                    <TextInput class="white" onChange={this.handleChangePassword} value={this.state.password} password></TextInput>
+                    <span className="white-text"><b>Username:</b></span>
+                    <TextInput className="white" onChange={this.handleChangeEmail} value={this.state.email}></TextInput>
+                    <span className="white-text"><b>Password:</b></span>                    
+                    <TextInput className="white" onChange={this.handleChangePassword} value={this.state.password} password></TextInput>
                     <Button onClick={this.loginCallback}>Login</Button>
                 </Card>
                 <br></br>
                 <div>
                 {this.state.loginError ? 
                 (<Card className="red">
-                    <span class="black-text">Invalid Credentials.</span>
+                    <span className="black-text">Invalid Credentials.</span>
                 </Card>) : <br></br>}
                 </div></div>}
             </div>

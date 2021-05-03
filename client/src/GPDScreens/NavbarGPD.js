@@ -18,9 +18,9 @@ class NavbarGPD extends Component{
             brand={<a className="brand-logo" href="/">MAST</a>}
             className = "blue"
             extendWith={<ul className="tabs tabs-transparent">
-                <li class="tab white-text"><a target="_self" href="/manage_students_gpd">Manage Students</a></li>
-                <li class="tab white-text"><a target="_self" href="/upload_file_gpd">Upload File</a></li>
-                <li class="tab white-text"><a target="_self" href="/enrollment_trends_gpd">View Enrollment Trends</a></li></ul>}
+                <li className="tab white-text"><a target="_self" href="/manage_students_gpd">Manage Students</a></li>
+                <li className="tab white-text"><a target="_self" href="/upload_file_gpd">Upload File</a></li>
+                <li className="tab white-text"><a target="_self" href="/enrollment_trends_gpd">View Enrollment Trends</a></li></ul>}
             options={{edge: 'left', preventScrolling: true}}>
             <Link to="/"><NavItem>Logout</NavItem></Link>
             </Navbar>

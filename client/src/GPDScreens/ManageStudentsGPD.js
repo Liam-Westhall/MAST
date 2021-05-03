@@ -169,22 +169,22 @@ class ManageStudentsGPD extends Component{
         for(let i = 0; i < this.state.degreeData.length; i++){
             let tempDegree = this.state.degreeData[i];
             if(student.department.replace(/ /g,'') === tempDegree.department){
-                if(student.department.replace(/ /g,'') == "AMS"){
-                    if(student.track == "Computational Applied Mathematics"){
+                if(student.department.replace(/ /g,'') === "AMS"){
+                    if(student.track === "Computational Applied Mathematics"){
                         let courses = tempDegree.json.requirements.tracks.comp.courses
                         console.log(courses);
                         for(var course in courses){
                             let courseStrArr = courses[course].split("/")
                             for(let i = 0; i < courseStrArr.length; i++){
                                 for(var grade in this.state.grades){
-                                    if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                    if(courseStrArr[i] === (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId === student.id)
                                     {
-                                        if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                        if(this.state.grades[grade].grade ==="A" || this.state.grades[grade].grade === "B") {
                                             completedCourses = completedCourses + 1;
                                         }
-                                        else if(this.state.grades[grade].grade == "C"){
+                                        else if(this.state.grades[grade].grade === "C"){
                                             if(this.state.grades[grade].grade.length > 1){
-                                                if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                if(this.state.grades[grade].grade.charAt(1) !== "-"){
                                                     completedCourses = completedCourses + 1
                                                 }
                                             }
@@ -195,21 +195,21 @@ class ManageStudentsGPD extends Component{
                         }
                     }
                 }
-                else if(student.track == "Operations Research"){
+                else if(student.track === "Operations Research"){
                     let courses = tempDegree.json.requirements.tracks.op.courses
                     console.log(courses);
                     for(var course in courses){
                         let courseStrArr = courses[course].split("/")
                         for(let i = 0; i < courseStrArr.length; i++){
                             for(var grade in this.state.grades){
-                                if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                if(courseStrArr[i] === (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId === student.id)
                                 {
-                                    if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                    if(this.state.grades[grade].grade === "A" || this.state.grades[grade].grade === "B") {
                                         completedCourses = completedCourses + 1;
                                     }
-                                    else if(this.state.grades[grade].grade == "C"){
+                                    else if(this.state.grades[grade].grade === "C"){
                                         if(this.state.grades[grade].grade.length > 1){
-                                            if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                            if(this.state.grades[grade].grade.charAt(1) !== "-"){
                                                 completedCourses = completedCourses + 1
                                             }
                                         }
@@ -219,21 +219,21 @@ class ManageStudentsGPD extends Component{
                         }
                     }
                 }
-                else if(student.track == "Computational Biology"){
+                else if(student.track === "Computational Biology"){
                     let courses = tempDegree.json.requirements.tracks.bio.courses
                     console.log(courses);
                     for(var course in courses){
                         let courseStrArr = courses[course].split("/")
                         for(let i = 0; i < courseStrArr.length; i++){
                             for(var grade in this.state.grades){
-                                if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                if(courseStrArr[i] === (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId === student.id)
                                 {
-                                    if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                    if(this.state.grades[grade].grade === "A" || this.state.grades[grade].grade === "B") {
                                         completedCourses = completedCourses + 1;
                                     }
-                                    else if(this.state.grades[grade].grade == "C"){
+                                    else if(this.state.grades[grade].grade === "C"){
                                         if(this.state.grades[grade].grade.length > 1){
-                                            if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                            if(this.state.grades[grade].grade.charAt(1) !== "-"){
                                                 completedCourses = completedCourses + 1
                                             }
                                         }
@@ -243,21 +243,21 @@ class ManageStudentsGPD extends Component{
                         }
                     }
                 }
-                else if(student.track == "Statistics"){
+                else if(student.track === "Statistics"){
                     let courses = tempDegree.json.requirements.tracks.stats.courses
                     console.log(courses);
                     for(var course in courses){
                         let courseStrArr = courses[course].split("/")
                         for(let i = 0; i < courseStrArr.length; i++){
                             for(var grade in this.state.grades){
-                                if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                if(courseStrArr[i] === (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId === student.id)
                                 {
-                                    if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                    if(this.state.grades[grade].grade === "A" || this.state.grades[grade].grade === "B") {
                                         completedCourses = completedCourses + 1;
                                     }
-                                    else if(this.state.grades[grade].grade == "C"){
+                                    else if(this.state.grades[grade].grade === "C"){
                                         if(this.state.grades[grade].grade.length > 1){
-                                            if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                            if(this.state.grades[grade].grade.charAt(1) !== "-"){
                                                 completedCourses = completedCourses + 1
                                             }
                                         }
@@ -267,21 +267,21 @@ class ManageStudentsGPD extends Component{
                         }
                     }
                 }
-                else if(student.track == "Quanitative Finance"){
+                else if(student.track === "Quanitative Finance"){
                     let courses = tempDegree.json.requirements.tracks.quan.courses
                     console.log(courses);
                     for(var course in courses){
                         let courseStrArr = courses[course].split("/")
                         for(let i = 0; i < courseStrArr.length; i++){
                             for(var grade in this.state.grades){
-                                if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                if(courseStrArr[i] === (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId === student.id)
                                 {
-                                    if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                    if(this.state.grades[grade].grade === "A" || this.state.grades[grade].grade === "B") {
                                         completedCourses = completedCourses + 1;
                                     }
-                                    else if(this.state.grades[grade].grade == "C"){
+                                    else if(this.state.grades[grade].grade === "C"){
                                         if(this.state.grades[grade].grade.length > 1){
-                                            if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                            if(this.state.grades[grade].grade.charAt(1) !== "-"){
                                                 completedCourses = completedCourses + 1
                                             }
                                         }
@@ -329,38 +329,38 @@ class ManageStudentsGPD extends Component{
                         trigger={<Button node="button" waves="light"> Advanced Search </Button>}>
                             <br></br>
                             <label>
-                                <input type="checkbox" class="filled-in" checked={this.state.searchByFirsName} onChange={() => this.setState({searchByFirsName: !this.state.searchByFirsName})}/>
+                                <input type="checkbox" className="filled-in" checked={this.state.searchByFirsName} onChange={() => this.setState({searchByFirsName: !this.state.searchByFirsName})}/>
                                 <span>First-name</span>
                             </label>
                             <TextInput className="white" id="search_firstName_input" onChange={(e) => this.setState({searchByFirstName_input: e.target.value})}></TextInput>
 
                             <label>
-                                <input type="checkbox" class="filled-in" checked={this.state.searchByLastName} onChange={() => this.setState({searchByLastName: !this.state.searchByLastName})}/>
+                                <input type="checkbox" className="filled-in" checked={this.state.searchByLastName} onChange={() => this.setState({searchByLastName: !this.state.searchByLastName})}/>
                                 <span>Last name</span>
                             </label>
                             <TextInput className="white" id="search_lastName_input" onChange={(e) => this.setState({searchByLastName_input: e.target.value})}></TextInput>
 
                             <label>
-                                <input type="checkbox" class="filled-in" checked={this.state.searchByStudentID} onChange={() => this.setState({searchByStudentID: !this.state.searchByStudentID})}/>
+                                <input type="checkbox" className="filled-in" checked={this.state.searchByStudentID} onChange={() => this.setState({searchByStudentID: !this.state.searchByStudentID})}/>
                                 <span>Student ID</span>
                             </label>
                             <TextInput className="white" id="search_studentID_input" onChange={(e) => this.setState({searchByStudentID_input: e.target.value})}></TextInput>
 
 
                             <label>
-                                <input type="checkbox" class="filled-in" checked={this.state.searchByDepartment} onChange={() => this.setState({searchByDepartment: !this.state.searchByDepartment})}/>
+                                <input type="checkbox" className="filled-in" checked={this.state.searchByDepartment} onChange={() => this.setState({searchByDepartment: !this.state.searchByDepartment})}/>
                                 <span>Department</span>
                             </label>
                             <TextInput className="white" id="search_department_input" onChange={(e) => this.setState({searchByDepartment_input: e.target.value})} ></TextInput>
 
                             <label>
-                                <input type="checkbox" class="filled-in" checked={this.state.searchByEmail} onChange={() => this.setState({searchByEmail: !this.state.searchByEmail})}/>
+                                <input type="checkbox" className="filled-in" checked={this.state.searchByEmail} onChange={() => this.setState({searchByEmail: !this.state.searchByEmail})}/>
                                 <span>Email</span>
                             </label>
                             <TextInput className="white" id="search_email_input" onChange={(e) => this.setState({searchByEmail_input: e.target.value})}></TextInput>
 
                             <label>
-                                <input type="checkbox" class="filled-in" checked={this.state.searchByTrack} onChange={() => this.setState({searchByTrack: !this.state.searchByTrack})}/>
+                                <input type="checkbox" className="filled-in" checked={this.state.searchByTrack} onChange={() => this.setState({searchByTrack: !this.state.searchByTrack})}/>
                                 <span>Track</span>
                             </label>
                             <TextInput className="white" id="search_track_input" onChange={(e) => this.setState({searchByTrack_input: e.target.value})}></TextInput>
@@ -384,7 +384,7 @@ class ManageStudentsGPD extends Component{
                     </thead>
                     <tbody>
                         {this.state.students.map((student) => (
-                                <tr onClick={this.editStudent.bind(this, student)}>
+                                <tr  key={student.sbuID} onClick={this.editStudent.bind(this, student)}>
                                     <th data-field="Name">{student.User.firstName + " " + student.User.lastName}</th>
                                     <th data-field="Id">{student.sbuID}</th>
                                     <th data-field="Email">{student.User.email}</th>
