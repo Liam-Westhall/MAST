@@ -17,8 +17,8 @@ class NavbarStudent extends Component{
             brand={<a className="brand-logo" href="/">MAST</a>}
             className = "blue"
             extendWith={<ul className="tabs tabs-transparent">
-                <li class="tab white-text"><a target="_self" href="/student_info_stu">Manage Students</a></li>
-                <li class="tab white-text"><a target="_self" href="/student_info_stu">Sugggest Course Plan</a></li></ul>}
+                <li class="tab white-text"><a target="_self" href="/student_info_stu">My Info</a></li>
+                </ul>}
             options={{edge: 'left', preventScrolling: true}}>
             <Link to="/"><NavItem>Logout</NavItem></Link>
             </Navbar>
