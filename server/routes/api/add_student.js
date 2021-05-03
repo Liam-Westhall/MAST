@@ -1,6 +1,8 @@
 const express = require('express')
 const jwt = require('jsonwebtoken')
 const router = express.Router()
+const bcrypt = require('bcrypt')
+
 let id = 111111111
 
 const {Student, User} = require('../../models')
@@ -12,6 +14,7 @@ router.post('/', async(req, res) => {
         let check = await User.findOne({where : {email: email}}).catch((err) => console.log('caught it'));
         let req_semester = ""
         let req_year = ""
+        let salt_rounds = 10
         if (check) {
             return res.status(409).send("User already exists")
         }
@@ -23,11 +26,14 @@ router.post('/', async(req, res) => {
             req_semester = "Spring"
         }
         req_year = (2000 + parseInt(entrySemester.substring(1))).toString();
+        //bcrypt here 
+        let salt = bcrypt.getSalt(salt_rounds)
+        let hashPassword =  bcrypt.hash(User.password, salt)
         let user = await User.create({
             firstName: firstName,
             lastName: lastName,
             email: email,
-            password: password,
+            password: hashPassword,
             isStudent: true
         }).catch((err) => console.log('caught it'));
 
