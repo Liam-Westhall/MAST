@@ -499,7 +499,9 @@ router.post('/course_info', async (req, res) => {
                         }
             
                     }
-
+                    if (credits === 0) {
+                        credits = 3;
+                    }
                     if (dept === '' || courseNum  === '' || title  === '' || description  === '' || credits === '') {
 
                     } else {
@@ -529,19 +531,9 @@ router.post('/course_info', async (req, res) => {
                                     }
                                 }); 
                               }
-                              //callback();
                             });
                           })
                     }
-
-
-                    
-
-                    //console.log(department);
-                    //console.log(courseNum);
-                    //console.log(title);
-                    //console.log(description);
-                    //console.log(credits);
                 }
 
 
