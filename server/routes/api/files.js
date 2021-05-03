@@ -128,7 +128,7 @@ router.post('/student_data', async (req, res) => {
 
         var studentProfile_bufferStream = new stream.PassThrough()
         studentProfile_bufferStream.end(studentProfile.data)
-        console.log("Updating Student data...")
+        
         studentProfile_bufferStream.pipe(csv())
         .on('data', (data) => {console.log(data) 
             results.push(data)})
@@ -151,7 +151,7 @@ router.post('/student_data', async (req, res) => {
                 console.log(data)
                 if (results[data].entry_semester !== 'Fall' && results[data].entry_semester !== 'Spring') throw results[data].entry_semester + 'Semester string is not correct'
                 if (departments.indexOf(results[data].department) <= -1) throw 'Not a correct department'
-                console.log("---------------------------------------->", results[data])
+            
                 let user = await User.create({
                     firstName: results[data].first_name,
                     lastName: results[data].last_name,
@@ -160,7 +160,7 @@ router.post('/student_data', async (req, res) => {
                     isStudent: true
                 }).catch((err) => console.log('caught it'));
 
-                console.log("creating student...")
+                
                 await Student.create({
                     sbuID: results[data].sbu_id,
                     department: results[data].department,
@@ -177,7 +177,7 @@ router.post('/student_data', async (req, res) => {
                     
                 }).catch((err) => console.log('caught it'));
 
-                console.log("student created")
+                
 
             }
            
@@ -282,35 +282,38 @@ router.post('/student_course_data', async (req, res) => {
                 }
 
 
-                var student_course= Student_Course.findOne({where: {
-                    StudentId: course_results[data].sbu_id,
+                var student_course= await Student_Course.findOne({where: {
+                    StudentId: student.id,
                     department: course_results[data].department,
                     course_num: course_results[data].course_num,
                 }})
 
                 if(student_course){
+                    console.log("LOG-------------------------> UPDATING student course")
                     await Student_Course.update({
-                        StudentId: course_results[data].sbu_id,
                         department: course_results[data].department,
-                        course_num: course_results[data].course_num,
+                        course_num: parseInt(course_results[data].course_num),
                         semester: course_results[data].semester,
                         year: course_results[data].year,
                         grade: course_results[data].grade,
-                        section: course_results[data].section
+                        section: parseInt(course_results[data].section)
                     }, {where: {
-                        StudentId: course_results[data].sbu_id,
+                        StudentId: student.id,
                         department: course_results[data].department,
                         course_num: course_results[data].course_num,
                     }})
                 }else {
+                    console.log("LOG-------------------------> CREATING student course")
                         let newCourse = await Student_Course.create({
-                            StudentId: course_results[data].sbu_id,
+                            StudentId: student.id,
                             department: course_results[data].department, 
-                            course_num: course_results[data].course_num,
+                            course_num: parseInt(course_results[data].course_num),
                             semester: course_results[data].semester,
                             year: course_results[data].year,
                             grade: course_results[data].grade,
-                            section: course_results[data].section
+                            section: course_results[data].section === "" ? 0 : parseInt(course_results[data].section),
+                            credits: 0,
+                            section: 0
                  })
                 }
     
