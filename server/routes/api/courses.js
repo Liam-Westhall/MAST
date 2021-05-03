@@ -25,6 +25,18 @@ router.get('/', async (req, res) => {
     }
 })
 
+router.get('/course?', async (req, res) => {
+
+    try{
+
+        let course = await Course.findOne({where: {courseNumber: req.query.number, department: req.query.name}})
+        res.send(course)
+    }catch{
+        console.log(error)
+        res.status(500).send("Could not find course")
+    }
+})
+
 router.post('/courselist', async (req, res) => {
     try {
         const {department, courselist, semesters} = req.body;

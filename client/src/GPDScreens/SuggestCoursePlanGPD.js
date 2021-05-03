@@ -29,7 +29,9 @@ class SuggestCoursePlanGPD extends Component {
             thursdayTimeEnd: "",
             fridayTimeBegin: "",
             fridayTimeEnd: "", 
-            currentSemester: ""
+            currentSemester: "",
+            preferredCourses: [],
+            avoidedCourses: []
         };
     }
 
@@ -448,11 +450,35 @@ class SuggestCoursePlanGPD extends Component {
 
     //gets the preferred courses from the user input on the website
     getPreferredCourses = async () => {
+        let courses = []
+        for(const course of this.state.preferredCourses){
+            let values = course.split(" ")
+            let retval = await axios.get("/api/courses/course?name=" + values[0] + "&number=" +values[1])
 
+            if(retval){
+                courses.push(retval.data)
+            }
+        }
+
+        
+        return courses
     }
 
     //gets the avoided courses from the user input on the website
     getAvoidedCourses = async () => {
+
+        let courses = []
+        for(const course of this.state.avoidedCourses){
+            let values = course.split(" ")
+            let retval = await axios.get("/api/courses/course?name=" + values[0] + "&number=" +values[1])
+
+            if(retval){
+                courses.push(retval.data)
+            }
+        }
+
+        
+        return courses
 
     }
 
@@ -724,7 +750,9 @@ class SuggestCoursePlanGPD extends Component {
                                     <tbody>
                                         {this.state.allCourses.map((course) => (
                                             <tr>
-                                                <td><Checkbox id={course + "prefer"} label={<span style={{color: "black"}}>{course}</span>}></Checkbox></td>
+                                                <td><Checkbox id={course + "prefer"} value={course} 
+                                                onChange={(e) => {this.state.avoidedCourses.includes(e.target.value) ? this.setState({avoidedCourses: this.state.avoidedCourses.filter((obj) => obj !== e.target.value)}) : this.setState({avoidedCourses: [...this.state.avoidedCourses, e.target.value]})}}  
+                                                label={<span style={{color: "black"}}>{course}</span>}></Checkbox></td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -743,7 +771,7 @@ class SuggestCoursePlanGPD extends Component {
                                     <tbody>
                                         {this.state.allCourses.map((course) => (
                                             <tr>
-                                                <td><Checkbox id={course + "avoid"} label={<span style={{color: "black"}}>{course}</span>}></Checkbox></td>
+                                                <td><Checkbox id={course + "avoid"} value={course} onChange={(e) => {this.state.preferredCourses.includes(e.target.value) ? this.setState({preferredCourses: this.state.preferredCourses.filter((obj) => obj !== e.target.value)}) : this.setState({preferredCourses: [...this.state.preferredCourses, e.target.value]})}} label={<span style={{color: "black"}}>{course}</span>}></Checkbox></td>
                                             </tr>
                                         ))}
                                     </tbody>
