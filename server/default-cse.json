@@ -2,19 +2,19 @@
     "name": "CSE",
     "version": "S21",
     "requirements": {
-        "gpa": "GPA Requirement: 3.0",
-        "track": {
+        "gpa_requirement": 3.0,
+        "tracks": {
             "basic": {
                 "courses": ["CSE 512/CSE 526/CSE 540/CSE 541/CSE 547/CSE 548/CSE 549", "CSE 502/CSE 504/CSE 506/CSE 508/CSE 509/CSE 532/CSE 534/CSE 535", "CSE 522"],
-                "elective_credits": 24
+                "elective_creds": 24
             },
             "advanced": {
                 "courses": ["CSE 512/CSE 526/CSE 540/CSE 541/CSE 547/CSE 548/CSE 549", "CSE 502/CSE 504/CSE 506/CSE 508/CSE 509/CSE 532/CSE 534/CSE 535", "CSE 523", "CSE 524"],
-                "elective_credits": 21
+                "elective_creds": 21
             },
             "thesis": {
                 "courses": ["CSE 512/CSE 526/CSE 540/CSE 541/CSE 547/CSE 548/CSE 549", "CSE 502/CSE 504/CSE 506/CSE 508/CSE 509/CSE 532/CSE 534/CSE 535", "CSE 566"],
-                "elective_credits": 18
+                "elective_creds": 18
             }
         }
     }

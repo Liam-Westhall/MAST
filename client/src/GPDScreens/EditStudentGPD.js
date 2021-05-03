@@ -18,47 +18,7 @@ class EditStudentGPD extends Component{
             entrySemester: this.props.location.state.currentEditStudent.entrySemester,
             track: this.props.location.state.currentEditStudent.track,
             sbuID: this.props.location.state.currentEditStudent.sbuID,
-            coursePlan: {
-                "studentID": 1,
-                "semesters": {
-                    "F17": {
-                        "0": {
-                            "department": "BMI",
-                            "courseNum": "592",
-                            "credits": 3,
-                            "semester": "Fall",
-                            "year": "2017",
-                            "grade": "B"
-                        },
-                        "1": {
-                            "department": "CSE",
-                            "courseNum": "503",
-                            "credits": 3,
-                            "semester": "Fall",
-                            "year": "2017",
-                            "grade": "A"
-                        }
-                    },
-                    "S17": {
-                        "0": {
-                            "department": "CSE",
-                            "courseNum": "504",
-                            "credits": 3,
-                            "semester": "Spring",
-                            "year": "2017",
-                            "grade": "C"
-                        },
-                        "1": {
-                            "department": "CSE",
-                            "courseNum": "505",
-                            "credits": 3,
-                            "semester": "Spring",
-                            "year": "2017",
-                            "grade": "D"
-                        }
-                    }
-                }
-            },
+            coursePlan: this.props.location.state.currentEditStudent.coursePlan,
             expectedGraduation: "",
             degreeData: [],
             comments: this.props.location.state.comments,

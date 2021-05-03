@@ -260,83 +260,85 @@ class CoursePlanScreen extends Component {
             else if(this.state.track == "Computational Biology"){
                 required_courses = this.state.degreeData.requirements.tracks.bio.courses
                 elective_credits = this.state.degreeData.requirements.tracks.bio.elective_creds
-                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+                remaining_courses = await this.searchCoursesAMS(grades, required_courses, elective_credits);
             }
             else if(this.state.track == "Operations Research"){
                 required_courses = this.state.degreeData.requirements.tracks.op.courses
                 elective_credits = this.state.degreeData.requirements.tracks.op.elective_creds
-                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+                remaining_courses = await this.searchCoursesAMS(grades, required_courses, elective_credits);
             }
             else if(this.state.track == "Statistics"){
                 required_courses = this.state.degreeData.requirements.tracks.stats.courses
                 elective_credits = this.state.degreeData.requirements.tracks.stats.elective_creds
-                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+                remaining_courses = await this.searchCoursesAMS(grades, required_courses, elective_credits);
             }
             else if(this.state.track == "Quanitative Finance"){
                 required_courses = this.state.degreeData.requirements.tracks.quan.courses
                 elective_credits = this.state.degreeData.requirements.tracks.quan.elective_creds
-                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+                remaining_courses = await this.searchCoursesAMS(grades, required_courses, elective_credits);
             }
         } 
         if(this.state.major.replace(/ /g, '') == 'BMI'){
             if(this.state.track == "Project/Imaging Informatics"){
                 required_courses = this.state.degreeData.requirements.tracks.proj_imag.courses
                 elective_credits = this.state.degreeData.requirements.tracks.proj_imag.elective_creds
-                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+                remaining_courses = await this.searchCoursesAMS(grades, required_courses, elective_credits);
             }
             else if(this.state.track == "Project/Clinical Informatics"){
                 required_courses = this.state.degreeData.requirements.tracks.proj_clinical.courses
                 elective_credits = this.state.degreeData.requirements.tracks.proj_clinical.elective_creds
-                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+                remaining_courses = await this.searchCoursesAMS(grades, required_courses, elective_credits);
             }
             else if(this.state.track == "Project/Translational Bio-Informatics"){
                 required_courses = this.state.degreeData.requirements.tracks.proj_trans.courses
                 elective_credits = this.state.degreeData.requirements.tracks.proj_trans.elective_creds
-                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+                remaining_courses = await this.searchCoursesAMS(grades, required_courses, elective_credits);
             }
             else if(this.state.track == "Thesis/Clinical Informatics"){
                 required_courses = this.state.degreeData.requirements.tracks.thesis_clinical.courses
                 elective_credits = this.state.degreeData.requirements.tracks.thesis_clinical.elective_creds
-                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+                remaining_courses = await this.searchCoursesAMS(grades, required_courses, elective_credits);
             }
             else if(this.state.track == "Thesis/Translational Bio-Informatics"){
                 required_courses = this.state.degreeData.requirements.tracks.thesis_trans.courses
                 elective_credits = this.state.degreeData.requirements.tracks.thesis_trans.elective_creds
-                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+                remaining_courses = await this.searchCoursesAMS(grades, required_courses, elective_credits);
             }
             else if(this.state.track == "Thesis/Imaging Informatics"){
                 required_courses = this.state.degreeData.requirements.tracks.thesis_imag.courses
                 elective_credits = this.state.degreeData.requirements.tracks.thesis_imag.elective_creds
-                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+                remaining_courses = await this.searchCoursesAMS(grades, required_courses, elective_credits);
             }
         }
         if(this.state.major.replace(/ /g, '') == 'CSE'){
             if(this.state.track == "Basic"){
                 required_courses = this.state.degreeData.requirements.tracks.basic.courses
                 elective_credits = this.state.degreeData.requirements.tracks.basic.elective_creds
-                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+                console.log(elective_credits);
+                remaining_courses = await this.searchCoursesAMS(grades, required_courses, elective_credits);
+                console.log(remaining_courses);
             }
             else if(this.state.track == "Advanced"){
                 required_courses = this.state.degreeData.requirements.tracks.advanced.courses
                 elective_credits = this.state.degreeData.requirements.tracks.advanced.elective_creds
-                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+                remaining_courses = await this.searchCoursesAMS(grades, required_courses, elective_credits);
             }
             else if(this.state.track == "Thesis"){
                 required_courses = this.state.degreeData.requirements.tracks.thesis.courses
                 elective_credits = this.state.degreeData.requirements.tracks.thesis.elective_creds
-                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+                remaining_courses = await this.searchCoursesAMS(grades, required_courses, elective_credits);
             }
         }
         if(this.state.major.replace(/ /g, '') == 'CE'){
             if(this.state.track == "Non-Thesis"){
                 required_courses = this.state.degreeData.requirements.tracks.non_thesis.courses
                 elective_credits = this.state.degreeData.requirements.tracks.non_thesis.elective_creds
-                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+                remaining_courses = await this.searchCoursesAMS(grades, required_courses, elective_credits);
             }
             else if(this.state.track == "Thesis"){
                 required_courses = this.state.degreeData.requirements.tracks.thesis.courses
                 elective_credits = this.state.degreeData.requirements.tracks.thesis.elective_creds
-                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+                remaining_courses = await this.searchCoursesAMS(grades, required_courses, elective_credits);
             }
         }
         return remaining_courses;
@@ -436,10 +438,7 @@ class CoursePlanScreen extends Component {
 
     }
 
-    suggestCoursePlan = async (remainingCourses, remainingElectiveCredits, preferredCourses, avoidedCourses) => {
-        console.log(remainingCourses);
-        let totalRemainingCredits = await this.getCreditsRemainingCourses(remainingCourses) + remainingElectiveCredits;
-        console.log(totalRemainingCredits);
+    suggestCoursePlan = async (remainingCourses, remainingElectiveCredits, preferredCourses, avoidedCourses, totalRemainingCredits) => {
         let editElectiveCredits = remainingElectiveCredits;
         let remainingSemesters = this.state.remainingSemesters
         let loopNextSem = this.state.currentSemester;
@@ -506,6 +505,7 @@ class CoursePlanScreen extends Component {
                 }
                 //Now checks degree requirement constraint
                 let courseStr = preferredCourses[i].department + " " + preferredCourses[i].courseNumber;
+                let department = preferredCourses[i].department
                 let degreeReqFound = false;
                 for(let remainLoop = 0; remainLoop < remainingCourses.length; remainLoop++){
                     let remainingCoursesSplit = remainingCourses[remainLoop].split("/");
@@ -517,7 +517,7 @@ class CoursePlanScreen extends Component {
                     }
                 }
                 if(!degreeReqFound){
-                    if(preferredCourses[i].credits < editElectiveCredits){
+                    if(preferredCourses[i].credits > editElectiveCredits){
                         continue;
                     }
                     else{
@@ -531,7 +531,7 @@ class CoursePlanScreen extends Component {
                         let remainingCoursesSplit = remainingCourses[j].split("/");
                         for(let splitLoop = 0; splitLoop < remainingCoursesSplit.length; splitLoop++){
                             console.log(remainingCoursesSplit[splitLoop]);
-                            if(courseStr == remainingCoursesSplit[splitLoop]){
+                            if(courseStr == remainingCoursesSplit[splitLoop] ){
                                 remainingCourses.splice(j, 1);
                             }
                         }
@@ -555,7 +555,6 @@ class CoursePlanScreen extends Component {
                 remainingSemesters = remainingSemesters - 1;
             }
             else{
-                console.log("Here");
                 await this.getAllCourses();
                 let nonPreferredCourses = this.state.allCourseVals;
                 console.log(nonPreferredCourses)
@@ -563,12 +562,18 @@ class CoursePlanScreen extends Component {
                     let constraintViolated = false;
                     let electiveCourse = false;
                     let requiredCourseFlag = false;
-                    console.log(avoidedCourses);
                     for(let j = 0; j < remainingCourses.length; j++){
-                        if(nonPreferredCourses[i].department + " " + nonPreferredCourses[i].courseNumber == remainingCourses[j]){
-                            requiredCourseFlag = true;
+                        let tempStrArr = remainingCourses[j].split("/");
+                        for(let k = 0; k < tempStrArr.length; k++){
+                            if(nonPreferredCourses[i].department + " " + nonPreferredCourses[i].courseNumber == tempStrArr[k]){
+                                requiredCourseFlag = true;
+                            }
                         }
                     }
+                    if(nonPreferredCourses[i].department == this.state.major){
+                        requiredCourseFlag = true;
+                    }
+                    console.log(requiredCourseFlag);
                     if(!requiredCourseFlag){
                         continue;
                     }
@@ -589,25 +594,21 @@ class CoursePlanScreen extends Component {
                     if(daysSplit[temp] == "MW"){
                         if((this.convert24to12(timesSplit[0]) < this.state.mondayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.mondayTimeEnd) || (this.convert24to12(timesSplit[0]) < this.state.wednesdayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.wednesdayTimeEnd)){
                             constraintViolated = true;
-                            break;
                         }
                     }
                     else if(daysSplit[temp] == "TUTH"){
                         if((this.convert24to12(timesSplit[0]) < this.state.tuesdayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.tuesdayTimeEnd) || (this.convert24to12(timesSplit[0]) < this.state.thursdayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.thursdayTimeEnd)){
                             constraintViolated = true;
-                            break;
                         }
                     }
                     else if(daysSplit[temp] == "MWF"){
                         if((this.convert24to12(timesSplit[0]) < this.state.mondayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.mondayTimeEnd) || (this.convert24to12(timesSplit[0]) < this.state.wednesdayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.wednesdayTimeEnd)  && (this.convert24to12(timesSplit[0]) < this.state.fridayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.fridayTimeEnd)){
                             constraintViolated = true;
-                            break;
                         }
                     }
                     else if(daysSplit[temp] == "MF"){
                         if((this.convert24to12(timesSplit[0]) < this.state.mondayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.mondayTimeEnd) || (this.convert24to12(timesSplit[0]) < this.state.fridayTimeBegin || this.convert24to12(timesSplit[1]) > this.state.fridayTimeEnd)){
                             constraintViolated = true;
-                            break;
                         }
                     }
                 }
@@ -635,7 +636,7 @@ class CoursePlanScreen extends Component {
                     }
                 }
                 if(!degreeReqFound){
-                    if(nonPreferredCourses[i].credits < editElectiveCredits){
+                    if(nonPreferredCourses[i].credits > editElectiveCredits){
                         continue;
                     }
                     else{

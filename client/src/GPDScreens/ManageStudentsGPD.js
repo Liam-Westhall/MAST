@@ -239,7 +239,7 @@ class ManageStudentsGPD extends Component{
         this.loadStudents()
     }
 
-    deleteStudentCallback = () => {
+    deleteStudentCallback = async () => {
         let body = []
         axios.post("/api/students/delete_all", body).catch((error) => console.log(error));
         this.setState({students: []});

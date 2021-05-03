@@ -209,8 +209,6 @@ router.post('/student_course_data', async (req, res) => {
         const departments = ['CSE', 'AMS', 'CE', 'BMI']
 
 
-        
-
         console.log("Updating course info...")
         // while(results.length > 0) {
         //     results.pop();

@@ -2,6 +2,7 @@
     "name": "CE",
     "version": "S21",
     "requirements": {
+        "gpa_requirement": 3.0,
         "tracks": {
             "no_thesis": {
                 "courses": ["ESE 536/CSE 538/ESE 545/ESE 566/ESE 587", "ESE 505/ESE 506/ESE 546/ESE 548", "ESE 507/ESE 530/ESE 549/ESE 555/ESE 556/ESE 575", "ESE 501/ESE 533/ESE 534/ESE 543/ESE 554/ESE 558/ESE 588/ESE 589/CSE 506/CSE 526/CSE 548/AMS 542", "ESE 501/ESE 533/ESE 534/ESE 543/ESE 554/ESE 558/ESE 588/ESE 589/CSE 506/CSE 526/CSE 548/AMS 542", "ESE 597"],

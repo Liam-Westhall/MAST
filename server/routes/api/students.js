@@ -47,9 +47,18 @@ router.post('/find_student', async (req, res) => {
 })
 
 router.post('/delete_all', async (req, res) => {
-    await Student.destroy({
+    await Comment.destroy({
+        where: {},
         truncate: true
-    }).catch((err) => console.log('caught it'));
+    }).catch((err) => console.log(err))
+    await Student.destroy({
+        where: {},
+        truncate: {cascade: true}
+    }).catch((err) => console.log(err));
+    await User.destroy({
+        where: {isStudent: 1},
+        truncate: {cascade: true}
+    }).catch((err) => console.log(err));
 }
 )
 
