@@ -890,13 +890,13 @@ class ManageStudentsGPD extends Component{
                         }
                     } 
 
-                    //  //GPA===1 requierment
-                    //  let gpa = this.calcGPA(student.sbuID)
-                    //  if(gpa >= tempDegree.json.requirements.gpa_requirement){
-                    //      completedCourses = completedCourses + 1
-                    //  }else {
-                    //      unsatisfiedCourses = unsatisfiedCourses + 1;
-                    //  }
+                     //GPA===1 requierment
+                     let gpa = this.calcGPA(student.sbuID)
+                     if(gpa >= tempDegree.json.requirements.gpa_requirement){
+                         completedCourses = completedCourses + 1
+                     }else {
+                         unsatisfiedCourses = unsatisfiedCourses + 1;
+                     }
                 }  
             }
         }

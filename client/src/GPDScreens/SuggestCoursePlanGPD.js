@@ -675,6 +675,37 @@ class SuggestCoursePlanGPD extends Component {
         return coursePlan;
     }
 
+    approveCousePlan = async () => {
+        
+        let approvedPlan ={"studentID": this.state.studentID, semesters: {}}
+        let currentCousePlan = this.state.currentCoursePlan;
+        let semesters = {}
+        for (const semester of currentCousePlan){
+            
+            for(const course of semester){
+
+                if(semesters.hasOwnProperty(course.semester)){
+                    semesters[course.semester][Object.keys(course.semester).length,toString()] = course
+                }else{
+                    semesters[course.semester]["0"] = [course]
+                }
+
+            }
+        }
+
+        // approvedPlan.semesters = semesters
+        // console.log(approvedPlan)
+        let body = {sbuID: this.state.sbuID, coursePlan: approvedPlan}
+        let header = {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }; 
+
+        await axios.post('/api/edit_student/addCoursePlan', body, header)
+
+    }
+
     onChange = (event) => {
         this.setState({[event.target.id]: event.target.value});
     }
@@ -794,7 +825,7 @@ class SuggestCoursePlanGPD extends Component {
                         </Row>
                         <Row>
                             <Col l={6} offset="l3">
-                                <Button>Approve Course Plan</Button>
+                                <Button onClick={() => this.approveCousePlan()}>Approve Course Plan</Button>
                             </Col>
                         </Row>
                     </Card>

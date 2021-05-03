@@ -31,4 +31,18 @@ router.post('/', async(req, res) => {
     }
 })
 
+router.post('/addCoursePlan', async (req, res) =>{
+
+    const {studentID, coursePlan} = req.body
+    console.log("UPDATING COURSE PLAN OF " + studentID)
+    if(!studentID || !coursePlan) res.status(400).send("could not update course plan")
+
+    try {
+        await Student.update({coursePlan: coursePlan}, {where: {id: studentID}})
+        res.send("success")
+    } catch (error) {
+        res.status(500).send("could not update course plan")
+    }
+})
+
 module.exports = router;
