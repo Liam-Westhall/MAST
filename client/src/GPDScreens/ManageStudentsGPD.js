@@ -36,7 +36,114 @@ class ManageStudentsGPD extends Component{
             searchByEmail_input: "",
             searchByTrack_input: "",
             degreeData: [],
-            grades: []
+            grades: [],
+            student_grades: []
+        }
+    }
+
+
+    calcGPA = (id) => {
+        //get grades from databse
+
+        let grades = []
+
+        for(const item of this.state.student_grades){
+            if(item.id == id){
+                grades = [...item.grades]
+                break
+            }
+        }
+
+        let grades4GPA = [...grades]
+        let totalCredits = 0
+        let finalGPA = 0
+        //loop through and get total credits
+        for(let i = 0; i < grades4GPA.length; i++){
+            totalCredits += grades4GPA[i].credits
+        }
+        //loop through grades that are length two A-, b+, c+ etc...
+        for(let i = 0; i < grades4GPA.length; i++){
+            if(grades4GPA[i].grade.length == 2){
+                if(grades4GPA[i].grade.charAt(0) == "A"){
+                    if(grades4GPA[i].grade.charAt(1) == "-"){
+                        let gradeValue = 3.67
+                        let creditValue = grades4GPA[i].credits
+                        let GPAValue = gradeValue * creditValue
+                        finalGPA += GPAValue
+                    }
+                }
+                if(grades4GPA[i].grade.charAt(0) == "B"){
+                    if(grades4GPA[i].grade.charAt(1) == "+"){
+                        let gradeValue = 3.33
+                        let creditValue = grades4GPA[i].credits
+                        let GPAValue = gradeValue * creditValue
+                        finalGPA += GPAValue
+                    }
+                    if(grades4GPA[i].grade.charAt(1) == "-"){
+                        let gradeValue = 2.67
+                        let creditValue = grades4GPA[i].credits
+                        let GPAValue = gradeValue * creditValue
+                        finalGPA += GPAValue
+                    }
+                }
+                if(grades4GPA[i].grade.charAt(0) == "C"){
+                    if(grades4GPA[i].grade.charAt(1) == "+"){
+                        let gradeValue = 2.33
+                        let creditValue = grades4GPA[i].credits
+                        let GPAValue = gradeValue * creditValue
+                        finalGPA += GPAValue
+                    }
+                    if(grades4GPA[i].grade.charAt(1) == "-"){
+                        let gradeValue = 1.67
+                        let creditValue = grades4GPA[i].credits
+                        let GPAValue = gradeValue * creditValue
+                        finalGPA += GPAValue
+                    }
+                    
+                }
+                if(grades4GPA[i].grade.charAt(0) == "D"){
+                    if(grades4GPA[i].grade.charAt(1) == "+"){
+                        let gradeValue = 1.33
+                        let creditValue = grades4GPA[i].credits
+                        let GPAValue = gradeValue * creditValue
+                        finalGPA += GPAValue
+                    }
+                }
+            }
+            //Loop through classes get their grade and credit and mulitply for GPA Value
+            if(grades4GPA[i].grade.charAt(0) == "A"){
+                let gradeValue = 4.0
+                let creditValue = grades4GPA[i].credits 
+                let GPAValue = gradeValue * creditValue
+                finalGPA += GPAValue
+            }
+            if(grades4GPA[i].grade.charAt(0) == "B"){
+                let gradeValue = 3.0
+                let creditValue = grades4GPA[i].credits 
+                let GPAValue = gradeValue * creditValue
+                finalGPA += GPAValue
+            }
+            if(grades4GPA[i].grade.charAt(0) == "C"){
+                let gradeValue = 2.0
+                let creditValue = grades4GPA[i].credits 
+                let GPAValue = gradeValue * creditValue
+                finalGPA += GPAValue
+            }
+            if(grades4GPA[i].grade.charAt(0) == "D"){
+                let gradeValue = 1.0
+                let creditValue = grades4GPA[i].credits
+                let GPAValue = gradeValue * creditValue
+                finalGPA += GPAValue
+            }
+            if(grades4GPA[i].grade.charAt(0) == "F"){
+                let gradeValue = 0.0
+                let creditValue = grades4GPA[i].credits
+                let GPAValue = gradeValue * creditValue
+                finalGPA += GPAValue
+            }
+            finalGPA = finalGPA / totalCredits //get the actual final GPA
+
+            return finalGPA
         }
     }
 
@@ -149,6 +256,21 @@ class ManageStudentsGPD extends Component{
         var students = await axios.get('/api/students').catch((err) => console.log('caught', err));
         console.log(students.data)
         this.setState({students: students.data})
+        
+        let grades = []
+        for (const student of students.data){
+            
+            let body = {id: student.id};
+            let header = {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            }; 
+            let res = await axios.post("/api/courses/getgrades", body)
+            grades.push({id: student.id, grades: [...res.data]})
+        }
+
+        this.setState({student_grades: [...grades]})
     }
 
     async componentDidMount() {
@@ -188,7 +310,7 @@ class ManageStudentsGPD extends Component{
         }
     }
 
-    checkCompletedRequirements = (student) => {
+    checkCompletedRequirements =  (student) => {
         let completedCourses = 0;
         let pendingCourses = 0;
         let unsatisfiedCourses = 0;
@@ -363,7 +485,16 @@ class ManageStudentsGPD extends Component{
                                 }     
                             }
                         }
-                    } 
+                    }
+                    
+                     //GPA===1 requierment
+                    let gpa =  this.calcGPA(student.id)
+                    if(gpa >= tempDegree.json.requirements.gpa_requirement){
+                        completedCourses = completedCourses + 1
+                    }else {
+                        unsatisfiedCourses = unsatisfiedCourses + 1;
+                    }
+
                 }
                 else if(student.department.replace(/ /g,'') == "BMI"){
                     if(student.track == "Project/Imaging Informatics"){
@@ -564,6 +695,14 @@ class ManageStudentsGPD extends Component{
                             }
                         }
                     }
+
+                     //GPA===1 requierment
+                     let gpa = this.calcGPA(student.id)
+                     if(gpa >= tempDegree.json.requirements.gpa_requirement){
+                         completedCourses = completedCourses + 1
+                     }else {
+                         unsatisfiedCourses = unsatisfiedCourses + 1;
+                     }
                 }
                 else if(student.department.replace(/ /g,'') == "CE"){
                     if(student.track == "No Thesis"){
@@ -635,6 +774,14 @@ class ManageStudentsGPD extends Component{
                             }
                         }
                     } 
+
+                     //GPA===1 requierment
+                     let gpa = this.calcGPA(student.id)
+                     if(gpa >= tempDegree.json.requirements.gpa_requirement){
+                         completedCourses = completedCourses + 1
+                     }else {
+                         unsatisfiedCourses = unsatisfiedCourses + 1;
+                     }
                 }
                 else if(student.department.replace(/ /g,'') == "CSE"){
                     if(student.track == "Basic"){
@@ -742,14 +889,40 @@ class ManageStudentsGPD extends Component{
                             }
                         }
                     } 
+
+                    //  //GPA===1 requierment
+                    //  let gpa = this.calcGPA(student.sbuID)
+                    //  if(gpa >= tempDegree.json.requirements.gpa_requirement){
+                    //      completedCourses = completedCourses + 1
+                    //  }else {
+                    //      unsatisfiedCourses = unsatisfiedCourses + 1;
+                    //  }
                 }  
             }
         }
-        let coursesArr = [];
-        coursesArr.push(completedCourses);
-        coursesArr.push(pendingCourses);
-        coursesArr.push(unsatisfiedCourses);
-        return coursesArr;
+
+         return {completedCourses: completedCourses,
+                 pendingCourses: pendingCourses,
+                 unsatisfiedCourses: unsatisfiedCourses};
+    }
+    
+    populateRequierement =  (student) => {
+
+        var status = this.checkCompletedRequirements(student)
+        
+        console.log(status)
+
+        return (<tr  key={student.sbuID} onClick={this.editStudent.bind(this, student)}>
+        <th data-field="Name">{student.User.firstName + " " + student.User.lastName}</th>
+        <th data-field="Id">{student.sbuID}</th>
+        <th data-field="Email">{student.User.email}</th>
+        <th data-field="Department">{student.department}</th>
+        <th data-field="Track">{student.track}</th>
+        <th data-field="Entry Semester">{student.entrySemester}</th>
+        <th data-field="Completed Courses">{status.completedCourses}</th>
+        <th data-field="Pending Courses">{status.pendingCourses}</th>
+        <th data-field="Unsatisfied Courses">{status.unsatisfiedCourses}</th>
+        </tr>)
     }
 
     render(){
@@ -841,19 +1014,7 @@ class ManageStudentsGPD extends Component{
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.students.map((student) => (
-                                <tr  key={student.sbuID} onClick={this.editStudent.bind(this, student)}>
-                                    <th data-field="Name">{student.User.firstName + " " + student.User.lastName}</th>
-                                    <th data-field="Id">{student.sbuID}</th>
-                                    <th data-field="Email">{student.User.email}</th>
-                                    <th data-field="Department">{student.department}</th>
-                                    <th data-field="Track">{student.track}</th>
-                                    <th data-field="Entry Semester">{student.entrySemester}</th>
-                                    <th data-field="Completed Courses">{this.checkCompletedRequirements(student)[0]}</th>
-                                    <th data-field="Pending Courses">{this.checkCompletedRequirements(student)[1]}</th>
-                                    <th data-field="Unsatisfied Courses">{this.checkCompletedRequirements(student)[2]}</th>
-                                </tr>
-                            ))
+                        {this.state.students.map((student) => this.populateRequierement(student))
                         }
                     </tbody>
                 </Table>
