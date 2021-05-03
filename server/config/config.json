@@ -1,7 +1,11 @@
 {
   "development": {
     "username": "root",
+<<<<<<< HEAD
     "password": "pokemon123",
+=======
+    "password": "cse416",
+>>>>>>> 62428145dc144c59d023e3290dc708f0e34489da
     "database": "mast",
     "host": "localhost",
     "dialect": "mysql"
