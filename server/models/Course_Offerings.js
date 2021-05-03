@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             validate: {
                 notEmpty: true,
-                isIn: ['CSE', 'AMS', 'CE', 'BMI']
+                //isIn: ['CSE', 'AMS', 'CE', 'BMI']
             }
         },
 
