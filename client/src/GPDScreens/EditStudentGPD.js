@@ -241,7 +241,7 @@ class EditStudentGPD extends Component{
             else if(this.state.track === "Operations Research"){
                 dropdown = <div>
                     <Collapsible class="disabled">
-                        {this.state.degreeData.requirements.tracks.bio.courses.map((course) => {
+                        {this.state.degreeData.requirements.tracks.op.courses.map((course) => {
                             let completedCheck = false;
                             let trueVal = this.checkCompletedCourse(course);
                             if(trueVal == true){
@@ -261,7 +261,7 @@ class EditStudentGPD extends Component{
             else if(this.state.track === "Computational Biology"){
                 dropdown = <div>
                     <Collapsible class="disabled">
-                        {this.state.degreeData.requirements.tracks.op.courses.map((course) => {
+                        {this.state.degreeData.requirements.tracks.bio.courses.map((course) => {
                             let completedCheck = false;
                             let trueVal = this.checkCompletedCourse(course);
                             if(trueVal == true){
