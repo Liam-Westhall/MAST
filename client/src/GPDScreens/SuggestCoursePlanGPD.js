@@ -120,19 +120,19 @@ class SuggestCoursePlanGPD extends Component {
             }
             if(grades4GPA[i].grade.charAt(0) == "C"){
                 let gradeValue = 2.0
-                let creditValue = grades4GPA[i].credits 
+                let creditValue = grades[i].credits 
                 let GPAValue = gradeValue * creditValue
                 finalGPA += GPAValue
             }
             if(grades4GPA[i].grade.charAt(0) == "D"){
                 let gradeValue = 1.0
-                let creditValue = grades4GPA[i].credits
+                let creditValue = grades[i].credits
                 let GPAValue = gradeValue * creditValue
                 finalGPA += GPAValue
             }
             if(grades4GPA[i].grade.charAt(0) == "F"){
                 let gradeValue = 0.0
-                let creditValue = grades4GPA[i].credits
+                let creditValue = grades[i].credits
                 let GPAValue = gradeValue * creditValue
                 finalGPA += GPAValue
             }
@@ -140,7 +140,6 @@ class SuggestCoursePlanGPD extends Component {
             return finalGPA
         }
     }
-
 
     //gets all the degree requirements for a specific major/track
     getDegreeRequirements = async () => {
@@ -401,7 +400,36 @@ class SuggestCoursePlanGPD extends Component {
             }
         } 
         if(this.state.major.replace(/ /g, '') == 'BMI'){
-
+            if(this.state.track == "Project/Imaging Informatics"){
+                required_courses = this.state.degreeData.requirements.tracks.proj_imag.courses
+                elective_credits = this.state.degreeData.requirements.tracks.proj_imag.elective_creds
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+            }
+            else if(this.state.track == "Project/Clinical Informatics"){
+                required_courses = this.state.degreeData.requirements.tracks.proj_clinical.courses
+                elective_credits = this.state.degreeData.requirements.tracks.proj_clinical.elective_creds
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+            }
+            else if(this.state.track == "Project/Translational Bio-Informatics"){
+                required_courses = this.state.degreeData.requirements.tracks.proj_trans.courses
+                elective_credits = this.state.degreeData.requirements.tracks.proj_trans.elective_creds
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+            }
+            else if(this.state.track == "Thesis/Clinical Informatics"){
+                required_courses = this.state.degreeData.requirements.tracks.thesis_clinical.courses
+                elective_credits = this.state.degreeData.requirements.tracks.thesis_clinical.elective_creds
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+            }
+            else if(this.state.track == "Thesis/Translational Bio-Informatics"){
+                required_courses = this.state.degreeData.requirements.tracks.thesis_trans.courses
+                elective_credits = this.state.degreeData.requirements.tracks.thesis_trans.elective_creds
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+            }
+            else if(this.state.track == "Thesis/Imaging Informatics"){
+                required_courses = this.state.degreeData.requirements.tracks.thesis_imag.courses
+                elective_credits = this.state.degreeData.requirements.tracks.thesis_imag.elective_creds
+                remaining_courses = this.searchCoursesAMS(grades, required_courses);
+            }
         }
         if(this.state.major.replace(/ /g, '') == 'CSE'){
             if(this.state.track == "basic"){
@@ -428,11 +456,7 @@ class SuggestCoursePlanGPD extends Component {
             
         }
         if(this.state.major.replace(/ /g, '') == 'ESE'){
-            if(this.state.track == "no_thesis"){
-            }
-            if(this.state.track == "thesis"){
 
-            }
         }
     }
 

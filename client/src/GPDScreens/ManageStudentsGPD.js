@@ -164,8 +164,34 @@ class ManageStudentsGPD extends Component{
         this.setState({degreeData: degreeData})
     }
 
+    checkCourseInPlan = (student, course) => {
+        var arrCourses = [];
+        let tempCoursePlan = student.coursePlan
+        if(tempCoursePlan == null){
+            return false;
+        }
+        else{
+            Object.keys(tempCoursePlan).forEach(function (key){
+                Object.keys(tempCoursePlan[key]).forEach(function (key2){
+                        Object.keys(tempCoursePlan[key][key2]).forEach(function (key3){
+                            arrCourses.push(tempCoursePlan[key][key2][key3])
+                        }) 
+                })
+            });
+            for(let j = 0; j < arrCourses.length; j++){
+                let courseStr = arrCourses[j].department + " " + arrCourses[j].courseNum;
+                if(course == courseStr){
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
     checkCompletedRequirements = (student) => {
         let completedCourses = 0;
+        let pendingCourses = 0;
+        let unsatisfiedCourses = 0;
         for(let i = 0; i < this.state.degreeData.length; i++){
             let tempDegree = this.state.degreeData[i];
             if(student.department.replace(/ /g,'') === tempDegree.department){
@@ -176,49 +202,170 @@ class ManageStudentsGPD extends Component{
                         for(var course in courses){
                             let courseStrArr = courses[course].split("/")
                             for(let i = 0; i < courseStrArr.length; i++){
+                                let completedCheck = false;
                                 for(var grade in this.state.grades){
                                     if(courseStrArr[i] === (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId === student.id)
                                     {
                                         if(this.state.grades[grade].grade ==="A" || this.state.grades[grade].grade === "B") {
                                             completedCourses = completedCourses + 1;
+                                            completedCheck = true;
                                         }
                                         else if(this.state.grades[grade].grade === "C"){
                                             if(this.state.grades[grade].grade.length > 1){
                                                 if(this.state.grades[grade].grade.charAt(1) !== "-"){
                                                     completedCourses = completedCourses + 1
+                                                    completedCheck = true;
                                                 }
                                             }
                                         }
                                     }
                                 }
+                                if(this.checkCourseInPlan(student, courseStrArr[i]) && !completedCheck){
+                                    pendingCourses = pendingCourses + 1;
+                                }
+                                else if(!completedCheck && i == courseStrArr.length - 1){
+                                    unsatisfiedCourses = unsatisfiedCourses + 1;
+                                }     
                             }
                         }
                     }
-                }
-                else if(student.track === "Operations Research"){
-                    let courses = tempDegree.json.requirements.tracks.op.courses
-                    console.log(courses);
-                    for(var course in courses){
-                        let courseStrArr = courses[course].split("/")
-                        for(let i = 0; i < courseStrArr.length; i++){
-                            for(var grade in this.state.grades){
-                                if(courseStrArr[i] === (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId === student.id)
-                                {
-                                    if(this.state.grades[grade].grade === "A" || this.state.grades[grade].grade === "B") {
-                                        completedCourses = completedCourses + 1;
-                                    }
-                                    else if(this.state.grades[grade].grade === "C"){
-                                        if(this.state.grades[grade].grade.length > 1){
-                                            if(this.state.grades[grade].grade.charAt(1) !== "-"){
-                                                completedCourses = completedCourses + 1
+                    else if(student.track == "Operations Research"){
+                        let courses = tempDegree.json.requirements.tracks.op.courses
+                        console.log(courses);
+                        for(var course in courses){
+                            console.log(courses[course]);
+                            let courseStrArr = courses[course].split("/")
+                            for(let i = 0; i < courseStrArr.length; i++){
+                                let completedCheck = false;
+                                for(var grade in this.state.grades){
+                                    if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                    {
+                                        if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                            completedCourses = completedCourses + 1;
+                                            completedCheck = true;
+                                            break;
+                                        }
+                                        else if(this.state.grades[grade].grade == "C"){
+                                            if(this.state.grades[grade].grade.length > 1){
+                                                if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                    completedCourses = completedCourses + 1
+                                                    completedCheck = true;
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
                                 }
+                                if(this.checkCourseInPlan(student, courseStrArr[i]) && !completedCheck){
+                                    pendingCourses = pendingCourses + 1;
+                                }
+                                else if(!completedCheck && i == courseStrArr.length - 1){
+                                    unsatisfiedCourses = unsatisfiedCourses + 1;
+                                }     
                             }
                         }
                     }
+                    else if(student.track == "Computational Biology"){
+                        let courses = tempDegree.json.requirements.tracks.bio.courses
+                        console.log(courses);
+                        for(var course in courses){
+                            let courseStrArr = courses[course].split("/")
+                            for(let i = 0; i < courseStrArr.length; i++){
+                                let completedCheck = false;
+                                for(var grade in this.state.grades){
+                                    if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                    {
+                                        if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                            completedCourses = completedCourses + 1;
+                                            completedCheck = true;
+                                        }
+                                        else if(this.state.grades[grade].grade == "C"){
+                                            if(this.state.grades[grade].grade.length > 1){
+                                                if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                    completedCourses = completedCourses + 1
+                                                    completedCheck = true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if(this.checkCourseInPlan(student, courseStrArr[i]) && !completedCheck){
+                                    pendingCourses = pendingCourses + 1;
+                                }
+                                else if(!completedCheck && i == courseStrArr.length - 1){
+                                    unsatisfiedCourses = unsatisfiedCourses + 1;
+                                }     
+                            }
+                        }
+                    }
+                    else if(student.track == "Statistics"){
+                        let courses = tempDegree.json.requirements.tracks.stats.courses
+                        console.log(courses);
+                        for(var course in courses){
+                            let courseStrArr = courses[course].split("/")
+                            for(let i = 0; i < courseStrArr.length; i++){
+                                    let completedCheck = false;
+                                    for(var grade in this.state.grades){
+                                        if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                        {
+                                            if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                                completedCourses = completedCourses + 1;
+                                                completedCheck = true;
+                                            }
+                                            else if(this.state.grades[grade].grade == "C"){
+                                                if(this.state.grades[grade].grade.length > 1){
+                                                    if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                        completedCourses = completedCourses + 1
+                                                        completedCheck = true;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if(this.checkCourseInPlan(student, courseStrArr[i]) && !completedCheck){
+                                        pendingCourses = pendingCourses + 1;
+                                    }
+                                    else if(!completedCheck && i == courseStrArr.length - 1){
+                                        unsatisfiedCourses = unsatisfiedCourses + 1;
+                                    }     
+                                }
+                        }
+                    }
+                    else if(student.track == "Quanitative Finance"){
+                        let courses = tempDegree.json.requirements.tracks.quan.courses
+                        console.log(courses);
+                        for(var course in courses){
+                            let courseStrArr = courses[course].split("/")
+                            for(let i = 0; i < courseStrArr.length; i++){
+                                let completedCheck = false;
+                                for(var grade in this.state.grades){
+                                    if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                    {
+                                        if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                            completedCourses = completedCourses + 1;
+                                            completedCheck = true;
+                                        }
+                                        else if(this.state.grades[grade].grade == "C"){
+                                            if(this.state.grades[grade].grade.length > 1){
+                                                if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                    completedCourses = completedCourses + 1
+                                                    completedCheck = true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if(this.checkCourseInPlan(student, courseStrArr[i]) && !completedCheck){
+                                    pendingCourses = pendingCourses + 1;
+                                }
+                                else if(!completedCheck && i == courseStrArr.length - 1){
+                                    unsatisfiedCourses = unsatisfiedCourses + 1;
+                                }     
+                            }
+                        }
+                    } 
                 }
+<<<<<<< HEAD
                 else if(student.track === "Computational Biology"){
                     let courses = tempDegree.json.requirements.tracks.bio.courses
                     console.log(courses);
@@ -235,13 +382,76 @@ class ManageStudentsGPD extends Component{
                                         if(this.state.grades[grade].grade.length > 1){
                                             if(this.state.grades[grade].grade.charAt(1) !== "-"){
                                                 completedCourses = completedCourses + 1
+=======
+                else if(student.department.replace(/ /g,'') == "BMI"){
+                    if(student.track == "Project/Imaging Informatics"){
+                        let courses = tempDegree.json.requirements.tracks.proj_imag.courses
+                        console.log(courses);
+                        for(var course in courses){
+                            let courseStrArr = courses[course].split("/")
+                            for(let i = 0; i < courseStrArr.length; i++){
+                                let completedCheck = false;
+                                for(var grade in this.state.grades){
+                                    if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                    {
+                                        if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                            completedCourses = completedCourses + 1;
+                                            completedCheck = true;
+                                        }
+                                        else if(this.state.grades[grade].grade == "C"){
+                                            if(this.state.grades[grade].grade.length > 1){
+                                                if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                    completedCourses = completedCourses + 1
+                                                    completedCheck = true;
+                                                }
                                             }
                                         }
                                     }
                                 }
+                                if(this.checkCourseInPlan(student, courseStrArr[i]) && !completedCheck){
+                                    pendingCourses = pendingCourses + 1;
+                                }
+                                else if(!completedCheck && i == courseStrArr.length - 1){
+                                    unsatisfiedCourses = unsatisfiedCourses + 1;
+                                }     
                             }
                         }
                     }
+                    else if(student.track == "Project/Clinical Informatics"){
+                        let courses = tempDegree.json.requirements.tracks.proj_clinical.courses
+                        console.log(courses);
+                        for(var course in courses){
+                            let courseStrArr = courses[course].split("/")
+                            for(let i = 0; i < courseStrArr.length; i++){
+                                let completedCheck = false;
+                                for(var grade in this.state.grades){
+                                    if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                    {
+                                        if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                            completedCourses = completedCourses + 1;
+                                            completedCheck = true;
+                                        }
+                                        else if(this.state.grades[grade].grade == "C"){
+                                            if(this.state.grades[grade].grade.length > 1){
+                                                if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                    completedCourses = completedCourses + 1
+                                                    completedCheck = true;
+                                                }
+>>>>>>> fcdeee7f1888e9554b8a4cdeeee9b7ce15577202
+                                            }
+                                        }
+                                    }
+                                }
+                                if(this.checkCourseInPlan(student, courseStrArr[i]) && !completedCheck){
+                                    pendingCourses = pendingCourses + 1;
+                                }
+                                else if(!completedCheck && i == courseStrArr.length - 1){
+                                    unsatisfiedCourses = unsatisfiedCourses + 1;
+                                }     
+                            }
+                        }
+                    }
+<<<<<<< HEAD
                 }
                 else if(student.track === "Statistics"){
                     let courses = tempDegree.json.requirements.tracks.stats.courses
@@ -259,14 +469,142 @@ class ManageStudentsGPD extends Component{
                                         if(this.state.grades[grade].grade.length > 1){
                                             if(this.state.grades[grade].grade.charAt(1) !== "-"){
                                                 completedCourses = completedCourses + 1
+=======
+                    else if(student.track == "Project/Translational Bio-Informatics"){
+                        let courses = tempDegree.json.requirements.tracks.proj_trans.courses
+                        console.log(courses);
+                        for(var course in courses){
+                            let courseStrArr = courses[course].split("/")
+                            for(let i = 0; i < courseStrArr.length; i++){
+                                let completedCheck = false;
+                                for(var grade in this.state.grades){
+                                    if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                    {
+                                        if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                            completedCourses = completedCourses + 1;
+                                            completedCheck = true;
+                                        }
+                                        else if(this.state.grades[grade].grade == "C"){
+                                            if(this.state.grades[grade].grade.length > 1){
+                                                if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                    completedCourses = completedCourses + 1
+                                                    completedCheck = true;
+                                                }
                                             }
                                         }
                                     }
                                 }
+                                if(this.checkCourseInPlan(student, courseStrArr[i]) && !completedCheck){
+                                    pendingCourses = pendingCourses + 1;
+                                }
+                                else if(!completedCheck && i == courseStrArr.length - 1){
+                                    unsatisfiedCourses = unsatisfiedCourses + 1;
+                                }     
+                            }
+                        }
+                    }
+                    else if(student.track == "Thesis/Imaging Informatics"){
+                        let courses = tempDegree.json.requirements.tracks.thesis_imag.courses
+                        console.log(courses);
+                        for(var course in courses){
+                            let courseStrArr = courses[course].split("/")
+                            for(let i = 0; i < courseStrArr.length; i++){
+                                let completedCheck = false;
+                                for(var grade in this.state.grades){
+                                    if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                    {
+                                        if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                            completedCourses = completedCourses + 1;
+                                            completedCheck = true;
+                                        }
+                                        else if(this.state.grades[grade].grade == "C"){
+                                            if(this.state.grades[grade].grade.length > 1){
+                                                if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                    completedCourses = completedCourses + 1
+                                                    completedCheck = true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if(this.checkCourseInPlan(student, courseStrArr[i]) && !completedCheck){
+                                    pendingCourses = pendingCourses + 1;
+                                }
+                                else if(!completedCheck && i == courseStrArr.length - 1){
+                                    unsatisfiedCourses = unsatisfiedCourses + 1;
+                                }     
+                            }
+                        }
+                    }
+                    else if(student.track == "Project/Clinical Informatics"){
+                        let courses = tempDegree.json.requirements.tracks.thesis_clinical.courses
+                        console.log(courses);
+                        for(var course in courses){
+                            let courseStrArr = courses[course].split("/")
+                            for(let i = 0; i < courseStrArr.length; i++){
+                                let completedCheck = false;
+                                for(var grade in this.state.grades){
+                                    if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                    {
+                                        if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                            completedCourses = completedCourses + 1;
+                                            completedCheck = true;
+                                        }
+                                        else if(this.state.grades[grade].grade == "C"){
+                                            if(this.state.grades[grade].grade.length > 1){
+                                                if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                    completedCourses = completedCourses + 1
+                                                    completedCheck = true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if(this.checkCourseInPlan(student, courseStrArr[i]) && !completedCheck){
+                                    pendingCourses = pendingCourses + 1;
+                                }
+                                else if(!completedCheck && i == courseStrArr.length - 1){
+                                    unsatisfiedCourses = unsatisfiedCourses + 1;
+                                }     
+                            }
+                        }
+                    }
+                    else if(student.track == "Project/Translational Bio-Informatics"){
+                        let courses = tempDegree.json.requirements.tracks.thesis_trans.courses
+                        console.log(courses);
+                        for(var course in courses){
+                            let courseStrArr = courses[course].split("/")
+                            for(let i = 0; i < courseStrArr.length; i++){
+                                let completedCheck = false;
+                                for(var grade in this.state.grades){
+                                    if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                    {
+                                        if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                            completedCourses = completedCourses + 1;
+                                            completedCheck = true;
+                                        }
+                                        else if(this.state.grades[grade].grade == "C"){
+                                            if(this.state.grades[grade].grade.length > 1){
+                                                if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                    completedCourses = completedCourses + 1
+                                                    completedCheck = true;
+                                                }
+>>>>>>> fcdeee7f1888e9554b8a4cdeeee9b7ce15577202
+                                            }
+                                        }
+                                    }
+                                }
+                                if(this.checkCourseInPlan(student, courseStrArr[i]) && !completedCheck){
+                                    pendingCourses = pendingCourses + 1;
+                                }
+                                else if(!completedCheck && i == courseStrArr.length - 1){
+                                    unsatisfiedCourses = unsatisfiedCourses + 1;
+                                }     
                             }
                         }
                     }
                 }
+<<<<<<< HEAD
                 else if(student.track === "Quanitative Finance"){
                     let courses = tempDegree.json.requirements.tracks.quan.courses
                     console.log(courses);
@@ -283,17 +621,193 @@ class ManageStudentsGPD extends Component{
                                         if(this.state.grades[grade].grade.length > 1){
                                             if(this.state.grades[grade].grade.charAt(1) !== "-"){
                                                 completedCourses = completedCourses + 1
+=======
+                else if(student.department.replace(/ /g,'') == "CE"){
+                    if(student.track == "No Thesis"){
+                        let courses = tempDegree.json.requirements.tracks.no_thesis.courses
+                        console.log(courses);
+                        for(var course in courses){
+                            let courseStrArr = courses[course].split("/")
+                            for(let i = 0; i < courseStrArr.length; i++){
+                                let completedCheck = false;
+                                for(var grade in this.state.grades){
+                                    if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                    {
+                                        if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                            completedCourses = completedCourses + 1;
+                                            completedCheck = true;
+                                        }
+                                        else if(this.state.grades[grade].grade == "C"){
+                                            if(this.state.grades[grade].grade.length > 1){
+                                                if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                    completedCourses = completedCourses + 1
+                                                    completedCheck = true;
+                                                }
                                             }
                                         }
                                     }
                                 }
+                                if(this.checkCourseInPlan(student, courseStrArr[i]) && !completedCheck){
+                                    pendingCourses = pendingCourses + 1;
+                                }
+                                else if(!completedCheck && i == courseStrArr.length - 1){
+                                    unsatisfiedCourses = unsatisfiedCourses + 1;
+                                }     
                             }
                         }
                     }
-                } 
+                    else if(student.track == "Thesis"){
+                        let courses = tempDegree.json.requirements.tracks.thesis.courses
+                        console.log(courses);
+                        for(var course in courses){
+                            console.log(courses[course]);
+                            let courseStrArr = courses[course].split("/")
+                            for(let i = 0; i < courseStrArr.length; i++){
+                                let completedCheck = false;
+                                for(var grade in this.state.grades){
+                                    if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                    {
+                                        if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                            completedCourses = completedCourses + 1;
+                                            completedCheck = true;
+                                            break;
+                                        }
+                                        else if(this.state.grades[grade].grade == "C"){
+                                            if(this.state.grades[grade].grade.length > 1){
+                                                if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                    completedCourses = completedCourses + 1
+                                                    completedCheck = true;
+                                                    break;
+                                                }
+>>>>>>> fcdeee7f1888e9554b8a4cdeeee9b7ce15577202
+                                            }
+                                        }
+                                    }
+                                }
+                                if(this.checkCourseInPlan(student, courseStrArr[i]) && !completedCheck){
+                                    pendingCourses = pendingCourses + 1;
+                                }
+                                else if(!completedCheck && i == courseStrArr.length - 1){
+                                    unsatisfiedCourses = unsatisfiedCourses + 1;
+                                }     
+                            }
+                        }
+                    } 
+                }
+                else if(student.department.replace(/ /g,'') == "CSE"){
+                    if(student.track == "Basic"){
+                        let courses = tempDegree.json.requirements.tracks.basic.courses
+                        console.log(courses);
+                        for(var course in courses){
+                            let courseStrArr = courses[course].split("/")
+                            for(let i = 0; i < courseStrArr.length; i++){
+                                let completedCheck = false;
+                                for(var grade in this.state.grades){
+                                    if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                    {
+                                        if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                            completedCourses = completedCourses + 1;
+                                            completedCheck = true;
+                                        }
+                                        else if(this.state.grades[grade].grade == "C"){
+                                            if(this.state.grades[grade].grade.length > 1){
+                                                if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                    completedCourses = completedCourses + 1
+                                                    completedCheck = true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if(this.checkCourseInPlan(student, courseStrArr[i]) && !completedCheck){
+                                    pendingCourses = pendingCourses + 1;
+                                }
+                                else if(!completedCheck && i == courseStrArr.length - 1){
+                                    unsatisfiedCourses = unsatisfiedCourses + 1;
+                                }     
+                            }
+                        }
+                    }
+                    else if(student.track == "Thesis"){
+                        let courses = tempDegree.json.requirements.tracks.thesis.courses
+                        console.log(courses);
+                        for(var course in courses){
+                            console.log(courses[course]);
+                            let courseStrArr = courses[course].split("/")
+                            for(let i = 0; i < courseStrArr.length; i++){
+                                let completedCheck = false;
+                                for(var grade in this.state.grades){
+                                    if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                    {
+                                        if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                            completedCourses = completedCourses + 1;
+                                            completedCheck = true;
+                                            break;
+                                        }
+                                        else if(this.state.grades[grade].grade == "C"){
+                                            if(this.state.grades[grade].grade.length > 1){
+                                                if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                    completedCourses = completedCourses + 1
+                                                    completedCheck = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if(this.checkCourseInPlan(student, courseStrArr[i]) && !completedCheck){
+                                    pendingCourses = pendingCourses + 1;
+                                }
+                                else if(!completedCheck && i == courseStrArr.length - 1){
+                                    unsatisfiedCourses = unsatisfiedCourses + 1;
+                                }     
+                            }
+                        }
+                    }
+                    else if(student.track == "Advanced"){
+                        let courses = tempDegree.json.requirements.tracks.advanced.courses
+                        console.log(courses);
+                        for(var course in courses){
+                            console.log(courses[course]);
+                            let courseStrArr = courses[course].split("/")
+                            for(let i = 0; i < courseStrArr.length; i++){
+                                let completedCheck = false;
+                                for(var grade in this.state.grades){
+                                    if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                    {
+                                        if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                            completedCourses = completedCourses + 1;
+                                            completedCheck = true;
+                                            break;
+                                        }
+                                        else if(this.state.grades[grade].grade == "C"){
+                                            if(this.state.grades[grade].grade.length > 1){
+                                                if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                    completedCourses = completedCourses + 1
+                                                    completedCheck = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if(this.checkCourseInPlan(student, courseStrArr[i]) && !completedCheck){
+                                    pendingCourses = pendingCourses + 1;
+                                }
+                                else if(!completedCheck && i == courseStrArr.length - 1){
+                                    unsatisfiedCourses = unsatisfiedCourses + 1;
+                                }     
+                            }
+                        }
+                    } 
+                }  
             }
         }
-        return completedCourses;
+        let coursesArr = [];
+        coursesArr.push(completedCourses);
+        coursesArr.push(pendingCourses);
+        coursesArr.push(unsatisfiedCourses);
+        return coursesArr;
     }
 
     render(){
@@ -380,6 +894,8 @@ class ManageStudentsGPD extends Component{
                             <th data-field="Track">Track</th>
                             <th data-field="Entry Semester">Entry Semester</th>
                             <th data-field="Completed Courses">Completed Courses</th>
+                            <th data-field="Pending Courses">Pending Courses</th>
+                            <th data-field="Unsatisfied Courses">Unsatisfied Courses</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -391,7 +907,9 @@ class ManageStudentsGPD extends Component{
                                     <th data-field="Department">{student.department}</th>
                                     <th data-field="Track">{student.track}</th>
                                     <th data-field="Entry Semester">{student.entrySemester}</th>
-                                    <th data-field="Completed Courses">{this.checkCompletedRequirements(student)}</th>
+                                    <th data-field="Completed Courses">{this.checkCompletedRequirements(student)[0]}</th>
+                                    <th data-field="Pending Courses">{this.checkCompletedRequirements(student)[1]}</th>
+                                    <th data-field="Unsatisfied Courses">{this.checkCompletedRequirements(student)[2]}</th>
                                 </tr>
                             ))
                         }
