@@ -337,34 +337,6 @@ router.post('/student_course_data', async (req, res) => {
 })
 
 
-
-
-cleanData = (text, department) => {
-    var isdept = false;
-    let deptData = new Array();
-
-    //Gets text for chosen department
-    text.forEach(function(line) {
-        let str = line
-        if (str.length === 3) {
-            if (isdept && !/[^a-z]/i.test(str)) {
-                console.log('that', str)
-                isdept = false;
-            }
-
-            if (str === department) {
-                console.log('this', str)
-                deptData.push(str)
-                isdept = true;
-            } 
-        } else if (isdept) {
-            deptData.push(str)
-        }
-    });
-
-    //
-}
-
 router.post('/student_grades', async (req, res) => {
     const {gradesObj} = req.files;
     let grades_json = JSON.parse(gradesObj.data);
@@ -391,6 +363,124 @@ router.post('/student_grades', async (req, res) => {
         res.status(500).send("error importing student data")
     }
 });
+
+cleanData = (text, department) => {
+    var isdept = false;
+    let deptData = new Array();
+
+    //Gets text for chosen department
+    text.forEach(function(line) {
+        let str = line
+        if (str.length === 3) {
+            if (isdept && !/[^a-z]/i.test(str)) {
+                console.log('that', str)
+                isdept = false;
+            }
+
+            if (str === department) {
+                console.log('this', str)
+                deptData.push(str)
+                isdept = true;
+            } 
+        } else if (isdept) {
+            deptData.push(str)
+        }
+    });
+
+    getCourses(deptData);
+
+}
+
+getCourses = (text) => {
+
+    let allCrsData = new Array();
+    let department = text[0];
+    let courseData = new Array();
+    let title = '';
+    let desription = '';
+
+    //Gets text for chosen department
+    for (let i = 2; i < text.length; i++) {
+        let str = text[i];
+        let tempDept = str.substring(0, 3);
+        let tempNum = Number(str.substring(5, 8));
+
+        if (tempDept === department && tempNum >= 500) {
+            allCrsData.push(courseData);
+            courseData = new Array();
+            courseData.push(str);
+        } else if (str === 'May be repeated for credit.' || str === 'Offered'|| str === 'May be repeated 2 times FOR credit.') {
+        } else if (str === 'Stony Brook University Graduate Bulletin: www.stonybrook.edu/gradbulletin') {
+            i += 3;
+        } else {
+            courseData.push(str);
+        }
+    }
+
+    console.log(allCrsData);
+    setCourse(allCrsData);
+}
+
+setCourse = (text) => {
+
+    for (let i = 0; i < text.length; i++) {
+        let department = '';
+        let courseNum = '';
+        let title = '';
+        let desription = '';
+        let credits = 0;
+        let prereqs = '';
+
+        let titleIsDone = false;
+        let descriptionIsDone = false;
+
+        for (let j = 0; j < text[i].length; j++) {
+            if (j === 0) {
+                department = text[i][j].substring(0, 3);
+                courseNum = text[i][j].substring(5, 8);
+                title = text[i][j].substring(9);
+            } else {
+
+                //If title is not done
+                if (!titleIsDone) {
+                    let tempWords = text[i][j].split(" ");
+                    let isUpper = true;
+                    
+                    //Check the line to see if every word begins with an uppercase letter
+                    for (let k = 0; k < tempWords.length; k++) {
+                        if (tempWords[k].charCodeAt(0) > 90) {
+                            isUpper = false;
+                        }
+                    }
+
+                    //if words all start with uppercase, add to title
+                    if (isUpper) {
+                        title += text[i][j];
+                    } else {
+                        //if any word starts with lowercase letter
+                        //add to description and set title bool 
+                        description += text[i][j];
+                        titleIsDone = true;
+                    }
+
+                } else if (!descriptionIsDone) {
+                    let isPrereq = false;
+                    let iscredit = false;
+
+                    if (text[i][j].substring(0, )) {
+
+                    }
+
+                } else {
+                    //
+                }
+
+
+            }
+
+        }
+    }
+}
 
 
 router.post('/course_info', async (req, res) => {
