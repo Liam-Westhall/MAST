@@ -341,11 +341,14 @@ router.post('/student_grades', async (req, res) => {
     console.log(grades_json)
     try{
         studentID = grades_json.studentID
+        let student = await Student.findOne({
+            where: {sbuID: studentID}
+        }).catch((err) => console.log('caught it'));;
         for(var sem in grades_json.semesters){
             console.log(grades_json.semesters[sem]);
             for(var course in grades_json.semesters[sem]){
                 let student_course = await Student_Course.create({
-                    StudentId: studentID,
+                    StudentId: student.id,
                     department: grades_json.semesters[sem][course].department,
                     course_num: grades_json.semesters[sem][course].courseNum,
                     credits: grades_json.semesters[sem][course].credits,
@@ -362,140 +365,6 @@ router.post('/student_grades', async (req, res) => {
     }
 });
 
-cleanData = (text, department) => {
-    var isdept = false;
-    let deptData = new Array();
-
-    //Gets text for chosen department
-    text.forEach(function(line) {
-        let str = line
-        if (str.length === 3) {
-            if (isdept && !/[^a-z]/i.test(str)) {
-                console.log('that', str)
-                isdept = false;
-            }
-
-            if (str === department) {
-                console.log('this', str)
-                deptData.push(str)
-                isdept = true;
-            } 
-        } else if (isdept) {
-            deptData.push(str)
-        }
-    });
-
-    getCourses(deptData);
-
-}
-
-getCourses = (text) => {
-
-    let allCrsData = new Array();
-    let department = text[0];
-    let courseData = new Array();
-    let title = '';
-    let desription = '';
-
-    //Gets text for chosen department
-    for (let i = 2; i < text.length; i++) {
-        let str = text[i];
-        let tempDept = str.substring(0, 3);
-        let tempNum = Number(str.substring(5, 8));
-
-        if (tempDept === department && tempNum >= 500) {
-            allCrsData.push(courseData);
-            courseData = new Array();
-            courseData.push(str);
-        } else if (str === 'May be repeated for credit.' || str === 'Offered'|| str === 'May be repeated 2 times FOR credit.') {
-        } else if (str === 'Stony Brook University Graduate Bulletin: www.stonybrook.edu/gradbulletin') {
-            i += 3;
-        } else {
-            courseData.push(str);
-        }
-    }
-
-    console.log(allCrsData);
-    setCourse(allCrsData);
-}
-
-setCourse = (text) => {
-
-    for (let i = 0; i < text.length; i++) {
-        let department = '';
-        let courseNum = '';
-        let title = '';
-        let description = '';
-        let credits = 0;
-        let prereqs = '';
-
-        let titleIsDone = false;
-        let descriptionIsDone = false;
-
-        for (let j = 0; j < text[i].length; j++) {
-            if (j === 0) {
-                department = text[i][j].substring(0, 3);
-                courseNum = text[i][j].substring(5, 8);
-                title = text[i][j].substring(9);
-            } else {
-
-                //If title is not done
-                if (!titleIsDone) {
-                    let tempWords = text[i][j].split(" ");
-                    let isUpper = true;
-                    
-                    //Check the line to see if every word begins with an uppercase letter
-                    for (let k = 0; k < tempWords.length; k++) {
-                        if (tempWords[k].charCodeAt(0) > 90) {
-                            isUpper = false;
-                        }
-                    }
-
-                    //if words all start with uppercase, add to title
-                    if (isUpper) {
-                        title += text[i][j];
-                    } else {
-                        //if any word starts with lowercase letter
-                        //add to description and set title bool 
-                        description += text[i][j];
-                        titleIsDone = true;
-                    }
-
-                    //If description is not done
-                } else if (!descriptionIsDone) {
-                    let isPrereq = false;
-                    let iscredit = false;
-
-                    let tempWords = text[i][j].split(" ");
-                    //Regex expression that matches line in bulletin with credit info
-                    if (tempWords[0].match(/(Fall,)|(Spring,)|(\d)|(Offered)|(\d-\d{1,2})/i)) {
-                        descriptionIsDone = true;
-
-                        //Find character that is a number, set credits
-                        for (let k = 0; k < tempWords.length; k++) {
-                            if (57 <= tempWords[k].charCodeAt(0) >= 48) {
-                                credits = parseInt(tempWords[k]);
-                            }
-                        }
-                    } else {
-                        //If not the credits(check if prereq?) add to description
-                        description += text[i][j];
-                    }
-
-                } 
-
-            }
-
-        }
-        console.log(department);
-        console.log(courseNum);
-        console.log(title);
-        console.log(description);
-        console.log(credits);
-    }
-
-}
-
 
 router.post('/course_info', async (req, res) => {
     //console.log(req.files.file.data)
@@ -510,7 +379,172 @@ router.post('/course_info', async (req, res) => {
         //Read pdf and convert to array or strings for each line
         new PdfReader().parseBuffer(req.files.file.data, function(err, item) {
             if (err) callback(err);
-            else if (!item) cleanData(rawtext, dept);   //When EOF is reached, clean data
+            else if (!item) {
+                //Get Data from pdf for specified department
+                var isdept = false;
+                let deptData = new Array();
+
+                //Gets text for chosen department
+                rawtext.forEach(function(line) {
+                    let str = line
+                    if (str.length === 3) {
+                        if (isdept && !/[^a-z]/i.test(str)) {
+                            console.log('that', str)
+                            isdept = false;
+                        }
+
+                        if (str === dept) {
+                            console.log('this', str)
+                            deptData.push(str)
+                            isdept = true;
+                        } 
+                    } else if (isdept) {
+                        deptData.push(str)
+                    }
+                });
+
+                //Split Data by course
+                let allCrsData = new Array();
+                let department = deptData[0];
+                let courseData = new Array();
+
+                //Gets text for chosen department
+                for (let i = 2; i < deptData.length; i++) {
+                    let str = deptData[i];
+                    let tempDept = str.substring(0, 3);
+                    let tempNum = Number(str.substring(5, 8));
+
+                    if (tempDept === department && tempNum >= 500) {
+                        allCrsData.push(courseData);
+                        courseData = new Array();
+                        courseData.push(str);
+                    } else if (str === 'May be repeated for credit.' || str === 'Offered'|| str === 'May be repeated 2 times FOR credit.') {
+                    } else if (str === 'Stony Brook University Graduate Bulletin: www.stonybrook.edu/gradbulletin') {
+                        i += 3;
+                    } else {
+                        courseData.push(str);
+                    }
+                }
+
+                //Split data for each course and add to database
+                for (let i = 0; i < allCrsData.length; i++) {
+                    let dept = '';
+                    let courseNum = '';
+                    let title = '';
+                    let description = '';
+                    let credits = 0;
+                    let prereqs = '';
+            
+                    let titleIsDone = false;
+                    let descriptionIsDone = false;
+            
+                    for (let j = 0; j < allCrsData[i].length; j++) {
+                        if (j === 0) {
+                            dept = allCrsData[i][j].substring(0, 3);
+                            courseNum = allCrsData[i][j].substring(5, 8);
+                            title = allCrsData[i][j].substring(9);
+                        } else {
+            
+                            //If title is not done
+                            if (!titleIsDone) {
+                                let tempWords = allCrsData[i][j].split(" ");
+                                let isUpper = true;
+                                
+                                //Check the line to see if every word begins with an uppercase letter
+                                for (let k = 0; k < tempWords.length; k++) {
+                                    if (tempWords[k].charCodeAt(0) > 90) {
+                                        isUpper = false;
+                                    }
+                                }
+            
+                                //if words all start with uppercase, add to title
+                                if (isUpper) {
+                                    title += allCrsData[i][j];
+                                } else {
+                                    //if any word starts with lowercase letter
+                                    //add to description and set title bool 
+                                    description += allCrsData[i][j];
+                                    titleIsDone = true;
+                                }
+            
+                                //If description is not done
+                            } else if (!descriptionIsDone) {
+                                let isPrereq = false;
+                                let iscredit = false;
+            
+                                let tempWords = allCrsData[i][j].split(" ");
+                                //console.log(tempWords);
+                                //Regex expression that matches line in bulletin with credit info
+                                if (tempWords[0].match(/(Fall,)|(Spring,)|(\d credits?)|(Offered)|(\d-\d{1,2})/i)) {
+                                    descriptionIsDone = true;
+                                    //Find character that is a number, set credits
+                                    let tempChars = allCrsData[i][j].split('');
+                                    for (let k = 0; k < tempChars.length; k++) {
+                                        let num = tempChars[k].charCodeAt(0);
+                                        if (num >= 48 && num <= 57) {
+                                            //console.log(tempChars[k].charCodeAt(0), tempChars[k]);
+                                            credits = parseInt(tempChars[k]);
+                                        }
+                                    }
+                                } else {
+                                    //If not the credits(check if prereq?) add to description
+                                    description += allCrsData[i][j];
+                                }
+            
+                            } 
+            
+                        }
+            
+                    }
+
+                    if (dept === '' || courseNum  === '' || title  === '' || description  === '' || credits === '') {
+
+                    } else {
+                        Course_Offerings.sync().then(function() {
+                            Course_Offerings.findOrCreate({
+                              where: {
+                                department: dept,
+                                courseNumber: courseNum
+                              },
+                              defaults: { 
+                                department: dept,
+                                courseNumber: courseNum,
+                                name: title,
+                                description: description,
+                                credits: credits
+                              }
+                            }).then(function(result) {
+                              if (!result[1]) { 
+                                result[0].update({
+                                    name: title,
+                                    description: description,
+                                    credits: credits
+                                }, {
+                                    where: {
+                                        department: dept,
+                                        courseNumber: courseNum
+                                    }
+                                }); 
+                              }
+                              //callback();
+                            });
+                          })
+                    }
+
+
+                    
+
+                    //console.log(department);
+                    //console.log(courseNum);
+                    //console.log(title);
+                    //console.log(description);
+                    //console.log(credits);
+                }
+
+
+
+
+            }   //When EOF is reached, scrub data and add to database
             else if (item.text) {
                 rawtext.push(item.text);
             }

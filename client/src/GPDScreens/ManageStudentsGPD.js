@@ -705,8 +705,8 @@ class ManageStudentsGPD extends Component{
                      }
                 }
                 else if(student.department.replace(/ /g,'') == "CE"){
-                    if(student.track == "No Thesis"){
-                        let courses = tempDegree.json.requirements.tracks.no_thesis.courses
+                    if(student.track == "Non-Thesis"){
+                        let courses = tempDegree.json.requirements.tracks.non_thesis.courses
                         console.log(courses);
                         for(var course in courses){
                             let courseStrArr = courses[course].split("/")
