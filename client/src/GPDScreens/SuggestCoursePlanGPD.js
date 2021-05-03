@@ -20,16 +20,16 @@ class SuggestCoursePlanGPD extends Component {
             allCourses: [],
             maxCredits: 0,
             remainingSemesters: 0,
-            mondayTimeBegin: "",
-            mondayTimeEnd: "",
-            tuesdayTimeBegin: "",
-            tuesdayTimeEnd: "",
-            wednesdayTimeBegin: "",
-            wednesdayTimeEnd: "",
-            thursdayTimeBegin: "",
-            thursdayTimeEnd: "",
-            fridayTimeBegin: "",
-            fridayTimeEnd: "", 
+            mondayTimeBegin: "00:00",
+            mondayTimeEnd: "23:59",
+            tuesdayTimeBegin: "00:00",
+            tuesdayTimeEnd: "23:59",
+            wednesdayTimeBegin: "00:00",
+            wednesdayTimeEnd: "23:59",
+            thursdayTimeBegin: "00:00",
+            thursdayTimeEnd: "23:59",
+            fridayTimeBegin: "00:00",
+            fridayTimeEnd: "23:59", 
             currentSemester: "S19",
             preferredCourses: [],
             avoidedCourses: [],
@@ -750,9 +750,6 @@ class SuggestCoursePlanGPD extends Component {
                     <Card className="grey lighten-3">
                         <Row>
                             <Col l={4}>
-                                <Select
-                                    placeholder="Select Semester"
-                                />
                             </Col>
                         </Row>
                         <Row>
@@ -784,6 +781,11 @@ class SuggestCoursePlanGPD extends Component {
                                 </Table>
                             </Col>
                         </Row>
+                        <Row>
+                            <Col l={6} offset="l3">
+                                <Button>Approve Course Plan</Button>
+                            </Col>
+                        </Row>
                     </Card>
                     </Row>
                     <Row>
@@ -795,13 +797,13 @@ class SuggestCoursePlanGPD extends Component {
                                     <b><u>Monday</u></b>
                                 </Col>
                                 <Col l={3}>
-                                    <input type="time" id="mondayTimeBegin" onChange={this.onChange}></input>
+                                    <input type="time" id="mondayTimeBegin" onChange={this.onChange} value={this.state.mondayTimeBegin}></input>
                                 </Col>
                                 <Col l={3}>
                                     <b>to</b>
                                 </Col>
                                 <Col l={3}>
-                                    <input type="time" id="mondayTimeEnd" onChange={this.onChange}></input>
+                                    <input type="time" id="mondayTimeEnd" onChange={this.onChange} value={this.state.mondayTimeEnd}></input>
                                 </Col>
                             </Row>
                             <Row>
@@ -809,13 +811,13 @@ class SuggestCoursePlanGPD extends Component {
                                     <b><u>Tuesday</u></b>
                                 </Col>
                                 <Col l={3}>
-                                    <input type="time" id="tuesdayTimeBegin" onChange={this.onChange}></input>
+                                    <input type="time" id="tuesdayTimeBegin" onChange={this.onChange} value={this.state.tuesdayTimeBegin}></input>
                                 </Col>
                                 <Col l={3}>
                                     <b>to</b>
                                 </Col>
                                 <Col l={3}>
-                                    <input type="time" id="tuesdayTimeEnd" onChange={this.onChange}></input>
+                                    <input type="time" id="tuesdayTimeEnd" onChange={this.onChange} value={this.state.tuesdayTimeEnd}></input>
                                 </Col>
                             </Row>
                             <Row>
@@ -823,13 +825,13 @@ class SuggestCoursePlanGPD extends Component {
                                     <b><u>Wednesday</u></b>
                                 </Col>
                                 <Col l={3}>
-                                    <input type="time" id="wednesdayTimeBegin" onChange={this.onChange}></input>
+                                    <input type="time" id="wednesdayTimeBegin" onChange={this.onChange} value={this.state.wednesdayTimeBegin}></input>
                                 </Col>
                                 <Col l={3}>
                                     <b>to</b>
                                 </Col>
                                 <Col l={3}>
-                                    <input type="time" id="wednesdayTimeEnd" onChange={this.onChange}></input>
+                                    <input type="time" id="wednesdayTimeEnd" onChange={this.onChange} value={this.state.wednesdayTimeEnd}></input>
                                 </Col>
                             </Row>
                             <Row>
@@ -837,13 +839,13 @@ class SuggestCoursePlanGPD extends Component {
                                     <b><u>Thursday</u></b>
                                 </Col>
                                 <Col l={3}>
-                                    <input type="time" id="thursdayTimeBegin" onChange={this.onChange}></input>
+                                    <input type="time" id="thursdayTimeBegin" onChange={this.onChange} value={this.state.thursdayTimeBegin}></input>
                                 </Col>
                                 <Col l={3}>
                                     <b>to</b>
                                 </Col>
                                 <Col l={3}>
-                                    <input type="time" id="thursdayTimeEnd" onChange={this.onChange}></input>
+                                    <input type="time" id="thursdayTimeEnd" onChange={this.onChange} value={this.state.mondayTimeEnd}></input>
                                 </Col>
                             </Row>
                             <Row>
@@ -851,13 +853,13 @@ class SuggestCoursePlanGPD extends Component {
                                     <b><u>Friday</u></b>
                                 </Col>
                                 <Col l={3}>
-                                    <input type="time" id="fridayTimeBegin" onChange={this.onChange}></input>
+                                    <input type="time" id="fridayTimeBegin" onChange={this.onChange} value={this.state.fridayTimeBegin}></input>
                                 </Col>
                                 <Col l={3}>
                                     <b>to</b>
                                 </Col>
                                 <Col l={3}>
-                                    <input type="time" id="fridayTimeEnd" onChange={this.onChange}></input>
+                                    <input type="time" id="fridayTimeEnd" onChange={this.onChange} value={this.state.fridayTimeEnd}></input>
                                 </Col>
                             </Row>
                             <Button onClick={this.onClickSuggestPlan}>Suggest Course Plan</Button>
