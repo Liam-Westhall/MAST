@@ -47,7 +47,6 @@ class SuggestCoursePlanGPD extends Component {
         return res.data;
     }
 
-/*
     calcGPA = async () => {
         //get grades from databse
         let grades4GPA = this.getGrades
@@ -141,7 +140,6 @@ class SuggestCoursePlanGPD extends Component {
             return finalGPA
         }
     }
-*/
 
     //gets all the degree requirements for a specific major/track
     getDegreeRequirements = async () => {

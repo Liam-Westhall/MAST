@@ -635,6 +635,113 @@ class ManageStudentsGPD extends Component{
                             }
                         }
                     } 
+                }
+                else if(student.department.replace(/ /g,'') == "CSE"){
+                    if(student.track == "Basic"){
+                        let courses = tempDegree.json.requirements.tracks.basic.courses
+                        console.log(courses);
+                        for(var course in courses){
+                            let courseStrArr = courses[course].split("/")
+                            for(let i = 0; i < courseStrArr.length; i++){
+                                let completedCheck = false;
+                                for(var grade in this.state.grades){
+                                    if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                    {
+                                        if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                            completedCourses = completedCourses + 1;
+                                            completedCheck = true;
+                                        }
+                                        else if(this.state.grades[grade].grade == "C"){
+                                            if(this.state.grades[grade].grade.length > 1){
+                                                if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                    completedCourses = completedCourses + 1
+                                                    completedCheck = true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if(this.checkCourseInPlan(student, courseStrArr[i]) && !completedCheck){
+                                    pendingCourses = pendingCourses + 1;
+                                }
+                                else if(!completedCheck && i == courseStrArr.length - 1){
+                                    unsatisfiedCourses = unsatisfiedCourses + 1;
+                                }     
+                            }
+                        }
+                    }
+                    else if(student.track == "Thesis"){
+                        let courses = tempDegree.json.requirements.tracks.thesis.courses
+                        console.log(courses);
+                        for(var course in courses){
+                            console.log(courses[course]);
+                            let courseStrArr = courses[course].split("/")
+                            for(let i = 0; i < courseStrArr.length; i++){
+                                let completedCheck = false;
+                                for(var grade in this.state.grades){
+                                    if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                    {
+                                        if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                            completedCourses = completedCourses + 1;
+                                            completedCheck = true;
+                                            break;
+                                        }
+                                        else if(this.state.grades[grade].grade == "C"){
+                                            if(this.state.grades[grade].grade.length > 1){
+                                                if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                    completedCourses = completedCourses + 1
+                                                    completedCheck = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if(this.checkCourseInPlan(student, courseStrArr[i]) && !completedCheck){
+                                    pendingCourses = pendingCourses + 1;
+                                }
+                                else if(!completedCheck && i == courseStrArr.length - 1){
+                                    unsatisfiedCourses = unsatisfiedCourses + 1;
+                                }     
+                            }
+                        }
+                    }
+                    else if(student.track == "Advanced"){
+                        let courses = tempDegree.json.requirements.tracks.advanced.courses
+                        console.log(courses);
+                        for(var course in courses){
+                            console.log(courses[course]);
+                            let courseStrArr = courses[course].split("/")
+                            for(let i = 0; i < courseStrArr.length; i++){
+                                let completedCheck = false;
+                                for(var grade in this.state.grades){
+                                    if(courseStrArr[i] == (this.state.grades[grade].department + " " + this.state.grades[grade].course_num).toString() && this.state.grades[grade].StudentId == student.id)
+                                    {
+                                        if(this.state.grades[grade].grade == "A" || this.state.grades[grade].grade == "B") {
+                                            completedCourses = completedCourses + 1;
+                                            completedCheck = true;
+                                            break;
+                                        }
+                                        else if(this.state.grades[grade].grade == "C"){
+                                            if(this.state.grades[grade].grade.length > 1){
+                                                if(this.state.grades[grade].grade.charAt(1) != "-"){
+                                                    completedCourses = completedCourses + 1
+                                                    completedCheck = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if(this.checkCourseInPlan(student, courseStrArr[i]) && !completedCheck){
+                                    pendingCourses = pendingCourses + 1;
+                                }
+                                else if(!completedCheck && i == courseStrArr.length - 1){
+                                    unsatisfiedCourses = unsatisfiedCourses + 1;
+                                }     
+                            }
+                        }
+                    } 
                 }  
             }
         }
