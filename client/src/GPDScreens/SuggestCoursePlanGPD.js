@@ -464,7 +464,20 @@ class SuggestCoursePlanGPD extends Component {
 
     //gets the total credits from the remaining courses for the student to take
     getCreditsRemainingCourses = async (remainingCourses) => {
+        
+        let total = 0
 
+        for(const course of remainingCourses){
+
+            let values = course.split(" ")
+            let retval = await axios.get("/api/courses/course?name=" + values[0] + "&number=" +values[1])
+            if(retval){
+                total = total + retval.data.credits
+            }
+
+        }
+
+        return total
     }
 
     //triggered when "Suggest Course Plan" Button is pressed
